@@ -1,0 +1,307 @@
+﻿@import "tailwindcss";
+
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+:root {
+  --color-water-900: #0a1628;
+  --color-water-800: #0f2042;
+  --color-water-700: #162d5e;
+  --color-water-600: #1e3a7a;
+  --color-water-500: #2563eb;
+  --color-water-400: #3b82f6;
+  --color-water-300: #60a5fa;
+  --color-water-200: #93c5fd;
+  --color-water-100: #dbeafe;
+
+  --color-teal-500: #14b8a6;
+  --color-teal-400: #2dd4bf;
+  --color-teal-300: #5eead4;
+
+  --color-safe: #10b981;
+  --color-bio: #f97316;
+  --color-chemical: #ef4444;
+  --color-physical: #eab308;
+  --color-mixed: #dc2626;
+
+  --glass-bg: rgba(15, 32, 66, 0.6);
+  --glass-border: rgba(59, 130, 246, 0.2);
+}
+
+/* ── Base ─────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--color-water-900);
+  color: #e2e8f0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-water-900); }
+::-webkit-scrollbar-thumb { background: var(--color-water-600); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-water-500); }
+
+/* ── Glass Cards ──────────────────────────────────────────────── */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+}
+
+/* ── Status Colors ────────────────────────────────────────────── */
+.status-safe    { color: var(--color-safe); }
+.status-bio     { color: var(--color-bio); }
+.status-chem    { color: var(--color-chemical); }
+.status-phys    { color: var(--color-physical); }
+.status-mixed   { color: var(--color-mixed); }
+
+.badge-safe   { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.badge-bio    { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+.badge-chem   { background: rgba(239, 68, 68, 0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.badge-phys   { background: rgba(234, 179, 8, 0.15);  color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
+.badge-mixed  { background: rgba(220, 38, 38, 0.2);   color: #fca5a5; border: 1px solid rgba(220,38,38,0.4); }
+
+/* ── Do Not Boil ──────────────────────────────────────────────── */
+.dnb-banner {
+  background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,38,0.15));
+  border: 2px solid rgba(239,68,68,0.5);
+  border-radius: 12px;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(239,68,68,0.5); }
+  50% { border-color: rgba(239,68,68,0.9); }
+}
+
+.boil-banner {
+  background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(234,88,12,0.15));
+  border: 2px solid rgba(249,115,22,0.5);
+  border-radius: 12px;
+}
+
+/* ── Animations ───────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+/* ── Leaflet map overrides ────────────────────────────────────── */
+.leaflet-container {
+  background: var(--color-water-900) !important;
+  border-radius: 12px;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--color-water-800) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--color-water-800) !important;
+}
+
+/* ── WhatsApp Preview ─────────────────────────────────────────── */
+.whatsapp-preview {
+  background: #0d1117;
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.whatsapp-header {
+  background: #075e54;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.whatsapp-bubble {
+  background: #1f2c34;
+  border-radius: 8px;
+  margin: 8px;
+  padding: 10px 14px;
+  position: relative;
+  max-width: 90%;
+}
+
+.whatsapp-bubble::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  border: 8px solid transparent;
+  border-right-color: #1f2c34;
+  border-top-color: #1f2c34;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────── */
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  color: #94a3b8;
+  text-decoration: none;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(59,130,246,0.1);
+  color: #93c5fd;
+}
+
+.sidebar-nav-item.active {
+  background: rgba(59,130,246,0.2);
+  color: #60a5fa;
+  border-left: 3px solid #3b82f6;
+}
+
+/* ── Table ────────────────────────────────────────────────────── */
+.data-table th {
+  background: rgba(15, 32, 66, 0.8);
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(59,130,246,0.15);
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.875rem;
+}
+
+.data-table tr:hover td {
+  background: rgba(59,130,246,0.05);
+}
+
+/* ── KPI Card ─────────────────────────────────────────────────── */
+.kpi-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* ── Button ───────────────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-secondary {
+  background: rgba(59,130,246,0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(59,130,246,0.3);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-secondary:hover {
+  background: rgba(59,130,246,0.2);
+}
+
+/* ── Input ────────────────────────────────────────────────────── */
+.form-input {
+  background: rgba(15,32,66,0.6);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 8px;
+  color: #e2e8f0;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+.form-input::placeholder {
+  color: #475569;
+}
+
+/* ── Severity badges ──────────────────────────────────────────── */
+.severity-SAFE     { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.severity-MODERATE { background: rgba(234, 179, 8, 0.15); color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.severity-HIGH     { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.severity-CRITICAL { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
