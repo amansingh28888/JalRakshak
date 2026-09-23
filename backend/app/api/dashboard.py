@@ -6,6 +6,7 @@ from sqlalchemy import distinct
 
 from app.database import get_db
 from app.models.water_sample import WaterSample
+from app.models.user_profile import UserProfile
 from app.analytics.aggregations import get_dashboard_summary, get_state_stats, get_district_stats
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
@@ -51,3 +52,30 @@ def list_districts(
         q = q.filter(WaterSample.state_ut == state)
     rows = q.all()
     return [r[0] for r in rows if r[0]]
+
+
+@router.get("/public-stats")
+def public_stats(db: Session = Depends(get_db)):
+    """
+    Public (unauthenticated) landing-page statistics.
+    Returns real counts from the live database — no hard-coded numbers.
+    """
+    summary = get_dashboard_summary(db)
+
+    # Count active field workers from user profiles table
+    active_workers = (
+        db.query(UserProfile)
+        .filter(UserProfile.role == "field_worker", UserProfile.status == "active")
+        .count()
+    )
+
+    return {
+        "total_samples":      summary["total_samples"],
+        "total_states":       summary["total_states"],
+        "total_districts":    summary["total_districts"],
+        "safe_percentage":    summary["safe_percentage"],
+        "biological_alerts":  summary["biological_alerts"],
+        "chemical_alerts":    summary["chemical_alerts"],
+        "do_not_boil_alerts": summary["do_not_boil_alerts"],
+        "active_workers":     active_workers,
+    }

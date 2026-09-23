@@ -116,6 +116,9 @@ from app.api.alerts import router as alerts_router
 from app.api.map import router as map_router
 from app.api.evaluate import router as evaluate_router
 from app.api.ai import router as ai_router
+from app.api.worker import router as worker_router
+from app.api.admin import router as admin_router
+from app.api.auth import router as auth_router
 
 app.include_router(samples_router)
 app.include_router(dashboard_router)
@@ -123,6 +126,9 @@ app.include_router(alerts_router)
 app.include_router(map_router)
 app.include_router(evaluate_router)
 app.include_router(ai_router)
+app.include_router(worker_router)
+app.include_router(admin_router)
+app.include_router(auth_router)
 
 
 # ── Core endpoints ────────────────────────────────────────────────────────────

@@ -5,22 +5,22 @@
 export const CATEGORY_CONFIG: Record<string, {
   label: string; color: string; badgeClass: string; icon: string;
 }> = {
-  POTABLE_SAFE:               { label: 'Potable — Safe',     color: '#10b981', badgeClass: 'badge-safe',  icon: '✅' },
-  UNSAFE_BIOLOGICAL_PATHOGEN: { label: 'Biological Pathogen', color: '#f97316', badgeClass: 'badge-bio',   icon: '🦠' },
-  CRITICAL_CHEMICAL_TOXIN:    { label: 'Chemical Toxin',      color: '#ef4444', badgeClass: 'badge-chem',  icon: '⚗️' },
-  MODERATE_PHYSICAL_PARAM:    { label: 'Physical Parameter',  color: '#eab308', badgeClass: 'badge-phys',  icon: '🌊' },
-  CRITICAL_MIXED_HAZARD:      { label: 'Mixed Hazard',        color: '#dc2626', badgeClass: 'badge-mixed', icon: '☣️' },
+  POTABLE_SAFE:               { label: 'Potable — Safe',     color: '#10b981', badgeClass: 'badge-safe',  icon: '' },
+  UNSAFE_BIOLOGICAL_PATHOGEN: { label: 'Biological Pathogen', color: '#f97316', badgeClass: 'badge-bio',   icon: '' },
+  CRITICAL_CHEMICAL_TOXIN:    { label: 'Chemical Toxin',      color: '#ef4444', badgeClass: 'badge-chem',  icon: '' },
+  MODERATE_PHYSICAL_PARAM:    { label: 'Physical Parameter',  color: '#eab308', badgeClass: 'badge-phys',  icon: '' },
+  CRITICAL_MIXED_HAZARD:      { label: 'Mixed Hazard',        color: '#dc2626', badgeClass: 'badge-mixed', icon: '' },
 };
 
 // ── Action configuration ───────────────────────────────────────────────────────
 
 export const ACTION_CONFIG: Record<string, { label: string; icon: string; isDoNotBoil: boolean }> = {
-  SAFE_TO_DRINK:                       { label: 'Safe to Drink',         icon: '✅', isDoNotBoil: false },
-  BOIL_OR_CHLORINATE_REQUIRED:         { label: 'Boil / Chlorinate',      icon: '🔥', isDoNotBoil: false },
-  DO_NOT_BOIL_ALTERNATIVE_SOURCE_ONLY: { label: 'Use Alternative Source', icon: '🚱', isDoNotBoil: true  },
-  FILTRATION_TREATMENT_RECOMMENDED:    { label: 'Filter & Treat',         icon: '🔄', isDoNotBoil: false },
-  FILTER_AND_RETEST:                   { label: 'Filter & Retest',        icon: '🔄', isDoNotBoil: false },
-  MIXED_HAZARD_CHEMICAL_PRIORITY:      { label: 'Use Alternative Source', icon: '🚱', isDoNotBoil: true  },
+  SAFE_TO_DRINK:                       { label: 'Safe to Drink',         icon: '', isDoNotBoil: false },
+  BOIL_OR_CHLORINATE_REQUIRED:         { label: 'Boil / Chlorinate',      icon: '', isDoNotBoil: false },
+  DO_NOT_BOIL_ALTERNATIVE_SOURCE_ONLY: { label: 'Use Alternative Source', icon: '', isDoNotBoil: true  },
+  FILTRATION_TREATMENT_RECOMMENDED:    { label: 'Filter & Treat',         icon: '', isDoNotBoil: false },
+  FILTER_AND_RETEST:                   { label: 'Filter & Retest',        icon: '', isDoNotBoil: false },
+  MIXED_HAZARD_CHEMICAL_PRIORITY:      { label: 'Use Alternative Source', icon: '', isDoNotBoil: true  },
 };
 
 // ── Severity configuration ─────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ export const MESSAGE_TYPE_CONFIG: Record<string, {
   SAFE: {
     label:        'Water is Safe',
     headline:     'No water quality issues detected',
-    icon:         '✅',
+    icon:         '',
     color:        '#10b981',
     bgColor:      'rgba(16,185,129,0.1)',
     borderColor:  '#10b981',
@@ -62,7 +62,7 @@ export const MESSAGE_TYPE_CONFIG: Record<string, {
   BIOLOGICAL_CONTAMINATION: {
     label:        'Biological Contamination',
     headline:     'Pathogen contamination detected',
-    icon:         '🦠',
+    icon:         '',
     color:        '#f97316',
     bgColor:      'rgba(249,115,22,0.1)',
     borderColor:  '#f97316',
@@ -72,7 +72,7 @@ export const MESSAGE_TYPE_CONFIG: Record<string, {
   CHEMICAL_CONTAMINATION: {
     label:        'Chemical Contamination',
     headline:     'Chemical contaminant exceeds safe limit',
-    icon:         '⚗️',
+    icon:         '',
     color:        '#ef4444',
     bgColor:      'rgba(239,68,68,0.1)',
     borderColor:  '#ef4444',
@@ -82,7 +82,7 @@ export const MESSAGE_TYPE_CONFIG: Record<string, {
   PHYSICAL_PARAMETER: {
     label:        'Physical Parameter Issue',
     headline:     'Physical quality parameter exceeds threshold',
-    icon:         '🌊',
+    icon:         '',
     color:        '#eab308',
     bgColor:      'rgba(234,179,8,0.1)',
     borderColor:  '#eab308',
@@ -92,7 +92,7 @@ export const MESSAGE_TYPE_CONFIG: Record<string, {
   MIXED_HAZARD: {
     label:        'Mixed Hazard',
     headline:     'Chemical and biological contamination detected',
-    icon:         '☣️',
+    icon:         '',
     color:        '#dc2626',
     bgColor:      'rgba(220,38,38,0.1)',
     borderColor:  '#dc2626',
@@ -105,13 +105,13 @@ export const MESSAGE_TYPE_CONFIG: Record<string, {
 // Converts structured action codes to human-readable English.
 
 export const RECOMMENDED_ACTION_LABELS: Record<string, { label: string; icon: string }> = {
-  BOIL_OR_CHLORINATE:                      { label: 'Boil or chlorinate before drinking',              icon: '🔥' },
-  DISINFECT_BEFORE_DRINKING:               { label: 'Disinfect before drinking',                       icon: '🧪' },
-  USE_ALTERNATIVE_SAFE_SOURCE:             { label: 'Use a certified safe alternative water source',   icon: '💧' },
-  USE_APPROPRIATE_CHEMICAL_TREATMENT:      { label: 'Use appropriate chemical treatment system',       icon: '⚗️' },
-  DISINFECT_FOR_BIOLOGICAL_CONTAMINATION:  { label: 'Also disinfect for biological contamination',     icon: '🦠' },
-  FILTER_OR_TREAT:                         { label: 'Filter or apply appropriate treatment',           icon: '🔄' },
-  RETEST:                                  { label: 'Retest after treatment',                          icon: '🔬' },
+  BOIL_OR_CHLORINATE:                      { label: 'Boil or chlorinate before drinking',              icon: '' },
+  DISINFECT_BEFORE_DRINKING:               { label: 'Disinfect before drinking',                       icon: '' },
+  USE_ALTERNATIVE_SAFE_SOURCE:             { label: 'Use a certified safe alternative water source',   icon: '' },
+  USE_APPROPRIATE_CHEMICAL_TREATMENT:      { label: 'Use appropriate chemical treatment system',       icon: '' },
+  DISINFECT_FOR_BIOLOGICAL_CONTAMINATION:  { label: 'Also disinfect for biological contamination',     icon: '' },
+  FILTER_OR_TREAT:                         { label: 'Filter or apply appropriate treatment',           icon: '' },
+  RETEST:                                  { label: 'Retest after treatment',                          icon: '' },
 };
 
 // ── Avoid action labels ────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@ export const RECOMMENDED_ACTION_LABELS: Record<string, { label: string; icon: st
 export const AVOID_ACTION_LABELS: Record<string, { label: string; icon: string }> = {
   DO_NOT_RELY_ON_BOILING: {
     label: 'Do not rely on boiling — boiling concentrates chemical contaminants',
-    icon:  '🚱',
+    icon:  '',
   },
 };
 
@@ -142,11 +142,11 @@ export function getMessageTypeConfig(messageType?: string) {
 }
 
 export function getRecommendedActionLabel(code: string) {
-  return RECOMMENDED_ACTION_LABELS[code] || { label: code.replace(/_/g, ' ').toLowerCase(), icon: '➡️' };
+  return RECOMMENDED_ACTION_LABELS[code] || { label: code.replace(/_/g, ' ').toLowerCase(), icon: '' };
 }
 
 export function getAvoidActionLabel(code: string) {
-  return AVOID_ACTION_LABELS[code] || { label: code.replace(/_/g, ' ').toLowerCase(), icon: '⚠️' };
+  return AVOID_ACTION_LABELS[code] || { label: code.replace(/_/g, ' ').toLowerCase(), icon: '' };
 }
 
 export function getMapColor(category?: string, doNotBoil?: boolean): string {

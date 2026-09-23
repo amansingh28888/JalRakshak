@@ -103,3 +103,18 @@ export const importSyntheticData = (n = 5000) =>
 // ── Health ─────────────────────────────────────────────────────────────────────
 export const getHealth = () =>
   api.get('/health').then(r => r.data);
+
+// ── Public Stats (landing page, no auth) ───────────────────────────────────────
+export interface PublicStats {
+  total_samples: number;
+  total_states: number;
+  total_districts: number;
+  safe_percentage: number;
+  biological_alerts: number;
+  chemical_alerts: number;
+  do_not_boil_alerts: number;
+  active_workers: number;
+}
+
+export const getPublicStats = () =>
+  api.get<PublicStats>('/api/dashboard/public-stats').then(r => r.data);

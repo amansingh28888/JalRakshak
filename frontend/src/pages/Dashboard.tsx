@@ -4,40 +4,48 @@ import {
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
+import { 
+  Droplets, AlertTriangle, FlaskConical, Bug, 
+  AlertOctagon, Waves, Database, CheckCircle, 
+  Ban, ShieldCheck 
+} from 'lucide-react';
 import { getDashboardSummary } from '../api';
 import type { DashboardSummary } from '../types';
 import { getCategoryConfig, formatPercentage } from '../utils/display';
 
 const CATEGORY_COLORS: Record<string, string> = {
-  POTABLE_SAFE:               '#10b981',
-  UNSAFE_BIOLOGICAL_PATHOGEN: '#f97316',
-  CRITICAL_CHEMICAL_TOXIN:    '#ef4444',
-  MODERATE_PHYSICAL_PARAM:    '#eab308',
-  CRITICAL_MIXED_HAZARD:      '#dc2626',
+  POTABLE_SAFE:               'var(--color-safe)',
+  UNSAFE_BIOLOGICAL_PATHOGEN: 'var(--color-warning)',
+  CRITICAL_CHEMICAL_TOXIN:    'var(--color-danger)',
+  MODERATE_PHYSICAL_PARAM:    '#F59E0B',
+  CRITICAL_MIXED_HAZARD:      '#B91C1C',
 };
 
-function KpiCard({ icon, label, value, sub, accent, onClick }: {
-  icon: string; label: string; value: string | number; sub?: string; accent?: string;
+function KpiCard({ icon: Icon, label, value, sub, accent, onClick }: {
+  icon: any; label: string; value: string | number; sub?: string; accent?: string;
   onClick?: () => void;
 }) {
   return (
     <div
-      className="kpi-card"
+      className={`card ${onClick ? 'card-hover' : ''}`}
       style={{
-        borderLeft: accent ? `3px solid ${accent}` : undefined,
+        borderLeft: accent ? `4px solid ${accent}` : undefined,
         cursor: onClick ? 'pointer' : undefined,
-        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
       }}
       onClick={onClick}
-      onMouseEnter={e => { if (onClick) (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
-      onMouseLeave={e => { if (onClick) (e.currentTarget as HTMLElement).style.transform = ''; }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span style={{ fontSize: '1.4rem' }}>{icon}</span>
-        {sub && <span style={{ fontSize: '0.7rem', color: '#64748b', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: 20 }}>{sub}</span>}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+        <div style={{ color: accent || 'var(--color-text-secondary)', background: 'var(--color-bg-soft)', padding: 8, borderRadius: 8 }}>
+          <Icon size={20} strokeWidth={2} />
+        </div>
+        {sub && <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', background: 'var(--color-bg-soft)', padding: '4px 10px', borderRadius: 20, fontWeight: 600 }}>{sub}</span>}
       </div>
-      <div style={{ fontSize: '1.8rem', fontFamily: 'Outfit', fontWeight: 700, color: accent || '#e2e8f0', lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: 6 }}>{label}</div>
+      <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-text)', lineHeight: 1.2 }}>{value}</div>
+      <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: 4, fontWeight: 500 }}>{label}</div>
     </div>
   );
 }
@@ -57,14 +65,15 @@ export default function Dashboard() {
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: '2rem' }}>💧</div>
-      <div style={{ color: '#64748b' }}>Loading dashboard data...</div>
+      <Droplets size={48} color="var(--color-primary)" className="animate-pulse" />
+      <div style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}>Loading dashboard data...</div>
     </div>
   );
 
   if (error) return (
-    <div className="glass-card" style={{ padding: 24, color: '#f87171' }}>
-      ⚠️ Failed to load dashboard: {error}
+    <div className="card" style={{ padding: 24, color: 'var(--color-danger)', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <AlertTriangle size={24} />
+      <span>Failed to load dashboard: {error}</span>
     </div>
   );
 
@@ -85,57 +94,55 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="animate-fade-in-up">
+    <div>
       {/* Header */}
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontFamily: 'Outfit', fontSize: '1.75rem', fontWeight: 800, color: '#e2e8f0', marginBottom: 6 }}>
-          💧 JalRakshak — Overview Dashboard
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: '1.75rem', color: 'var(--color-text)', marginBottom: 8 }}>
+          Overview Dashboard
         </h1>
-        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-          AI-Based Water Quality Monitoring &amp; Vernacular Alert System
-          &nbsp;·&nbsp; All metrics computed from live database &nbsp;·&nbsp;
-          <span style={{ color: '#3b82f6' }}>IS 10500:2012</span> standards
+        <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem' }}>
+          Monitoring water quality across India using <strong>IS 10500:2012</strong> standards.
         </p>
       </div>
 
-      {/* Attention Banner — context-aware, shows what the problems are */}
+      {/* Attention Banner */}
       {totalAttention > 0 && (
         <div
           style={{
-            background: 'linear-gradient(135deg, rgba(239,68,68,0.12), rgba(220,38,38,0.06))',
-            border: '1px solid rgba(239,68,68,0.3)',
+            background: '#FDF3E1',
+            border: '1px solid rgba(201,130,0,0.3)',
             borderRadius: 12,
-            padding: '16px 24px',
-            marginBottom: 24,
+            padding: '20px 24px',
+            marginBottom: 32,
             display: 'flex',
             alignItems: 'flex-start',
             gap: 16,
           }}
         >
-          <span style={{ fontSize: '2rem', lineHeight: 1 }}>⚠️</span>
+          <AlertTriangle size={28} color="var(--color-warning)" style={{ marginTop: 2 }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: 'Outfit', fontWeight: 700, fontSize: '1.05rem', color: '#f87171', marginBottom: 6 }}>
+            <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#9C6500', marginBottom: 8 }}>
               {totalAttention.toLocaleString()} samples require attention ({formatPercentage(attentionPct)})
             </div>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', fontSize: '0.82rem' }}>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: '0.85rem' }}>
               {summary.chemical_alerts > 0 && (
-                <span style={{ color: '#fca5a5' }}>
-                  ⚗️ {summary.chemical_alerts.toLocaleString()} chemical — use appropriate treatment or alternative source
+                <span style={{ color: '#9C6500', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <FlaskConical size={14} /> {summary.chemical_alerts.toLocaleString()} chemical — use alternative source
                 </span>
               )}
               {summary.biological_alerts > 0 && (
-                <span style={{ color: '#fdba74' }}>
-                  🦠 {summary.biological_alerts.toLocaleString()} biological — disinfect before drinking
+                <span style={{ color: '#9C6500', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Bug size={14} /> {summary.biological_alerts.toLocaleString()} biological — disinfect before drinking
                 </span>
               )}
               {summary.mixed_hazards > 0 && (
-                <span style={{ color: '#f87171' }}>
-                  ☣️ {summary.mixed_hazards.toLocaleString()} mixed — chemical treatment + disinfection required
+                <span style={{ color: 'var(--color-danger)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <AlertOctagon size={14} /> {summary.mixed_hazards.toLocaleString()} mixed — treatment required
                 </span>
               )}
               {summary.physical_concerns > 0 && (
-                <span style={{ color: '#fde68a' }}>
-                  🌊 {summary.physical_concerns.toLocaleString()} physical — filter and retest
+                <span style={{ color: '#9C6500', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Waves size={14} /> {summary.physical_concerns.toLocaleString()} physical — filter and retest
                 </span>
               )}
             </div>
@@ -143,134 +150,132 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Primary KPI Grid — 7 cards: what problem types exist */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(155px, 1fr))', gap: 16, marginBottom: 28 }}>
-        <KpiCard icon="🗃️" label="Total Samples"        value={summary.total_samples.toLocaleString()} />
-        <KpiCard icon="✅" label="Safe to Drink"         value={summary.safe_samples.toLocaleString()}
-          sub={formatPercentage(summary.safe_percentage)} accent="#10b981"
+      {/* Primary KPI Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 32 }}>
+        <KpiCard icon={Database} label="Total Samples" value={summary.total_samples.toLocaleString()} />
+        <KpiCard icon={CheckCircle} label="Safe to Drink" value={summary.safe_samples.toLocaleString()}
+          sub={formatPercentage(summary.safe_percentage)} accent="var(--color-safe)"
           onClick={() => navigate('/samples?category=POTABLE_SAFE')} />
-        <KpiCard icon="⚗️" label="Chemical Issues"       value={summary.chemical_alerts.toLocaleString()} accent="#ef4444"
+        <KpiCard icon={FlaskConical} label="Chemical Issues" value={summary.chemical_alerts.toLocaleString()} accent="var(--color-danger)"
           onClick={() => navigate('/alerts?category=CRITICAL_CHEMICAL_TOXIN')} />
-        <KpiCard icon="🦠" label="Biological Issues"     value={summary.biological_alerts.toLocaleString()} accent="#f97316"
+        <KpiCard icon={Bug} label="Biological Issues" value={summary.biological_alerts.toLocaleString()} accent="var(--color-warning)"
           onClick={() => navigate('/alerts?category=UNSAFE_BIOLOGICAL_PATHOGEN')} />
-        <KpiCard icon="🌊" label="Physical Issues"       value={summary.physical_concerns.toLocaleString()} accent="#eab308"
+        <KpiCard icon={Waves} label="Physical Issues" value={summary.physical_concerns.toLocaleString()} accent="#F59E0B"
           onClick={() => navigate('/alerts?category=MODERATE_PHYSICAL_PARAM')} />
-        <KpiCard icon="☣️" label="Mixed Hazards"         value={summary.mixed_hazards.toLocaleString()} accent="#dc2626"
+        <KpiCard icon={AlertOctagon} label="Mixed Hazards" value={summary.mixed_hazards.toLocaleString()} accent="#B91C1C"
           onClick={() => navigate('/alerts?category=CRITICAL_MIXED_HAZARD')} />
-        <KpiCard icon="🗺️" label="States Covered"        value={summary.total_states} />
       </div>
 
       {/* Secondary info: do_not_boil context note */}
       {summary.do_not_boil_alerts > 0 && (
         <div style={{
-          background: 'rgba(239,68,68,0.06)',
-          border: '1px solid rgba(239,68,68,0.2)',
+          background: '#FCE8E8',
+          border: '1px solid rgba(214,69,69,0.3)',
           borderRadius: 8,
-          padding: '10px 18px',
-          marginBottom: 24,
-          fontSize: '0.82rem',
-          color: '#fca5a5',
+          padding: '12px 20px',
+          marginBottom: 32,
+          fontSize: '0.85rem',
+          color: 'var(--color-danger)',
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
+          gap: 12,
         }}>
-          <span>🚱</span>
+          <Ban size={18} />
           <span>
             <strong>{summary.do_not_boil_alerts.toLocaleString()} samples</strong> ({formatPercentage(summary.do_not_boil_percentage)})
-            have chemical contamination where boiling is not effective — fluoride, arsenic, or nitrate.
-            These samples require an appropriate treatment system or a safe alternative source.
+            have chemical contamination where boiling is not effective (e.g., fluoride, arsenic). These require proper filtration.
           </span>
         </div>
       )}
 
       {/* Charts Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
-        {/* Pie Chart — problem type distribution */}
-        <div className="glass-card" style={{ padding: 24 }}>
-          <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 20, color: '#e2e8f0' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+        {/* Pie Chart */}
+        <div className="card" style={{ padding: 32 }}>
+          <h3 style={{ fontWeight: 600, marginBottom: 24, color: 'var(--color-text)' }}>
             Water Quality Distribution
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
-              <Pie data={pieData} dataKey="value" cx="50%" cy="50%" outerRadius={100}
+              <Pie data={pieData} dataKey="value" cx="50%" cy="50%" outerRadius={110} innerRadius={60}
                 label={({ percent }: { percent?: number }) => `${((percent ?? 0) * 100).toFixed(1)}%`}>
                 {pieData.map((entry, i) => (
-                  <Cell key={i} fill={CATEGORY_COLORS[entry.category] || '#64748b'} />
+                  <Cell key={i} fill={CATEGORY_COLORS[entry.category] || '#94A3B8'} />
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ background: '#0f2042', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8 }}
+                contentStyle={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 8, color: 'var(--color-text)', boxShadow: '0 4px 12px rgba(22,50,79,0.1)' }}
                 formatter={(val) => [Number(val).toLocaleString(), 'Samples']}
               />
-              <Legend formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{value}</span>} />
+              <Legend formatter={(value) => <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>{value}</span>} />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
         {/* Top Chemical States Bar */}
-        <div className="glass-card" style={{ padding: 24 }}>
-          <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 20, color: '#e2e8f0' }}>
+        <div className="card" style={{ padding: 32 }}>
+          <h3 style={{ fontWeight: 600, marginBottom: 24, color: 'var(--color-text)' }}>
             Top States by Chemical Alerts
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={stateBarData} layout="vertical" margin={{ left: 8, right: 16 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis type="number" tick={{ fill: '#64748b', fontSize: 11 }} />
-              <YAxis type="category" dataKey="state" tick={{ fill: '#94a3b8', fontSize: 11 }} width={80} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" horizontal={false} />
+              <XAxis type="number" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+              <YAxis type="category" dataKey="state" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} width={90} />
               <Tooltip
-                contentStyle={{ background: '#0f2042', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8 }}
+                contentStyle={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 8, color: 'var(--color-text)', boxShadow: '0 4px 12px rgba(22,50,79,0.1)' }}
                 formatter={(val) => [Number(val).toLocaleString(), 'Chemical Alerts']}
               />
-              <Bar dataKey="chemical" fill="#ef4444" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="chemical" fill="var(--color-primary)" radius={[0, 4, 4, 0]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Second Row of Charts */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
         {/* Source Distribution */}
-        <div className="glass-card" style={{ padding: 24 }}>
-          <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 20, color: '#e2e8f0' }}>
+        <div className="card" style={{ padding: 32 }}>
+          <h3 style={{ fontWeight: 600, marginBottom: 24, color: 'var(--color-text)' }}>
             Water Source Distribution
           </h3>
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
             {summary.source_distribution.map(s => (
-              <div key={s.source} style={{ flex: '1 1 150px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>{s.source || 'Unknown'}</span>
-                  <span style={{ fontSize: '0.85rem', color: '#60a5fa', fontWeight: 600 }}>{s.percentage}%</span>
+              <div key={s.source} style={{ flex: '1 1 180px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>{s.source || 'Unknown'}</span>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--color-text)', fontWeight: 700 }}>{s.percentage}%</span>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 4, height: 6 }}>
-                  <div style={{ background: 'linear-gradient(90deg, #2563eb, #14b8a6)', borderRadius: 4, height: 6, width: `${s.percentage}%`, transition: 'width 0.8s ease' }} />
+                <div style={{ background: 'var(--color-bg-soft)', borderRadius: 6, height: 8 }}>
+                  <div style={{ background: 'var(--color-primary)', borderRadius: 6, height: 8, width: `${s.percentage}%`, transition: 'width 0.8s ease' }} />
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 4 }}>{s.count.toLocaleString()} samples</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: 8 }}>{s.count.toLocaleString()} samples</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Severity Distribution */}
-        <div className="glass-card" style={{ padding: 24 }}>
-          <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 20, color: '#e2e8f0' }}>
+        <div className="card" style={{ padding: 32 }}>
+          <h3 style={{ fontWeight: 600, marginBottom: 24, color: 'var(--color-text)' }}>
             Alert Severity Breakdown
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={summary.severity_distribution} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="severity" tick={{ fill: '#64748b', fontSize: 11 }} />
-              <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+              <XAxis dataKey="severity" tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
+              <YAxis tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} />
               <Tooltip
-                contentStyle={{ background: '#0f2042', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8 }}
+                contentStyle={{ background: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 8, color: 'var(--color-text)', boxShadow: '0 4px 12px rgba(22,50,79,0.1)' }}
                 formatter={(val) => [Number(val).toLocaleString(), 'Samples']}
               />
-              <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
+              <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={40}>
                 {summary.severity_distribution.map((entry, index) => {
-                  let color = '#10b981'; // SAFE
-                  if (entry.severity === 'LOW') color = '#3b82f6';
-                  if (entry.severity === 'MODERATE') color = '#eab308';
-                  if (entry.severity === 'HIGH') color = '#f97316';
-                  if (entry.severity === 'CRITICAL') color = '#ef4444';
+                  let color = 'var(--color-safe)'; // SAFE
+                  if (entry.severity === 'LOW') color = 'var(--color-primary)';
+                  if (entry.severity === 'MODERATE') color = '#F59E0B';
+                  if (entry.severity === 'HIGH') color = 'var(--color-warning)';
+                  if (entry.severity === 'CRITICAL') color = 'var(--color-danger)';
                   return <Cell key={`cell-${index}`} fill={color} />;
                 })}
               </Bar>
@@ -280,9 +285,12 @@ export default function Dashboard() {
       </div>
 
       {/* Architecture Note */}
-      <div style={{ marginTop: 24, padding: '12px 20px', background: 'rgba(59,130,246,0.05)', borderRadius: 10, border: '1px solid rgba(59,130,246,0.1)', fontSize: '0.8rem', color: '#64748b' }}>
-        🔒 <strong style={{ color: '#60a5fa' }}>Safety Architecture:</strong> All classifications above are computed by the deterministic
-        rule engine using IS 10500:2012 standards. Gemini AI is used only for Hindi communication — it never overrides safety decisions.
+      <div style={{ padding: '16px 24px', background: 'var(--color-bg)', borderRadius: 8, border: '1px solid var(--color-border)', fontSize: '0.85rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <ShieldCheck size={20} color="var(--color-primary)" />
+        <span>
+          <strong style={{ color: 'var(--color-text)' }}>Safety Architecture:</strong> All classifications are computed deterministically by the rule engine. 
+          AI translation operates strictly in the presentation layer.
+        </span>
       </div>
     </div>
   );

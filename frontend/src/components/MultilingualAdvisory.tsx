@@ -3,6 +3,7 @@ import { getAdvisory, getGeminiStatus } from '../api';
 import type { WaterSample, WaterQualityVerdict, AdvisoryResponse } from '../types';
 import { LanguageSelector } from './LanguageSelector';
 import { getSavedLanguageCode, saveLanguageCode, getCachedAdvisory, setCachedAdvisory, getLanguageByCode } from '../utils/language';
+import { Globe2, Loader2, RefreshCw, Sparkles, AlertTriangle, Cpu, ListChecks, Ban, Bug, Lightbulb } from 'lucide-react';
 
 interface MultilingualAdvisoryProps {
   sample: WaterSample;
@@ -76,10 +77,11 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
   const isRtl = langInfo.isRtl;
 
   return (
-    <div className="glass-card" style={{ padding: 20 }}>
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">
-        <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, color: '#e2e8f0' }} className="text-lg">
-          🌍 AI Language Advisory
+    <div className="card" style={{ padding: 32, marginBottom: 24 }}>
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <h3 style={{ fontWeight: 700, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }} className="text-xl">
+          <Globe2 size={24} color="var(--color-primary)" />
+          AI Language Advisory
         </h3>
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <LanguageSelector 
@@ -92,65 +94,71 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
             onClick={handleGenerate} 
             disabled={loading}
           >
-            {loading ? '⏳ Generating...' : (advisory ? '🔄 Regenerate' : '✨ Generate')}
+            {loading ? (
+              <><Loader2 size={16} className="animate-spin" /> Generating...</>
+            ) : advisory ? (
+              <><RefreshCw size={16} /> Regenerate</>
+            ) : (
+              <><Sparkles size={16} /> Generate</>
+            )}
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-900/30 border border-red-500 rounded-md text-red-200 mb-4 text-sm">
-          ⚠️ {error}
+        <div style={{ padding: '12px 16px', background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 8, color: 'var(--color-danger)', marginBottom: 16, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <AlertTriangle size={18} /> {error}
         </div>
       )}
 
       {advisory && (
         <div dir={isRtl ? 'rtl' : 'ltr'} className={`transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
-          <div style={{ marginBottom: 8, fontSize: '0.75rem', color: '#475569' }} dir="ltr" className="flex items-center justify-between">
-            <span>
-              Source: {advisory.source === 'gemini' 
-                ? `✨ Gemini AI (${advisory.model_used})` 
-                : `📋 Deterministic Fallback (${advisory.source})`}
+          <div style={{ marginBottom: 12, fontSize: '0.8rem', color: 'var(--color-text-secondary)' }} dir="ltr" className="flex items-center justify-between">
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {advisory.source === 'gemini' 
+                ? <><Cpu size={14} color="var(--color-primary)" /> Gemini AI ({advisory.model_used})</>
+                : <><ListChecks size={14} /> Deterministic Fallback ({advisory.source})</>}
             </span>
-            <span className="font-mono bg-gray-800 px-2 py-0.5 rounded text-gray-400">
+            <span style={{ fontFamily: 'monospace', background: 'var(--color-bg-soft)', padding: '2px 8px', borderRadius: 4, color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}>
               {advisory.target_language} ({advisory.language_code})
             </span>
           </div>
           
-          <div style={{ padding: 20, background: 'rgba(255,255,255,0.03)', borderRadius: 10 }}>
-            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#e2e8f0', marginBottom: 12 }}>
+          <div style={{ padding: 24, background: 'var(--color-bg-soft)', borderRadius: 12, border: '1px solid var(--color-border)' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 16 }}>
               {advisory.warning_title}
             </div>
             
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase' }}>
-                ⚠️ Warning
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <AlertTriangle size={14} /> Warning
               </div>
-              <div style={{ fontSize: '0.95rem', color: '#e2e8f0', lineHeight: 1.6 }}>
+              <div style={{ fontSize: '1rem', color: 'var(--color-text)', lineHeight: 1.6 }}>
                 {advisory.warning}
               </div>
             </div>
             
             <div style={{
-              marginBottom: 16,
-              padding: 12,
-              background: verdict.do_not_boil ? 'rgba(239,68,68,0.1)' : 'rgba(249,115,22,0.1)',
-              borderLeft: isRtl ? 'none' : `4px solid ${verdict.do_not_boil ? '#ef4444' : '#f97316'}`,
-              borderRight: isRtl ? `4px solid ${verdict.do_not_boil ? '#ef4444' : '#f97316'}` : 'none',
-              borderRadius: 8,
+              marginBottom: 20,
+              padding: 16,
+              background: verdict.do_not_boil ? '#FCE8E8' : '#FDF3E1',
+              borderLeft: isRtl ? 'none' : `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}`,
+              borderRight: isRtl ? `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}` : 'none',
+              borderRadius: '0 8px 8px 0',
             }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase' }}>
-                {verdict.do_not_boil ? '🚱 Caution (Boiling not effective)' : '🦠 Caution'}
+              <div style={{ fontSize: '0.8rem', color: verdict.do_not_boil ? 'var(--color-danger)' : '#9C6500', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {verdict.do_not_boil ? <><Ban size={14} /> Caution (Boiling not effective)</> : <><Bug size={14} /> Caution</>}
               </div>
-              <div style={{ fontSize: '0.95rem', color: verdict.do_not_boil ? '#fca5a5' : '#fdba74', lineHeight: 1.6, fontWeight: 600 }}>
+              <div style={{ fontSize: '1rem', color: verdict.do_not_boil ? '#B91C1C' : '#9C6500', lineHeight: 1.6, fontWeight: 600 }}>
                 {advisory.caution}
               </div>
             </div>
             
             <div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase' }}>
-                💡 Solution
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-safe)', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Lightbulb size={14} /> Solution
               </div>
-              <div style={{ fontSize: '0.95rem', color: '#10b981', lineHeight: 1.6, fontWeight: 500 }}>
+              <div style={{ fontSize: '1rem', color: 'var(--color-safe)', lineHeight: 1.6, fontWeight: 600 }}>
                 {advisory.solution}
               </div>
             </div>
@@ -159,23 +167,16 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
       )}
       
       {!advisory && !loading && !error && (
-        <div className="py-10 text-center text-gray-500 border border-dashed border-gray-700 rounded-lg bg-gray-800/30">
-          <GlobeAltIcon className="h-10 w-10 mx-auto text-gray-600 mb-2" />
-          <p>Select a language and click Generate to see the advisory.</p>
+        <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--color-text-secondary)', background: 'var(--color-bg-soft)', borderRadius: 12, border: '1px dashed var(--color-border)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Globe2 size={40} color="var(--color-primary)" style={{ opacity: 0.5, marginBottom: 16 }} />
+          <p style={{ fontWeight: 500, fontSize: '0.95rem' }}>Select a language and click Generate to see the advisory.</p>
           {!geminiConfigured && (
-             <p className="text-xs text-yellow-600 mt-2">Note: Gemini is not configured. Fallback deterministic translations will be used.</p>
+             <p style={{ fontSize: '0.8rem', color: '#9C6500', marginTop: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
+               <AlertTriangle size={14} /> Note: Gemini is not configured. Fallback deterministic translations will be used.
+             </p>
           )}
         </div>
       )}
     </div>
   );
 };
-
-// Extracted to avoid import issue
-function GlobeAltIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-    </svg>
-  );
-}

@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { getSamples, getStates } from '../api';
 import type { WaterSample, PaginatedResponse } from '../types';
 import { getCategoryConfig, getActionConfig } from '../utils/display';
+import { Search, ChevronLeft, ChevronRight, Ban } from 'lucide-react';
 
 const CATEGORIES = [
   { value: '', label: 'All Categories' },
-  { value: 'POTABLE_SAFE', label: '✅ Safe' },
-  { value: 'UNSAFE_BIOLOGICAL_PATHOGEN', label: '🦠 Biological' },
-  { value: 'CRITICAL_CHEMICAL_TOXIN', label: '⚗️ Chemical' },
-  { value: 'MODERATE_PHYSICAL_PARAM', label: '🌊 Physical' },
-  { value: 'CRITICAL_MIXED_HAZARD', label: '☣️ Mixed' },
+  { value: 'POTABLE_SAFE', label: 'Safe' },
+  { value: 'UNSAFE_BIOLOGICAL_PATHOGEN', label: 'Biological' },
+  { value: 'CRITICAL_CHEMICAL_TOXIN', label: 'Chemical' },
+  { value: 'MODERATE_PHYSICAL_PARAM', label: 'Physical' },
+  { value: 'CRITICAL_MIXED_HAZARD', label: 'Mixed' },
 ];
 
 export default function Explorer() {
@@ -47,20 +48,21 @@ export default function Explorer() {
     setFilters(f => ({ ...f, [key]: val, page: 1 }));
 
   return (
-    <div className="animate-fade-in-up">
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: 'Outfit', fontSize: '1.75rem', fontWeight: 800, color: '#e2e8f0', marginBottom: 6 }}>
-          🔍 Water Quality Explorer
+    <div>
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: '1.75rem', color: 'var(--color-text)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Search size={28} color="var(--color-primary)" />
+          Water Quality Explorer
         </h1>
-        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+        <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem' }}>
           Browse, search, and filter all water quality samples. Click any row for full details.
         </p>
       </div>
 
       {/* Filters */}
-      <div className="glass-card" style={{ padding: 20, marginBottom: 20 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
-          <input className="form-input" placeholder="🔍 Search state / district / village..."
+      <div className="card" style={{ padding: 24, marginBottom: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
+          <input className="form-input" placeholder="Search state / district / village..."
             value={filters.search} onChange={e => setFilter('search', e.target.value)} />
           <select className="form-input" value={filters.state} onChange={e => setFilter('state', e.target.value)}>
             <option value="">All States</option>
@@ -73,7 +75,7 @@ export default function Explorer() {
             value={filters.do_not_boil === undefined ? '' : String(filters.do_not_boil)}
             onChange={e => setFilter('do_not_boil', e.target.value === '' ? undefined : e.target.value === 'true')}>
             <option value="">All Actions</option>
-            <option value="true">🚫 DO NOT BOIL only</option>
+            <option value="true">DO NOT BOIL only</option>
             <option value="false">Others</option>
           </select>
           <select className="form-input" value={filters.page_size}
@@ -87,28 +89,31 @@ export default function Explorer() {
 
       {/* Results count */}
       {data && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <span style={{ color: '#64748b', fontSize: '0.85rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>
             {data.total.toLocaleString()} results · Page {data.page} of {data.pages}
           </span>
           <div style={{ display: 'flex', gap: 8 }}>
             <button className="btn-secondary" disabled={data.page <= 1}
-              onClick={() => setFilter('page', filters.page - 1)} style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-              ← Prev
+              onClick={() => setFilter('page', filters.page - 1)} style={{ padding: '6px 14px', fontSize: '0.85rem' }}>
+              <ChevronLeft size={16} /> Prev
             </button>
             <button className="btn-secondary" disabled={data.page >= data.pages}
-              onClick={() => setFilter('page', filters.page + 1)} style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-              Next →
+              onClick={() => setFilter('page', filters.page + 1)} style={{ padding: '6px 14px', fontSize: '0.85rem' }}>
+              Next <ChevronRight size={16} />
             </button>
           </div>
         </div>
       )}
 
       {/* Table */}
-      <div className="glass-card" style={{ overflow: 'hidden' }}>
+      <div className="card" style={{ overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           {loading ? (
-            <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading...</div>
+            <div style={{ padding: 60, textAlign: 'center', color: 'var(--color-text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+              <Search size={32} className="animate-pulse" color="var(--color-primary)" />
+              <span>Loading results...</span>
+            </div>
           ) : (
             <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -130,38 +135,40 @@ export default function Explorer() {
                   const cat = getCategoryConfig(s.alert_category);
                   const act = getActionConfig(s.action_code);
                   return (
-                    <tr key={s.id} onClick={() => navigate(`/sample/${s.id}`)}
+                    <tr key={s.id} onClick={() => navigate(`/citizen/sample/${s.id}`)}
                       style={{ cursor: 'pointer' }}>
-                      <td style={{ color: '#64748b', fontSize: '0.75rem' }}>{s.id}</td>
+                      <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem', fontFamily: 'monospace' }}>{s.id}</td>
                       <td>
-                        <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '0.875rem' }}>{s.state_ut}</div>
-                        <div style={{ color: '#64748b', fontSize: '0.75rem' }}>{s.district}</div>
+                        <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.875rem' }}>{s.state_ut}</div>
+                        <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem' }}>{s.district}</div>
                       </td>
-                      <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{s.water_source_type || '—'}</td>
+                      <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{s.water_source_type || '—'}</td>
                       <td>
-                        <span className={cat.badgeClass} style={{ fontSize: '0.75rem', padding: '3px 8px', borderRadius: 20 }}>
-                          {cat.icon} {cat.label}
+                        <span className={cat.badgeClass} style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 20 }}>
+                          {cat.label}
                         </span>
                       </td>
-                      <td style={{ fontSize: '0.8rem', color: act.isDoNotBoil ? '#f87171' : '#94a3b8', fontWeight: act.isDoNotBoil ? 700 : 400 }}>
-                        {act.icon} {act.label}
+                      <td style={{ fontSize: '0.85rem', color: act.isDoNotBoil ? 'var(--color-danger)' : 'var(--color-text-secondary)', fontWeight: act.isDoNotBoil ? 600 : 400 }}>
+                        {act.label}
                       </td>
-                      <td style={{ color: (s.fluoride_mg_l || 0) > 1.5 ? '#f87171' : '#94a3b8', fontSize: '0.8rem' }}>
+                      <td style={{ color: (s.fluoride_mg_l || 0) > 1.5 ? 'var(--color-danger)' : 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: (s.fluoride_mg_l || 0) > 1.5 ? 600 : 400 }}>
                         {s.fluoride_mg_l?.toFixed(3) ?? '—'}
                       </td>
-                      <td style={{ color: (s.arsenic_mg_l || 0) > 0.05 ? '#f87171' : '#94a3b8', fontSize: '0.8rem' }}>
+                      <td style={{ color: (s.arsenic_mg_l || 0) > 0.05 ? 'var(--color-danger)' : 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: (s.arsenic_mg_l || 0) > 0.05 ? 600 : 400 }}>
                         {s.arsenic_mg_l?.toFixed(4) ?? '—'}
                       </td>
-                      <td style={{ color: (s.nitrate_mg_l || 0) > 45 ? '#f87171' : '#94a3b8', fontSize: '0.8rem' }}>
+                      <td style={{ color: (s.nitrate_mg_l || 0) > 45 ? 'var(--color-danger)' : 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: (s.nitrate_mg_l || 0) > 45 ? 600 : 400 }}>
                         {s.nitrate_mg_l?.toFixed(1) ?? '—'}
                       </td>
-                      <td style={{ color: (s.e_coli_mpn || 0) > 0 ? '#fb923c' : '#94a3b8', fontSize: '0.8rem' }}>
+                      <td style={{ color: (s.e_coli_mpn || 0) > 0 ? 'var(--color-warning)' : 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: (s.e_coli_mpn || 0) > 0 ? 600 : 400 }}>
                         {s.e_coli_mpn?.toFixed(0) ?? '—'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         {s.do_not_boil
-                          ? <span style={{ background: 'rgba(239,68,68,0.2)', color: '#f87171', padding: '2px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 700 }}>🚫 YES</span>
-                          : <span style={{ color: '#475569', fontSize: '0.75rem' }}>—</span>}
+                          ? <span style={{ background: '#FCE8E8', color: 'var(--color-danger)', border: '1px solid rgba(214,69,69,0.3)', padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                              <Ban size={12} strokeWidth={3} /> YES
+                            </span>
+                          : <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem' }}>—</span>}
                       </td>
                     </tr>
                   );

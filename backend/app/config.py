@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     # CORS
     frontend_origin: str = "http://localhost:5173"
 
+    # Supabase Auth
+    supabase_url: Optional[str] = None
+    supabase_service_role_key: Optional[str] = None
+
     # Gemini AI — NEVER expose to frontend
     gemini_api_key: Optional[str] = None
     gemini_model: str = "gemini-3.6-flash"

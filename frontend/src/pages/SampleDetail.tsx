@@ -7,6 +7,7 @@ import {
   getRecommendedActionLabel, getAvoidActionLabel, formatValue,
 } from '../utils/display';
 import { MultilingualAdvisory } from '../components/MultilingualAdvisory';
+import { ArrowLeft, MapPin, FlaskConical, AlertTriangle, ShieldCheck, Ban, CheckCircle2, AlertOctagon, Info, BarChart3, TestTube2 } from 'lucide-react';
 
 const PARAM_DISPLAY = [
   { key: 'ph',               label: 'pH',            unit: 'pH units',  acceptable: '6.5–8.5', permissible: 'No relaxation',        chemical: false },
@@ -36,8 +37,8 @@ export default function SampleDetail() {
       .catch(e => setError(e.message));
   }, [id]);
 
-  if (error)                return <div className="glass-card" style={{ padding: 24, color: '#f87171' }}>⚠️ {error}</div>;
-  if (!sample || !verdict)  return <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading sample...</div>;
+  if (error)                return <div className="card" style={{ padding: 24, color: 'var(--color-danger)' }}>⚠️ {error}</div>;
+  if (!sample || !verdict)  return <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-secondary)' }}>Loading sample...</div>;
 
   const cat      = getCategoryConfig(verdict.category);
   const sev      = getSeverityConfig(verdict.severity);
@@ -47,32 +48,39 @@ export default function SampleDetail() {
   const hasAvoidActions       = verdict.avoid_actions && verdict.avoid_actions.length > 0;
 
   return (
-    <div className="animate-fade-in-up">
+    <div>
       {/* Header */}
-      <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={() => navigate(-1)} className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>← Back</button>
-        <h1 style={{ fontFamily: 'Outfit', fontSize: '1.5rem', fontWeight: 800, color: '#e2e8f0' }}>
+      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={() => navigate(-1)} className="btn-secondary" style={{ padding: '8px 12px', fontSize: '0.85rem' }}>
+          <ArrowLeft size={16} /> Back
+        </button>
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
           Sample #{sample.id} — {sample.district}, {sample.state_ut}
         </h1>
       </div>
 
-      {/* ── PRIMARY STATUS BANNER — message_type based ──────────────────────── */}
+      {/* ── PRIMARY STATUS BANNER ──────────────────────── */}
       <div style={{
-        background:   mtConfig.bgColor,
-        border:       `1px solid ${mtConfig.borderColor}60`,
+        background:   mtConfig.bgColor === 'rgba(16,185,129,0.1)' ? '#E6F6EF' : 
+                      mtConfig.bgColor === 'rgba(239,68,68,0.1)' ? '#FCE8E8' : 
+                      mtConfig.bgColor === 'rgba(249,115,22,0.1)' ? '#FDF3E1' : 
+                      mtConfig.bgColor === 'rgba(234,179,8,0.1)' ? '#FDF3E1' : '#F7FAFC',
+        border:       `1px solid ${mtConfig.color}40`,
         borderRadius: 12,
-        padding:      '20px 24px',
-        marginBottom: 20,
+        padding:      '24px 32px',
+        marginBottom: 24,
         display:      'flex',
         alignItems:   'center',
-        gap:          16,
+        gap:          24,
       }}>
-        <span style={{ fontSize: '2.5rem', lineHeight: 1 }}>{mtConfig.icon}</span>
+        <div style={{ color: mtConfig.color, background: 'var(--color-bg)', padding: 16, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          {verdict.safe_to_drink ? <ShieldCheck size={36} /> : <AlertTriangle size={36} />}
+        </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.25rem', color: mtConfig.color }}>
+          <div style={{ fontWeight: 700, fontSize: '1.3rem', color: mtConfig.color, marginBottom: 6 }}>
             {mtConfig.headline}
           </div>
-          <div style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: 4 }}>
+          <div style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
             {verdict.safe_to_drink
               ? 'This water is currently within classification thresholds for drinking.'
               : `Primary contaminant: ${verdict.primary_contaminant || 'See parameter table below'}`
@@ -81,50 +89,52 @@ export default function SampleDetail() {
         </div>
         {/* Safe-to-drink badge */}
         <div style={{
-          background:   verdict.safe_to_drink ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
-          border:       `1px solid ${verdict.safe_to_drink ? '#10b981' : '#ef4444'}`,
+          background:   verdict.safe_to_drink ? 'var(--color-bg)' : 'var(--color-bg)',
+          border:       `1px solid ${verdict.safe_to_drink ? 'var(--color-safe)' : 'var(--color-danger)'}`,
           borderRadius: 8,
-          padding:      '8px 16px',
+          padding:      '12px 24px',
           textAlign:    'center',
-          minWidth:     110,
+          minWidth:     140,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
         }}>
-          <div style={{ fontSize: '1.4rem' }}>{verdict.safe_to_drink ? '✅' : '🚱'}</div>
+          <div style={{ color: verdict.safe_to_drink ? 'var(--color-safe)' : 'var(--color-danger)', marginBottom: 8, display: 'flex', justifyContent: 'center' }}>
+            {verdict.safe_to_drink ? <CheckCircle2 size={32} /> : <Ban size={32} />}
+          </div>
           <div style={{
-            fontSize:   '0.7rem',
+            fontSize:   '0.75rem',
             fontWeight: 700,
-            color:      verdict.safe_to_drink ? '#10b981' : '#ef4444',
-            marginTop:  4,
+            color:      verdict.safe_to_drink ? 'var(--color-safe)' : 'var(--color-danger)',
           }}>
-            {verdict.safe_to_drink ? 'SAFE TO DRINK' : 'NOT SAFE\nTO DRINK'}
+            {verdict.safe_to_drink ? 'SAFE TO DRINK' : 'NOT SAFE TO DRINK'}
           </div>
         </div>
       </div>
 
       {/* ── WHAT TO DO + WHAT TO AVOID — side by side ───────────────────────── */}
       {(!verdict.safe_to_drink) && (hasRecommendedActions || hasAvoidActions) && (
-        <div style={{ display: 'grid', gridTemplateColumns: hasAvoidActions ? '1fr 1fr' : '1fr', gap: 16, marginBottom: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: hasAvoidActions ? '1fr 1fr' : '1fr', gap: 24, marginBottom: 24 }}>
 
           {/* Recommended Actions */}
           {hasRecommendedActions && (
-            <div className="glass-card" style={{ padding: 20 }}>
-              <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 12, color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                ✅ {mtConfig.actionHeading}
+            <div className="card" style={{ padding: 24 }}>
+              <h3 style={{ fontWeight: 700, marginBottom: 16, color: 'var(--color-safe)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle2 size={16} /> {mtConfig.actionHeading}
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {verdict.recommended_actions.map(code => {
-                  const { label, icon } = getRecommendedActionLabel(code);
+                  const { label } = getRecommendedActionLabel(code);
                   return (
                     <div key={code} style={{
                       display:      'flex',
                       alignItems:   'center',
-                      gap:          10,
-                      padding:      '10px 14px',
-                      background:   'rgba(16,185,129,0.08)',
-                      border:       '1px solid rgba(16,185,129,0.2)',
+                      gap:          12,
+                      padding:      '12px 16px',
+                      background:   '#E6F6EF',
+                      border:       '1px solid rgba(22,138,91,0.2)',
                       borderRadius: 8,
                     }}>
-                      <span style={{ fontSize: '1.2rem' }}>{icon}</span>
-                      <span style={{ fontSize: '0.85rem', color: '#e2e8f0', lineHeight: 1.4 }}>{label}</span>
+                      <Info size={18} color="var(--color-safe)" />
+                      <span style={{ fontSize: '0.9rem', color: 'var(--color-text)', fontWeight: 500 }}>{label}</span>
                     </div>
                   );
                 })}
@@ -134,25 +144,25 @@ export default function SampleDetail() {
 
           {/* Avoid Actions */}
           {hasAvoidActions && (
-            <div className="glass-card" style={{ padding: 20 }}>
-              <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 12, color: '#94a3b8', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                🚫 {mtConfig.avoidHeading || 'Important restriction'}
+            <div className="card" style={{ padding: 24 }}>
+              <h3 style={{ fontWeight: 700, marginBottom: 16, color: 'var(--color-danger)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Ban size={16} /> {mtConfig.avoidHeading || 'Important restriction'}
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {verdict.avoid_actions.map(code => {
-                  const { label, icon } = getAvoidActionLabel(code);
+                  const { label } = getAvoidActionLabel(code);
                   return (
                     <div key={code} style={{
                       display:      'flex',
                       alignItems:   'center',
-                      gap:          10,
-                      padding:      '10px 14px',
-                      background:   'rgba(239,68,68,0.1)',
-                      border:       '1px solid rgba(239,68,68,0.3)',
+                      gap:          12,
+                      padding:      '12px 16px',
+                      background:   '#FCE8E8',
+                      border:       '1px solid rgba(214,69,69,0.3)',
                       borderRadius: 8,
                     }}>
-                      <span style={{ fontSize: '1.2rem' }}>{icon}</span>
-                      <span style={{ fontSize: '0.85rem', color: '#fca5a5', lineHeight: 1.4, fontWeight: 600 }}>{label}</span>
+                      <AlertOctagon size={18} color="var(--color-danger)" />
+                      <span style={{ fontSize: '0.9rem', color: 'var(--color-danger)', fontWeight: 600 }}>{label}</span>
                     </div>
                   );
                 })}
@@ -163,12 +173,12 @@ export default function SampleDetail() {
       )}
 
       {/* ── Info Row: Location + Classification ─────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
 
         {/* Location */}
-        <div className="glass-card" style={{ padding: 20 }}>
-          <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 14, color: '#94a3b8', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            📍 Location
+        <div className="card" style={{ padding: 24 }}>
+          <h3 style={{ fontWeight: 700, marginBottom: 16, color: 'var(--color-text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <MapPin size={16} /> Location Details
           </h3>
           {[
             ['State / UT',   sample.state_ut],
@@ -178,50 +188,51 @@ export default function SampleDetail() {
             ['Season',       sample.season_cycle || '—'],
             ['Date',         sample.sample_date || '—'],
           ].map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-              <span style={{ color: '#64748b', fontSize: '0.85rem' }}>{k}</span>
-              <span style={{ color: '#e2e8f0', fontSize: '0.85rem', fontWeight: 500 }}>{v}</span>
+            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--color-border)' }}>
+              <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>{k}</span>
+              <span style={{ color: 'var(--color-text)', fontSize: '0.9rem', fontWeight: 600 }}>{v}</span>
             </div>
           ))}
         </div>
 
         {/* Classification detail */}
-        <div className="glass-card" style={{ padding: 20 }}>
-          <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 14, color: '#94a3b8', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            🧪 Classification Detail
+        <div className="card" style={{ padding: 24 }}>
+          <h3 style={{ fontWeight: 700, marginBottom: 16, color: 'var(--color-text-secondary)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <TestTube2 size={16} /> Classification Detail
           </h3>
           {/* Category badge */}
-          <div style={{ marginBottom: 12 }}>
-            <span className={cat.badgeClass} style={{ padding: '6px 14px', borderRadius: 20, fontSize: '0.85rem', fontWeight: 700 }}>
-              {cat.icon} {cat.label}
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ padding: '6px 14px', borderRadius: 6, fontSize: '0.85rem', fontWeight: 600, background: 'var(--color-bg-soft)', border: `1px solid ${cat.color}40`, color: cat.color }}>
+              {cat.label}
             </span>
           </div>
           {/* Severity */}
-          <div style={{ marginBottom: 12 }}>
-            <span style={{ background: sev.bgColor, color: sev.color, padding: '4px 12px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600 }}>
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ background: sev.bgColor === 'rgba(239,68,68,0.2)' ? '#FCE8E8' : sev.bgColor === 'rgba(249,115,22,0.2)' ? '#FDF3E1' : sev.bgColor === 'rgba(234,179,8,0.2)' ? '#FDF3E1' : '#E6F6EF', color: sev.color, padding: '4px 12px', borderRadius: 6, fontSize: '0.85rem', fontWeight: 600, border: `1px solid ${sev.color}40` }}>
               Severity: {sev.label}
             </span>
           </div>
           {/* Primary contaminant */}
           {verdict.primary_contaminant && (
-            <div style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: 10 }}>
-              Primary Contaminant: <strong style={{ color: '#e2e8f0' }}>{verdict.primary_contaminant}</strong>
+            <div style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: 12 }}>
+              Primary Contaminant: <strong style={{ color: 'var(--color-text)' }}>{verdict.primary_contaminant}</strong>
             </div>
           )}
           {/* Why this classification */}
-          <div style={{ marginTop: 10, padding: 12, background: 'rgba(255,255,255,0.03)', borderRadius: 8 }}>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, marginBottom: 6 }}>WHY THIS CLASSIFICATION:</div>
+          <div style={{ marginTop: 12, padding: 16, background: 'var(--color-bg-soft)', borderRadius: 8, border: '1px solid var(--color-border)' }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', fontWeight: 700, marginBottom: 8 }}>WHY THIS CLASSIFICATION:</div>
             {verdict.reasons.map((r, i) => (
-              <div key={i} style={{ fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.5, marginBottom: 4 }}>• {r}</div>
+              <div key={i} style={{ fontSize: '0.85rem', color: 'var(--color-text)', lineHeight: 1.5, marginBottom: 4 }}>• {r}</div>
             ))}
           </div>
         </div>
       </div>
 
       {/* ── Parameter Table ──────────────────────────────────────────────────── */}
-      <div className="glass-card" style={{ padding: 20, marginBottom: 20 }}>
-        <h3 style={{ fontFamily: 'Outfit', fontWeight: 700, marginBottom: 16, color: '#e2e8f0' }}>
-          📊 Measured Parameters vs. IS 10500:2012 Standards
+      <div className="card" style={{ padding: 32, marginBottom: 24 }}>
+        <h3 style={{ fontWeight: 600, marginBottom: 24, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <BarChart3 size={20} color="var(--color-primary)" />
+          Measured Parameters vs. IS 10500:2012 Standards
         </h3>
         <div style={{ overflowX: 'auto' }}>
           <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -240,20 +251,31 @@ export default function SampleDetail() {
                 const val     = (sample as unknown as Record<string, number | undefined>)[p.key];
                 const pResult = verdict.parameter_results.find(r => r.field_name === p.key);
                 const status  = pResult?.status || 'NO_DATA';
-                const statusColor = status === 'OK' ? '#10b981' : status === 'ACCEPTABLE_EXCEEDED' ? '#eab308' : status === 'PERMISSIBLE_EXCEEDED' ? '#ef4444' : '#475569';
-                const statusLabel = { OK: '✅ OK', ACCEPTABLE_EXCEEDED: '⚠️ Elevated', PERMISSIBLE_EXCEEDED: '🚨 Exceeded', NO_DATA: '— No Data' }[status] || status;
+                const statusColor = status === 'OK' ? 'var(--color-safe)' : status === 'ACCEPTABLE_EXCEEDED' ? '#F59E0B' : status === 'PERMISSIBLE_EXCEEDED' ? 'var(--color-danger)' : 'var(--color-text-secondary)';
+                
+                let StatusIcon = null;
+                if (status === 'OK') StatusIcon = <CheckCircle2 size={14} />;
+                if (status === 'ACCEPTABLE_EXCEEDED') StatusIcon = <AlertTriangle size={14} />;
+                if (status === 'PERMISSIBLE_EXCEEDED') StatusIcon = <AlertOctagon size={14} />;
+
+                const statusLabel = { OK: 'OK', ACCEPTABLE_EXCEEDED: 'Elevated', PERMISSIBLE_EXCEEDED: 'Exceeded', NO_DATA: 'No Data' }[status] || status;
+                
                 return (
-                  <tr key={p.key} style={{ background: status === 'PERMISSIBLE_EXCEEDED' ? 'rgba(239,68,68,0.04)' : undefined }}>
-                    <td style={{ fontWeight: 600, color: p.chemical ? '#fca5a5' : '#e2e8f0', fontSize: '0.85rem' }}>
-                      {p.chemical && <span style={{ color: '#ef4444', marginRight: 4 }}>⚗️</span>}{p.label}
+                  <tr key={p.key} style={{ background: status === 'PERMISSIBLE_EXCEEDED' ? '#FCE8E8' : undefined }}>
+                    <td style={{ fontWeight: 600, color: p.chemical ? 'var(--color-text)' : 'var(--color-text)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {p.chemical && <FlaskConical size={14} color="var(--color-danger)" />}{p.label}
                     </td>
-                    <td style={{ fontWeight: 700, color: statusColor, fontSize: '0.9rem' }}>
+                    <td style={{ fontWeight: 700, color: statusColor, fontSize: '0.95rem' }}>
                       {val !== undefined && val !== null ? formatValue(val, p.key === 'arsenic_mg_l' ? 4 : 2) : '—'}
                     </td>
-                    <td style={{ color: '#64748b', fontSize: '0.8rem' }}>{p.unit}</td>
-                    <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{p.acceptable}</td>
-                    <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{p.permissible}</td>
-                    <td><span style={{ color: statusColor, fontWeight: 600, fontSize: '0.8rem' }}>{statusLabel}</span></td>
+                    <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{p.unit}</td>
+                    <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{p.acceptable}</td>
+                    <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{p.permissible}</td>
+                    <td>
+                      <span style={{ color: statusColor, fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 4 }}>
+                        {StatusIcon} {statusLabel}
+                      </span>
+                    </td>
                   </tr>
                 );
               })}
