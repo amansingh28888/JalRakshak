@@ -1,5 +1,5 @@
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Search, Map as MapIcon, Bell, Database, Info, Droplets, LogOut, FileText, UserCircle, PlusCircle, Users } from 'lucide-react';
+import { LayoutDashboard, Search, Map as MapIcon, Bell, Database, Info, LogOut, FileText, UserCircle, PlusCircle, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -15,12 +15,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   let navItems = [];
   let portalName = "JalRakshak";
   let portalSub = "Water Quality Portal";
-  let portalHome = "/citizen/dashboard";
+
 
   if (path.startsWith('/admin')) {
     portalName = "Admin Portal";
     portalSub = "JalRakshak Management";
-    portalHome = "/admin/dashboard";
+
     navItems = [
       { to: '/admin/dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
       { to: '/admin/samples', label: 'All Samples', icon: Search },
@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   } else if (path.startsWith('/worker')) {
     portalName = "Worker Portal";
     portalSub = "Field Worker Portal";
-    portalHome = "/worker/dashboard";
+
     navItems = [
       { to: '/worker/dashboard', label: 'Worker Dashboard', icon: LayoutDashboard },
       { to: '/worker/collect', label: 'Collect Sample', icon: PlusCircle },
@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     // Citizen Portal
     portalName = "Citizen Access";
     portalSub = "Citizen Portal";
-    portalHome = "/citizen/dashboard";
+
     navItems = [
       { to: '/citizen/dashboard', label: 'Overview Dashboard', icon: LayoutDashboard },
       { to: '/citizen/explorer', label: 'Water Quality Explorer', icon: Search },

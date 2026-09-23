@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Users, ArrowRight, Droplets, Globe2, Activity, ShieldCheck, LogIn, MapPin, Bell, BarChart3, ChevronRight, Phone, Mail, ExternalLink } from 'lucide-react';
+import { Users, ArrowRight, Droplets, Globe2, Activity, ShieldCheck, LogIn, MapPin, Bell, BarChart3, ChevronRight, Phone, Mail, ExternalLink } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { getPublicStats, type PublicStats } from '../api';
 
@@ -92,8 +92,7 @@ export default function RootLanding() {
   const [slide, setSlide] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [tickerPaused, setTickerPaused] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [visible, setVisible] = useState(false);
+
   const [stats, setStats] = useState<PublicStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
@@ -105,9 +104,7 @@ export default function RootLanding() {
       .finally(() => setStatsLoading(false));
   }, []);
 
-  /* auto-rotate hero */
   useEffect(() => {
-    setVisible(true);
     const t = setInterval(() => setSlide(s => (s + 1) % HERO_SLIDES.length), 5000);
     return () => clearInterval(t);
   }, []);
