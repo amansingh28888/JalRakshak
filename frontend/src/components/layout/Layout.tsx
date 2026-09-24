@@ -157,6 +157,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main style={{ marginLeft: 260, flex: 1, minHeight: '100vh', padding: '32px 40px', maxWidth: 'calc(100vw - 260px)' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           {children}
+        </div>
       </main>
       <JalDootChatbot />
     </div>

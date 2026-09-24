@@ -50,8 +50,12 @@ def setup_test_db():
 
     # Cleanup
     import os
+    test_engine.dispose()
     if os.path.exists("./test_water_quality.db"):
-        os.remove("./test_water_quality.db")
+        try:
+            os.remove("./test_water_quality.db")
+        except PermissionError:
+            pass
 
 
 client = TestClient(app)

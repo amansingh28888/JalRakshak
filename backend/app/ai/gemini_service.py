@@ -62,6 +62,7 @@ class AdvisoryResponse:
         message_type: str = MessageType.SAFE,
         target_language: str = "English",
         language_code: str = "en",
+        detailed_advisory: Optional[dict] = None
     ):
         self.warning_title = warning_title
         self.warning = warning
@@ -75,6 +76,7 @@ class AdvisoryResponse:
         self.message_type = message_type
         self.target_language = target_language
         self.language_code = language_code
+        self.detailed_advisory = detailed_advisory
 
     def to_dict(self) -> dict:
         return {
@@ -90,6 +92,7 @@ class AdvisoryResponse:
             "message_type":  self.message_type,
             "target_language": self.target_language,
             "language_code": self.language_code,
+            "detailed_advisory": self.detailed_advisory,
         }
 
 
