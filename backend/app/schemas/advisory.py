@@ -1,5 +1,5 @@
 """Advisory request/response schemas."""
-from typing import List, Optional
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
 
 
