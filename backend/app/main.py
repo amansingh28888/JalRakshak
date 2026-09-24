@@ -101,9 +101,25 @@ app = FastAPI(
 )
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
+# Parse comma-separated origins from environment
+configured_origins = [
+    origin.strip() 
+    for origin in settings.frontend_origin.split(",") 
+    if origin.strip()
+]
+
+base_origins = [
+    "https://jal-rakshak-ibtaixucm-amansingh28888.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+]
+
+allow_origins = list(set(configured_origins + base_origins))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_origin, "http://localhost:5173", "http://localhost:3000"],
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
