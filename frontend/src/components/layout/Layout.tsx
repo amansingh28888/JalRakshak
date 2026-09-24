@@ -1,6 +1,7 @@
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Search, Map as MapIcon, Bell, Database, Info, LogOut, FileText, UserCircle, PlusCircle, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { JalDootChatbot } from '../JalDootChatbot';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -9,7 +10,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // Hide sidebar on landing and login
   if (path === '/' || path === '/login') {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        <JalDootChatbot />
+      </>
+    );
   }
 
   let navItems = [];
@@ -151,8 +157,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main style={{ marginLeft: 260, flex: 1, minHeight: '100vh', padding: '32px 40px', maxWidth: 'calc(100vw - 260px)' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           {children}
-        </div>
       </main>
+      <JalDootChatbot />
     </div>
   );
 }
