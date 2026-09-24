@@ -54,7 +54,8 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
         message_type:       verdict.message_type,
         reason:             verdict.reasons[0] || '',
         target_language:    languageName,
-        language_code:      languageCode
+        language_code:      languageCode,
+        parameter_results:  verdict.parameter_results
       });
       setAdvisory(result);
       if (sample.id) {
@@ -125,43 +126,139 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
           </div>
           
           <div style={{ padding: 24, background: 'var(--color-bg-soft)', borderRadius: 12, border: '1px solid var(--color-border)' }}>
-            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 16 }}>
-              {advisory.warning_title}
-            </div>
-            
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <AlertTriangle size={14} /> Warning
-              </div>
-              <div style={{ fontSize: '1rem', color: 'var(--color-text)', lineHeight: 1.6 }}>
-                {advisory.warning}
-              </div>
-            </div>
-            
-            <div style={{
-              marginBottom: 20,
-              padding: 16,
-              background: verdict.do_not_boil ? '#FCE8E8' : '#FDF3E1',
-              borderLeft: isRtl ? 'none' : `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}`,
-              borderRight: isRtl ? `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}` : 'none',
-              borderRadius: '0 8px 8px 0',
-            }}>
-              <div style={{ fontSize: '0.8rem', color: verdict.do_not_boil ? 'var(--color-danger)' : '#9C6500', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
-                {verdict.do_not_boil ? <><Ban size={14} /> Caution (Boiling not effective)</> : <><Bug size={14} /> Caution</>}
-              </div>
-              <div style={{ fontSize: '1rem', color: verdict.do_not_boil ? '#B91C1C' : '#9C6500', lineHeight: 1.6, fontWeight: 600 }}>
-                {advisory.caution}
-              </div>
-            </div>
-            
-            <div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--color-safe)', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Lightbulb size={14} /> Solution
-              </div>
-              <div style={{ fontSize: '1rem', color: 'var(--color-safe)', lineHeight: 1.6, fontWeight: 600 }}>
-                {advisory.solution}
-              </div>
-            </div>
+            {advisory.detailed_advisory ? (
+              // Detailed AI layout
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                    {advisory.detailed_advisory.status}
+                  </div>
+                </div>
+                
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: '1rem', color: 'var(--color-text)', lineHeight: 1.6, fontWeight: 500 }}>
+                    {advisory.detailed_advisory.conclusion}
+                  </div>
+                  {advisory.detailed_advisory.sample_date && (
+                    <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: 4 }}>
+                      Date: {advisory.detailed_advisory.sample_date} | Location: {advisory.detailed_advisory.location}
+                    </div>
+                  )}
+                </div>
+
+                {advisory.detailed_advisory.detected_parameters.length > 0 && (
+                  <div style={{ marginBottom: 24 }}>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase' }}>
+                      Parameters Detected
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+                      {advisory.detailed_advisory.detected_parameters.map((p, idx) => (
+                        <div key={idx} style={{ background: '#fff', padding: 12, borderRadius: 8, border: `1px solid ${p.is_above ? 'var(--color-danger)' : 'var(--color-border)'}` }}>
+                          <div style={{ fontWeight: 600, color: p.is_above ? 'var(--color-danger)' : 'var(--color-text)' }}>{p.parameter_name}</div>
+                          <div style={{ fontSize: '0.9rem', marginTop: 4 }}>Value: <b>{p.measured_value}</b> (Limit: {p.standard_limit})</div>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: 4 }}>{p.explanation}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ marginBottom: 24, padding: 16, background: '#fff', borderRadius: 8, border: '1px solid var(--color-border)' }}>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--color-text)', fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <AlertTriangle size={16} /> Understanding the Problem
+                  </div>
+                  <div style={{ fontSize: '0.95rem', color: 'var(--color-text)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+                    {advisory.detailed_advisory.problem_explanation}
+                  </div>
+                  <div style={{ fontSize: '0.95rem', color: 'var(--color-text)', lineHeight: 1.6, marginTop: 12 }}>
+                    <b>Health Concerns:</b> {advisory.detailed_advisory.health_concerns}
+                  </div>
+                </div>
+
+                <div style={{
+                  marginBottom: 24,
+                  padding: 16,
+                  background: advisory.detailed_advisory.boiling_useful ? '#F0F9F0' : '#FCE8E8',
+                  borderLeft: isRtl ? 'none' : `4px solid ${advisory.detailed_advisory.boiling_useful ? 'var(--color-safe)' : 'var(--color-danger)'}`,
+                  borderRight: isRtl ? `4px solid ${advisory.detailed_advisory.boiling_useful ? 'var(--color-safe)' : 'var(--color-danger)'}` : 'none',
+                  borderRadius: '0 8px 8px 0',
+                }}>
+                  <div style={{ fontSize: '0.9rem', color: advisory.detailed_advisory.boiling_useful ? 'var(--color-safe)' : 'var(--color-danger)', fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {advisory.detailed_advisory.boiling_useful ? <><Lightbulb size={16} /> Boiling is Effective</> : <><Ban size={16} /> Do Not Rely on Boiling</>}
+                  </div>
+                  <div style={{ fontSize: '0.95rem', color: advisory.detailed_advisory.boiling_useful ? '#166534' : '#B91C1C', lineHeight: 1.6, fontWeight: 500 }}>
+                    {advisory.detailed_advisory.boiling_explanation}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase' }}>
+                    Action Plan
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
+                    <div style={{ background: '#fff', padding: 16, borderRadius: 8, border: '1px solid var(--color-border)' }}>
+                      <div style={{ fontWeight: 600, marginBottom: 8, color: 'var(--color-primary)' }}>For Citizens</div>
+                      <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.95rem', color: 'var(--color-text)', lineHeight: 1.6 }}>
+                        {advisory.detailed_advisory.citizen_actions.map((act, i) => <li key={i}>{act}</li>)}
+                      </ul>
+                    </div>
+                    {advisory.detailed_advisory.authority_actions.length > 0 && (
+                      <div style={{ background: '#fff', padding: 16, borderRadius: 8, border: '1px solid var(--color-border)' }}>
+                        <div style={{ fontWeight: 600, marginBottom: 8, color: 'var(--color-primary)' }}>For Authorities / Technical Team</div>
+                        <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.95rem', color: 'var(--color-text)', lineHeight: 1.6 }}>
+                          {advisory.detailed_advisory.authority_actions.map((act, i) => <li key={i}>{act}</li>)}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontStyle: 'italic', background: 'rgba(0,0,0,0.02)', padding: 12, borderRadius: 6 }}>
+                  {advisory.detailed_advisory.confidence_note}
+                </div>
+              </>
+            ) : (
+              // Old Fallback Layout
+              <>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 16 }}>
+                  {advisory.warning_title}
+                </div>
+                
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <AlertTriangle size={14} /> Warning
+                  </div>
+                  <div style={{ fontSize: '1rem', color: 'var(--color-text)', lineHeight: 1.6 }}>
+                    {advisory.warning}
+                  </div>
+                </div>
+                
+                <div style={{
+                  marginBottom: 20,
+                  padding: 16,
+                  background: verdict.do_not_boil ? '#FCE8E8' : '#FDF3E1',
+                  borderLeft: isRtl ? 'none' : `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}`,
+                  borderRight: isRtl ? `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}` : 'none',
+                  borderRadius: '0 8px 8px 0',
+                }}>
+                  <div style={{ fontSize: '0.8rem', color: verdict.do_not_boil ? 'var(--color-danger)' : '#9C6500', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {verdict.do_not_boil ? <><Ban size={14} /> Caution (Boiling not effective)</> : <><Bug size={14} /> Caution</>}
+                  </div>
+                  <div style={{ fontSize: '1rem', color: verdict.do_not_boil ? '#B91C1C' : '#9C6500', lineHeight: 1.6, fontWeight: 600 }}>
+                    {advisory.caution}
+                  </div>
+                </div>
+                
+                <div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-safe)', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Lightbulb size={14} /> Solution
+                  </div>
+                  <div style={{ fontSize: '1rem', color: 'var(--color-safe)', lineHeight: 1.6, fontWeight: 600 }}>
+                    {advisory.solution}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

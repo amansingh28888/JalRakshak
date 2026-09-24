@@ -120,6 +120,29 @@ def _build_prompt(context: dict) -> str:
     target_language    = context.get("target_language", "English")
     language_code      = context.get("language_code", "en")
 
+    parameter_results  = context.get("parameter_results", [])
+
+    # Filter for parameters that exceeded limits
+    exceeded_params = [
+        p for p in parameter_results
+        if p.get("status") in {"PERMISSIBLE_EXCEEDED", "ACCEPTABLE_EXCEEDED"}
+    ]
+    
+    # If safe, just list primary or all
+    if not exceeded_params and parameter_results:
+        exceeded_params = parameter_results[:3] # just for context
+
+    param_details_text = ""
+    for p in exceeded_params:
+        p_name = p.get('name', 'Unknown')
+        p_val = p.get('measured_value', 'Unknown')
+        p_unit = p.get('unit', '')
+        p_limit = p.get('permissible_limit') or p.get('acceptable_limit') or 'N/A'
+        param_details_text += f"- {p_name}: {p_val} {p_unit} (Limit: {p_limit})\n"
+
+    if not param_details_text:
+        param_details_text = f"- {parameter}: {measured_value} {unit}\n"
+
     # Build generic English action strings to pass to the translator
     action_map = {
         "BOIL_OR_CHLORINATE":                    "Boil water or do chlorination",
@@ -162,8 +185,9 @@ CRITICAL RULES — FOLLOW STRICTLY:
 10. If do_not_boil=True, caution MUST mention that boiling is not appropriate for this chemical issue.
 11. Use simple {target_language} that normal citizens can understand easily.
 12. Avoid technical jargon. Be direct and actionable.
-13. Do NOT translate, convert, or invent numbers/measurements. Keep '{measured_value} {unit}' exactly as is.
+13. Do NOT translate, convert, or invent numbers/measurements. Keep values exactly as provided.
 14. Ensure proper cultural phrasing in {target_language}.
+15. Provide a detailed, highly informative explanation in the 'detailed_advisory' field that explains exactly what the contamination means, realistic possible sources, and clear next steps, keeping the tone professional but accessible.
 
 PRE-COMPUTED SAFETY VERDICT (from deterministic rule engine — DO NOT CHANGE):
 - Location: {district}, {state}
@@ -174,6 +198,9 @@ PRE-COMPUTED SAFETY VERDICT (from deterministic rule engine — DO NOT CHANGE):
 - Do NOT rely on boiling: {do_not_boil}
 - Primary detected issue: {parameter} = {measured_value} {unit}
 - Rule reason: {reason}
+
+DETECTED PARAMETERS (Outside limits):
+{param_details_text}
 
 PRE-COMPUTED RECOMMENDED ACTIONS (translate these — do NOT add more):
 {rec_actions_text}
@@ -189,7 +216,32 @@ Generate a JSON advisory. The JSON must have exactly these keys:
   "solution": "What the citizen should do — translate recommended_actions into {target_language}, be specific and actionable",
   "short_message": "One short sentence summary in {target_language} (for WhatsApp/SMS)",
   "target_language": "{target_language}",
-  "language_code": "{language_code}"
+  "language_code": "{language_code}",
+  "detailed_advisory": {{
+    "status": "Safe / Warning / Critical (in {target_language})",
+    "location": "Location string",
+    "overall_risk": "Short explanation of overall risk in {target_language}",
+    "conclusion": "One-line conclusion in {target_language}",
+    "detected_parameters": [
+      {{
+        "parameter_name": "Name of parameter",
+        "measured_value": "Value with unit",
+        "standard_limit": "Applicable limit",
+        "difference": "Difference from limit",
+        "is_above": true/false,
+        "explanation": "Explain what this parameter represents in water quality (in {target_language})"
+      }}
+    ],
+    "problem_explanation": "2-4 paragraphs explaining why this sample is classified as unsafe/warning. Do not just repeat the parameter value. Explain the significance of the detected contamination in plain {target_language}.",
+    "health_concerns": "Explain potential concerns associated with the detected contaminant (in {target_language}). Mention vulnerable groups only when relevant. Do not diagnose diseases.",
+    "possible_sources": ["Array of realistic possible sources for this contamination (in {target_language})"],
+    "boiling_useful": true/false (must match NOT do_not_boil unless biological),
+    "boiling_explanation": "Explicitly explain whether boiling is useful for this particular contaminant and why (in {target_language}).",
+    "citizen_actions": ["Array of practical actions for citizens in priority order (in {target_language})"],
+    "authority_actions": ["Array of actions relevant to a water-quality monitoring team (in {target_language})"],
+    "rule_trigger": "Explain the exact rule/threshold that triggered the alert ({reason}) (in {target_language})",
+    "confidence_note": "If based on a single parameter, state that conclusion is based on available measurement (in {target_language})"
+  }}
 }}
 
 Respond with ONLY valid JSON. No markdown, no code blocks, no extra text."""
@@ -347,6 +399,7 @@ async def generate_advisory(context: dict) -> AdvisoryResponse:
             message_type=message_type,
             target_language=advisory_dict.get("target_language", target_language),
             language_code=advisory_dict.get("language_code", language_code),
+            detailed_advisory=advisory_dict.get("detailed_advisory")
         )
 
     except json.JSONDecodeError as e:

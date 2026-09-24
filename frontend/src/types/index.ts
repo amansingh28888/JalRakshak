@@ -338,6 +338,31 @@ export interface AdvisoryResponse {
   /** The language generated */
   target_language: string;
   language_code: string;
+
+  detailed_advisory?: {
+    status: string;
+    location: string;
+    sample_date?: string;
+    overall_risk: string;
+    conclusion: string;
+    detected_parameters: {
+      parameter_name: string;
+      measured_value: string;
+      standard_limit: string;
+      difference: string;
+      is_above: boolean;
+      explanation: string;
+    }[];
+    problem_explanation: string;
+    health_concerns: string;
+    possible_sources: string[];
+    boiling_useful: boolean;
+    boiling_explanation: string;
+    citizen_actions: string[];
+    authority_actions: string[];
+    rule_trigger: string;
+    confidence_note: string;
+  };
 }
 
 
