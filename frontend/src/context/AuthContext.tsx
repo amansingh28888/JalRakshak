@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchProfile = async (sessionData: Session) => {
     setProfileLoaded(false);
     try {
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+      const baseUrl = import.meta.env.VITE_API_URL || '';
       const response = await fetch(
         `${baseUrl}/api/auth/me`,
         { headers: { Authorization: `Bearer ${sessionData.access_token}` } }

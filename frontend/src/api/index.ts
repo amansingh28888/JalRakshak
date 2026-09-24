@@ -6,7 +6,7 @@ import type {
 } from '../types';
 
 const api = axios.create({
-  baseURL: '',   // Vite proxy handles /api → backend
+  baseURL: import.meta.env.VITE_API_URL || '',
   headers: { 'Content-Type': 'application/json' },
 });
 

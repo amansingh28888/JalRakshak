@@ -24,7 +24,7 @@ export default function AdminSamples() {
   const fetchSamples = async (pageIndex: number) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/samples?page=${pageIndex}&page_size=20`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/samples?page=${pageIndex}&page_size=20`, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`
         }

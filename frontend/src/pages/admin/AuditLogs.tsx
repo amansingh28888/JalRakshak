@@ -27,7 +27,7 @@ export default function AuditLogs() {
     const fetch_ = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/admin/audit-logs?limit=100`,
+          `${import.meta.env.VITE_API_URL}/api/admin/audit-logs?limit=100`,
           { headers: { Authorization: `Bearer ${session?.access_token}` } }
         );
         if (res.ok) setLogs(await res.json());

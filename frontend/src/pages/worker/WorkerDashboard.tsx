@@ -24,14 +24,14 @@ export default function WorkerDashboard() {
     const fetchMySamples = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/worker/samples?page=1&page_size=5`,
+          `${import.meta.env.VITE_API_URL}/api/worker/samples?page=1&page_size=5`,
           { headers: { Authorization: `Bearer ${session?.access_token}` } }
         );
         if (res.ok) {
           const data = await res.json();
           setSamples(data.items || []);
           const allRes = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/worker/samples?page=1&page_size=1000`,
+            `${import.meta.env.VITE_API_URL}/api/worker/samples?page=1&page_size=1000`,
             { headers: { Authorization: `Bearer ${session?.access_token}` } }
           );
           if (allRes.ok) {

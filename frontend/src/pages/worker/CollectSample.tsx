@@ -56,7 +56,7 @@ export default function CollectSample() {
     }
 
     try {
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+      const baseUrl = import.meta.env.VITE_API_URL || '';
       const res = await fetch(
         `${baseUrl}/api/worker/samples`,
         {

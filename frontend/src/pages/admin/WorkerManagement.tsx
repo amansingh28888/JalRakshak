@@ -35,7 +35,7 @@ export default function WorkerManagement() {
 
   const fetchWorkers = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/admin/workers`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/workers`, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`
         }
@@ -62,7 +62,7 @@ export default function WorkerManagement() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/admin/workers`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/workers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
