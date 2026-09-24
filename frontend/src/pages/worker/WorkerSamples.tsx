@@ -28,7 +28,7 @@ export default function WorkerSamples() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/worker/samples?page=${page}&page_size=20`,
+          `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/worker/samples?page=${page}&page_size=20`,
           { headers: { Authorization: `Bearer ${session?.access_token}` } }
         );
         if (res.ok) {

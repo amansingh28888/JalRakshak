@@ -56,7 +56,7 @@ export default function CollectSample() {
     }
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
       const res = await fetch(
         `${baseUrl}/api/worker/samples`,
         {
