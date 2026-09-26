@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { getMapMarkers } from '../api';
 import type { MapMarker } from '../types';
 import { getMapColor, getCategoryConfig } from '../utils/display';
-import { Map as MapIcon, MapPin, Ban, Info, Loader2 } from 'lucide-react';
+import { Map as MapIcon, MapPin, Ban, Info, Loader2, Layers } from 'lucide-react';
+import HeatmapLayer from '../components/map/HeatmapLayer';
 
 export default function MapView() {
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState({ category: '', do_not_boil: '' });
+  const [viewMode, setViewMode] = useState<'markers' | 'heatmap'>('markers');
 
   const fetchMarkers = () => {
     setLoading(true);
@@ -22,6 +24,18 @@ export default function MapView() {
   };
 
   useEffect(() => { fetchMarkers(); }, [filter]);
+
+  const heatmapPoints = useMemo(() => {
+    return markers.map(m => {
+      let intensity = 0;
+      if (m.category === 'POTABLE_SAFE') intensity = 0.1;
+      else if (m.category === 'MODERATE_PHYSICAL_PARAM') intensity = 0.4;
+      else if (m.category === 'UNSAFE_BIOLOGICAL_PATHOGEN') intensity = 0.7;
+      else intensity = 1.0; // Chemical / Mixed
+
+      return [m.lat, m.lon, intensity] as [number, number, number];
+    });
+  }, [markers]);
 
   return (
     <div>
@@ -53,7 +67,50 @@ export default function MapView() {
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
+        
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          {/* View Mode Toggle */}
+          <div style={{ display: 'flex', background: 'var(--color-bg-soft)', borderRadius: 8, padding: 4, marginRight: 12 }}>
+            <button
+              onClick={() => setViewMode('markers')}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 6,
+                border: 'none',
+                background: viewMode === 'markers' ? 'white' : 'transparent',
+                boxShadow: viewMode === 'markers' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                color: viewMode === 'markers' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                fontWeight: viewMode === 'markers' ? 600 : 500,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: '0.85rem'
+              }}
+            >
+              <MapPin size={16} /> Markers
+            </button>
+            <button
+              onClick={() => setViewMode('heatmap')}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 6,
+                border: 'none',
+                background: viewMode === 'heatmap' ? 'white' : 'transparent',
+                boxShadow: viewMode === 'heatmap' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                color: viewMode === 'heatmap' ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                fontWeight: viewMode === 'heatmap' ? 600 : 500,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: '0.85rem'
+              }}
+            >
+              <Layers size={16} /> Heatmap
+            </button>
+          </div>
+
           <select className="form-input" style={{ width: 180 }} value={filter.category}
             onChange={e => setFilter(f => ({ ...f, category: e.target.value }))}>
             <option value="">All Categories</option>
@@ -89,7 +146,19 @@ export default function MapView() {
             attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {markers.map(m => {
+          
+          {viewMode === 'heatmap' && heatmapPoints.length > 0 && (
+            <HeatmapLayer 
+              points={heatmapPoints} 
+              options={{ 
+                radius: filter.category ? 30 : 20, 
+                blur: 15,
+                maxZoom: 10 
+              }} 
+            />
+          )}
+
+          {viewMode === 'markers' && markers.map(m => {
             const cat = getCategoryConfig(m.category);
             return (
               <CircleMarker

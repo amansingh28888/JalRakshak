@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+backend_dir = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(backend_dir))
+
 import pandas as pd
 
 from app.utils.column_mapper import build_reverse_map
