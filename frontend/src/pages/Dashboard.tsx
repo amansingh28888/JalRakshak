@@ -7,7 +7,7 @@ import {
 import { 
   Droplets, AlertTriangle, FlaskConical, Bug, 
   AlertOctagon, Waves, Database, CheckCircle, 
-  Ban, ShieldCheck 
+  Ban, ShieldCheck, LineChart, TrendingUp, BarChart2, FileDown 
 } from 'lucide-react';
 import { getDashboardSummary } from '../api';
 import type { DashboardSummary } from '../types';
@@ -281,6 +281,46 @@ export default function Dashboard() {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Advanced Analytics Section */}
+      <div style={{ marginBottom: 32 }}>
+        <h2 style={{ fontSize: '1.25rem', color: 'var(--color-text)', marginBottom: 16 }}>
+          Advanced Analytics Hub
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
+          <div className="card card-hover" style={{ padding: 24, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12 }} onClick={() => navigate('/analytics/trends')}>
+            <div style={{ width: 40, height: 40, borderRadius: 8, background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LineChart size={24} />
+            </div>
+            <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--color-text)' }}>Trends Analysis</h3>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>Analyze historical patterns and track safety parameters over time.</p>
+          </div>
+
+          <div className="card card-hover" style={{ padding: 24, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12 }} onClick={() => navigate('/analytics/forecast')}>
+            <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <TrendingUp size={24} />
+            </div>
+            <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--color-text)' }}>Predictive Forecasting</h3>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>Project future contamination levels based on historical progression.</p>
+          </div>
+
+          <div className="card card-hover" style={{ padding: 24, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12 }} onClick={() => navigate('/analytics/compare')}>
+            <div style={{ width: 40, height: 40, borderRadius: 8, background: '#E0E7FF', color: '#4338CA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BarChart2 size={24} />
+            </div>
+            <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--color-text)' }}>Location Comparison</h3>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>Benchmarking districts side-by-side on specific quality parameters.</p>
+          </div>
+
+          <div className="card card-hover" style={{ padding: 24, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12 }} onClick={() => navigate('/reports')}>
+            <div style={{ width: 40, height: 40, borderRadius: 8, background: '#DCFCE7', color: '#15803D', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FileDown size={24} />
+            </div>
+            <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--color-text)' }}>Download Reports</h3>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>Export precise analytical data in PDF, Excel, and CSV formats.</p>
+          </div>
         </div>
       </div>
 

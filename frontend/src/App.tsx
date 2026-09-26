@@ -20,6 +20,12 @@ import AdminSamples from './pages/admin/AdminSamples';
 import WorkerManagement from './pages/admin/WorkerManagement';
 import AuditLogs from './pages/admin/AuditLogs';
 
+// New Analytics & Reports pages
+import Trends from './pages/analytics/Trends';
+import Forecast from './pages/analytics/Forecast';
+import Compare from './pages/analytics/Compare';
+import Reports from './pages/reports/Reports';
+
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
@@ -32,6 +38,12 @@ export default function App() {
             {/* Root & Auth */}
             <Route path="/" element={<RootLanding />} />
             <Route path="/login" element={<Login />} />
+
+            {/* Global Analytics & Reports (Publicly accessible but respects roles internally if needed) */}
+            <Route path="/analytics/trends" element={<Trends />} />
+            <Route path="/analytics/forecast" element={<Forecast />} />
+            <Route path="/analytics/compare" element={<Compare />} />
+            <Route path="/reports" element={<Reports />} />
 
             {/* Citizen Portal (Public) */}
             <Route path="/citizen">

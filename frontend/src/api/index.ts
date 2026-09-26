@@ -62,6 +62,16 @@ export interface AlertFilters {
 export const getAlerts = (filters: AlertFilters = {}) =>
   api.get('/api/alerts', { params: filters }).then(r => r.data);
 
+// ── Analytics & Reports ────────────────────────────────────────────────────────
+export const getAnalyticsTrends = (params: any) => 
+  api.get('/api/analytics/trends', { params }).then(r => r.data);
+
+export const getAnalyticsForecast = (params: any) =>
+  api.get('/api/analytics/forecast', { params }).then(r => r.data);
+
+export const getAnalyticsCompare = (params: any) =>
+  api.get('/api/analytics/compare', { params }).then(r => r.data);
+
 // ── Map ────────────────────────────────────────────────────────────────────────
 export const getMapMarkers = (params: Record<string, unknown> = {}) =>
   api.get<{ markers: MapMarker[]; total: number }>('/api/map/samples', { params }).then(r => r.data);

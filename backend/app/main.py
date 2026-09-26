@@ -111,6 +111,8 @@ configured_origins = [
 base_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
 ]
 
 allow_origins = list(set(configured_origins + base_origins))
@@ -134,6 +136,8 @@ from app.api.ai import router as ai_router
 from app.api.worker import router as worker_router
 from app.api.admin import router as admin_router
 from app.api.auth import router as auth_router
+from app.api.analytics import router as analytics_router
+from app.api.reports import router as reports_router
 
 app.include_router(samples_router)
 app.include_router(dashboard_router)
@@ -144,6 +148,8 @@ app.include_router(ai_router)
 app.include_router(worker_router)
 app.include_router(admin_router)
 app.include_router(auth_router)
+app.include_router(analytics_router)
+app.include_router(reports_router)
 
 
 # ── Core endpoints ────────────────────────────────────────────────────────────

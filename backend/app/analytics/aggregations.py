@@ -19,8 +19,19 @@ def get_dashboard_summary(db: Session) -> Dict[str, Any]:
     Compute all dashboard KPIs from the database.
     All numbers are real database counts — never fabricated.
     """
-    total = db.query(func.count(WaterSample.id)).scalar() or 0
+    stats = db.query(
+        func.count(WaterSample.id).label("total"),
+        func.sum(case((WaterSample.alert_category == AlertCategory.POTABLE_SAFE, 1), else_=0)).label("safe"),
+        func.sum(case((WaterSample.alert_category == AlertCategory.UNSAFE_BIOLOGICAL_PATHOGEN, 1), else_=0)).label("bio"),
+        func.sum(case((WaterSample.alert_category == AlertCategory.CRITICAL_CHEMICAL_TOXIN, 1), else_=0)).label("chem"),
+        func.sum(case((WaterSample.alert_category == AlertCategory.MODERATE_PHYSICAL_PARAM, 1), else_=0)).label("phys"),
+        func.sum(case((WaterSample.alert_category == AlertCategory.CRITICAL_MIXED_HAZARD, 1), else_=0)).label("mixed"),
+        func.sum(case((WaterSample.do_not_boil == True, 1), else_=0)).label("dnb"),
+        func.count(distinct(WaterSample.state_ut)).label("states"),
+        func.count(distinct(WaterSample.district)).label("districts")
+    ).first()
 
+    total = stats.total or 0
     if total == 0:
         return {
             "total_samples": 0,
@@ -40,32 +51,14 @@ def get_dashboard_summary(db: Session) -> Dict[str, Any]:
             "severity_distribution": [],
         }
 
-    safe = db.query(func.count(WaterSample.id)).filter(
-        WaterSample.alert_category == AlertCategory.POTABLE_SAFE
-    ).scalar() or 0
-
-    bio = db.query(func.count(WaterSample.id)).filter(
-        WaterSample.alert_category == AlertCategory.UNSAFE_BIOLOGICAL_PATHOGEN
-    ).scalar() or 0
-
-    chem = db.query(func.count(WaterSample.id)).filter(
-        WaterSample.alert_category == AlertCategory.CRITICAL_CHEMICAL_TOXIN
-    ).scalar() or 0
-
-    phys = db.query(func.count(WaterSample.id)).filter(
-        WaterSample.alert_category == AlertCategory.MODERATE_PHYSICAL_PARAM
-    ).scalar() or 0
-
-    mixed = db.query(func.count(WaterSample.id)).filter(
-        WaterSample.alert_category == AlertCategory.CRITICAL_MIXED_HAZARD
-    ).scalar() or 0
-
-    dnb = db.query(func.count(WaterSample.id)).filter(
-        WaterSample.do_not_boil == True
-    ).scalar() or 0
-
-    states = db.query(func.count(distinct(WaterSample.state_ut))).scalar() or 0
-    districts = db.query(func.count(distinct(WaterSample.district))).scalar() or 0
+    safe = stats.safe or 0
+    bio = stats.bio or 0
+    chem = stats.chem or 0
+    phys = stats.phys or 0
+    mixed = stats.mixed or 0
+    dnb = stats.dnb or 0
+    states = stats.states or 0
+    districts = stats.districts or 0
 
     # Category distribution
     cat_rows = db.query(

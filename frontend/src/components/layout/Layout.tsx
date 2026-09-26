@@ -1,5 +1,5 @@
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Search, Map as MapIcon, Bell, Database, Info, LogOut, FileText, UserCircle, PlusCircle, Users } from 'lucide-react';
+import { LayoutDashboard, Search, Map as MapIcon, Bell, Database, Info, LogOut, FileText, UserCircle, PlusCircle, Users, TrendingUp, BarChart2, LineChart, FileDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { JalDootChatbot } from '../JalDootChatbot';
 
@@ -19,11 +19,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   let navItems = [];
+  let analyticsItems = [
+    { to: '/analytics/trends', label: 'Trends', icon: LineChart },
+    { to: '/analytics/forecast', label: 'Forecast', icon: TrendingUp },
+    { to: '/analytics/compare', label: 'Compare Locations', icon: BarChart2 },
+    { to: '/reports', label: 'Reports', icon: FileDown },
+  ];
+  
   let portalName = "JalRakshak";
   let portalSub = "Water Quality Portal";
 
 
-  if (path.startsWith('/admin')) {
+  if (path.startsWith('/admin') || (path.startsWith('/analytics') && profile?.role === 'admin') || (path.startsWith('/reports') && profile?.role === 'admin')) {
     portalName = "Admin Portal";
     portalSub = "JalRakshak Management";
 
@@ -34,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       { to: '/admin/workers', label: 'Field Workers', icon: Users },
       { to: '/admin/audit-logs', label: 'Audit Logs', icon: FileText },
     ];
-  } else if (path.startsWith('/worker')) {
+  } else if (path.startsWith('/worker') || (path.startsWith('/analytics') && profile?.role === 'field_worker') || (path.startsWith('/reports') && profile?.role === 'field_worker')) {
     portalName = "Worker Portal";
     portalSub = "Field Worker Portal";
 
@@ -60,8 +67,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--color-bg-soft)' }}>
-      {/* Sidebar */}
-      <aside style={{
+      {/* Sidebar - Hide when printing */}
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          .print-main { margin-left: 0 !important; padding: 0 !important; max-width: 100% !important; background: white !important; }
+        }
+      `}</style>
+      <aside className="no-print" style={{
         width: 260,
         minHeight: '100vh',
         background: 'var(--color-bg)',
@@ -117,6 +130,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </NavLink>
             );
           })}
+          
+          <div style={{ fontSize: '0.65rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.05em', padding: '16px 8px 12px', textTransform: 'uppercase' }}>
+            Analytics
+          </div>
+          {analyticsItems.map(item => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `sidebar-nav-item ${isActive ? 'active' : ''}`
+                }
+                style={{ marginBottom: 4 }}
+              >
+                <Icon size={18} strokeWidth={2} />
+                {item.label}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {user ? (
@@ -154,12 +187,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main */}
-      <main style={{ marginLeft: 260, flex: 1, minHeight: '100vh', padding: '32px 40px', maxWidth: 'calc(100vw - 260px)' }}>
+      <main className="print-main" style={{ marginLeft: 260, flex: 1, minHeight: '100vh', padding: '32px 40px', maxWidth: 'calc(100vw - 260px)' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           {children}
         </div>
       </main>
-      <JalDootChatbot />
+      <div className="no-print">
+        <JalDootChatbot />
+      </div>
     </div>
   );
 }
