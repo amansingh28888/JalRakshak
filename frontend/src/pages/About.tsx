@@ -30,7 +30,7 @@ export default function About() {
           Core Safety Principle
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
-          <div style={{ padding: 24, background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 12, textAlign: 'center' }}>
+          <div style={{ padding: 24, background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 12, textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
               <Settings size={36} color="var(--color-danger)" />
             </div>
@@ -38,7 +38,7 @@ export default function About() {
             <div style={{ color: 'var(--color-danger)', fontSize: '0.9rem', marginTop: 4, fontWeight: 600 }}>SAFETY AUTHORITY</div>
             <div style={{ color: '#9C3535', fontSize: '0.85rem', marginTop: 12 }}>IS 10500:2012 · Deterministic · Auditable · Tested</div>
           </div>
-          <div style={{ padding: 24, background: '#E6F6EF', border: '1px solid rgba(22,138,91,0.3)', borderRadius: 12, textAlign: 'center' }}>
+          <div style={{ padding: 24, background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(22,138,91,0.3)', borderRadius: 12, textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
               <Bot size={36} color="var(--color-safe)" />
             </div>

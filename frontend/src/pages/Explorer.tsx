@@ -165,7 +165,7 @@ export default function Explorer() {
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         {s.do_not_boil
-                          ? <span style={{ background: '#FCE8E8', color: 'var(--color-danger)', border: '1px solid rgba(214,69,69,0.3)', padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          ? <span style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--color-danger)', border: '1px solid rgba(214,69,69,0.3)', padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                               <Ban size={12} strokeWidth={3} /> YES
                             </span>
                           : <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem' }}>—</span>}

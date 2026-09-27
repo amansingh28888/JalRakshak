@@ -286,6 +286,14 @@ h1, h2, h3, h4, h5 {
 .data-table tr:last-child td:first-child { border-bottom-left-radius: 12px; }
 .data-table tr:last-child td:last-child { border-bottom-right-radius: 12px; }
 
+.data-table tr.danger-row td {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.data-table tr.danger-row:hover td {
+  background: rgba(239, 68, 68, 0.25);
+}
+
 /* ── KPI Card ─────────────────────────────────────────────────── */
 .kpi-card {
   background: rgba(12, 30, 62, 0.6);

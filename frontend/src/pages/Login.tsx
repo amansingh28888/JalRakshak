@@ -74,7 +74,7 @@ export default function Login() {
         </div>
 
         {error && (
-          <div style={{ padding: '12px 16px', background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 8, color: 'var(--color-danger)', fontSize: '0.85rem', marginBottom: 24, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <div style={{ padding: '12px 16px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 8, color: 'var(--color-danger)', fontSize: '0.85rem', marginBottom: 24, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <AlertTriangle size={16} style={{ marginTop: 2, flexShrink: 0 }} />
             <span>{error}</span>
           </div>

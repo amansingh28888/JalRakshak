@@ -107,7 +107,7 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
       </div>
 
       {error && (
-        <div style={{ padding: '12px 16px', background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 8, color: 'var(--color-danger)', marginBottom: 16, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ padding: '12px 16px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 8, color: 'var(--color-danger)', marginBottom: 16, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertTriangle size={18} /> {error}
         </div>
       )}
@@ -178,7 +178,7 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
                 <div style={{
                   marginBottom: 24,
                   padding: 16,
-                  background: advisory.detailed_advisory.boiling_useful ? '#F0F9F0' : '#FCE8E8',
+                  background: advisory.detailed_advisory.boiling_useful ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                   borderLeft: isRtl ? 'none' : `4px solid ${advisory.detailed_advisory.boiling_useful ? 'var(--color-safe)' : 'var(--color-danger)'}`,
                   borderRight: isRtl ? `4px solid ${advisory.detailed_advisory.boiling_useful ? 'var(--color-safe)' : 'var(--color-danger)'}` : 'none',
                   borderRadius: '0 8px 8px 0',
@@ -236,7 +236,7 @@ export const MultilingualAdvisory: React.FC<MultilingualAdvisoryProps> = ({ samp
                 <div style={{
                   marginBottom: 20,
                   padding: 16,
-                  background: verdict.do_not_boil ? '#FCE8E8' : '#FDF3E1',
+                  background: verdict.do_not_boil ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
                   borderLeft: isRtl ? 'none' : `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}`,
                   borderRight: isRtl ? `4px solid ${verdict.do_not_boil ? 'var(--color-danger)' : 'var(--color-warning)'}` : 'none',
                   borderRadius: '0 8px 8px 0',

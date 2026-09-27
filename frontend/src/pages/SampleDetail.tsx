@@ -61,10 +61,10 @@ export default function SampleDetail() {
 
       {/* ── PRIMARY STATUS BANNER ──────────────────────── */}
       <div style={{
-        background:   mtConfig.bgColor === 'rgba(16,185,129,0.1)' ? '#E6F6EF' : 
-                      mtConfig.bgColor === 'rgba(239,68,68,0.1)' ? '#FCE8E8' : 
-                      mtConfig.bgColor === 'rgba(249,115,22,0.1)' ? '#FDF3E1' : 
-                      mtConfig.bgColor === 'rgba(234,179,8,0.1)' ? '#FDF3E1' : '#F7FAFC',
+        background:   mtConfig.bgColor === 'rgba(16,185,129,0.1)' ? 'rgba(16, 185, 129, 0.15)' : 
+                      mtConfig.bgColor === 'rgba(239,68,68,0.1)' ? 'rgba(239, 68, 68, 0.15)' : 
+                      mtConfig.bgColor === 'rgba(249,115,22,0.1)' ? 'rgba(245, 158, 11, 0.15)' : 
+                      mtConfig.bgColor === 'rgba(234,179,8,0.1)' ? 'rgba(245, 158, 11, 0.15)' : '#F7FAFC',
         border:       `1px solid ${mtConfig.color}40`,
         borderRadius: 12,
         padding:      '24px 32px',
@@ -129,7 +129,7 @@ export default function SampleDetail() {
                       alignItems:   'center',
                       gap:          12,
                       padding:      '12px 16px',
-                      background:   '#E6F6EF',
+                      background:   'rgba(16, 185, 129, 0.15)',
                       border:       '1px solid rgba(22,138,91,0.2)',
                       borderRadius: 8,
                     }}>
@@ -157,7 +157,7 @@ export default function SampleDetail() {
                       alignItems:   'center',
                       gap:          12,
                       padding:      '12px 16px',
-                      background:   '#FCE8E8',
+                      background:   'rgba(239, 68, 68, 0.15)',
                       border:       '1px solid rgba(214,69,69,0.3)',
                       borderRadius: 8,
                     }}>
@@ -208,7 +208,7 @@ export default function SampleDetail() {
           </div>
           {/* Severity */}
           <div style={{ marginBottom: 16 }}>
-            <span style={{ background: sev.bgColor === 'rgba(239,68,68,0.2)' ? '#FCE8E8' : sev.bgColor === 'rgba(249,115,22,0.2)' ? '#FDF3E1' : sev.bgColor === 'rgba(234,179,8,0.2)' ? '#FDF3E1' : '#E6F6EF', color: sev.color, padding: '4px 12px', borderRadius: 6, fontSize: '0.85rem', fontWeight: 600, border: `1px solid ${sev.color}40` }}>
+            <span style={{ background: sev.bgColor === 'rgba(239,68,68,0.2)' ? 'rgba(239, 68, 68, 0.15)' : sev.bgColor === 'rgba(249,115,22,0.2)' ? 'rgba(245, 158, 11, 0.15)' : sev.bgColor === 'rgba(234,179,8,0.2)' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)', color: sev.color, padding: '4px 12px', borderRadius: 6, fontSize: '0.85rem', fontWeight: 600, border: `1px solid ${sev.color}40` }}>
               Severity: {sev.label}
             </span>
           </div>
@@ -261,7 +261,7 @@ export default function SampleDetail() {
                 const statusLabel = { OK: 'OK', ACCEPTABLE_EXCEEDED: 'Elevated', PERMISSIBLE_EXCEEDED: 'Exceeded', NO_DATA: 'No Data' }[status] || status;
                 
                 return (
-                  <tr key={p.key} style={{ background: status === 'PERMISSIBLE_EXCEEDED' ? '#FCE8E8' : undefined }}>
+                  <tr key={p.key} className={status === 'PERMISSIBLE_EXCEEDED' ? 'danger-row' : ''}>
                     <td style={{ fontWeight: 600, color: p.chemical ? 'var(--color-text)' : 'var(--color-text)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6 }}>
                       {p.chemical && <FlaskConical size={14} color="var(--color-danger)" />}{p.label}
                     </td>

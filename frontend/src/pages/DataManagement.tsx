@@ -143,13 +143,13 @@ export default function DataManagement() {
           </div>
 
           {selectedFile && (
-            <div style={{ marginBottom: 16, padding: '12px 16px', background: '#E6F6EF', border: '1px solid rgba(22,138,91,0.2)', borderRadius: 8, fontSize: '0.85rem', color: 'var(--color-safe)', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ marginBottom: 16, padding: '12px 16px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(22,138,91,0.2)', borderRadius: 8, fontSize: '0.85rem', color: 'var(--color-safe)', display: 'flex', alignItems: 'center', gap: 8 }}>
               <CheckCircle2 size={16} /> {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
             </div>
           )}
 
           {error && (
-            <div style={{ marginBottom: 16, padding: '12px 16px', background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.2)', borderRadius: 8, fontSize: '0.85rem', color: 'var(--color-danger)', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ marginBottom: 16, padding: '12px 16px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(214,69,69,0.2)', borderRadius: 8, fontSize: '0.85rem', color: 'var(--color-danger)', display: 'flex', alignItems: 'center', gap: 8 }}>
               <AlertTriangle size={16} /> {error}
             </div>
           )}
@@ -179,7 +179,7 @@ export default function DataManagement() {
             Load 5,000 synthetic water quality samples with realistic geographic distribution across India.
             Approximate target distribution: 37.4% safe, 21.8% biological, 19.4% chemical, 16.6% physical, 4.8% mixed.
           </p>
-          <div style={{ padding: '16px', background: '#FDF3E1', border: '1px solid rgba(201,130,0,0.2)', borderRadius: 8, marginBottom: 24, fontSize: '0.85rem', color: '#9C6500', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <div style={{ padding: '16px', background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(201,130,0,0.2)', borderRadius: 8, marginBottom: 24, fontSize: '0.85rem', color: '#9C6500', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: 2 }} />
             Synthetic data will REPLACE the existing database. Used for demonstrations only.
             Clearly labeled as synthetic throughout the application.
@@ -225,7 +225,7 @@ export default function DataManagement() {
             ))}
           </div>
           {report.rejection_reasons_sample.length > 0 && (
-            <div style={{ background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.2)', borderRadius: 8, padding: 16 }}>
+            <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(214,69,69,0.2)', borderRadius: 8, padding: 16 }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--color-danger)', fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <XCircle size={14} /> REJECTION REASONS (SAMPLE)
               </div>

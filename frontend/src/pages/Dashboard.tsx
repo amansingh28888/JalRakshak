@@ -109,7 +109,7 @@ export default function Dashboard() {
       {totalAttention > 0 && (
         <div
           style={{
-            background: '#FDF3E1',
+            background: 'rgba(245, 158, 11, 0.15)',
             border: '1px solid rgba(201,130,0,0.3)',
             borderRadius: 12,
             padding: '20px 24px',
@@ -169,7 +169,7 @@ export default function Dashboard() {
       {/* Secondary info: do_not_boil context note */}
       {summary.do_not_boil_alerts > 0 && (
         <div style={{
-          background: '#FCE8E8',
+          background: 'rgba(239, 68, 68, 0.15)',
           border: '1px solid rgba(214,69,69,0.3)',
           borderRadius: 8,
           padding: '12px 20px',

@@ -133,9 +133,9 @@ export default function AlertCenter() {
                     <tr
                       key={alert.id as number}
                       onClick={() => navigate(`/citizen/sample/${alert.id}`)}
+                      className={isChemical ? 'danger-row' : ''}
                       style={{
                         cursor: 'pointer',
-                        background: isChemical ? '#FCE8E8' : undefined,
                       }}
                     >
                       <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.75rem', fontFamily: 'monospace' }}>#{alert.id as number}</td>

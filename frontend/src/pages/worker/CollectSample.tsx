@@ -108,7 +108,7 @@ export default function CollectSample() {
       </div>
 
       {error && (
-        <div style={{ background: '#FCE8E8', color: 'var(--color-danger)', padding: '12px 16px', borderRadius: 8, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--color-danger)', padding: '12px 16px', borderRadius: 8, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertCircle size={20} /> {error}
         </div>
       )}

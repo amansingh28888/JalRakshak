@@ -190,7 +190,7 @@ export default function MapView() {
                       </div>
                     )}
                     {m.do_not_boil && (
-                      <div style={{ background: '#FCE8E8', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 6, padding: '4px 8px', marginTop: 8, fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                      <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(214,69,69,0.3)', borderRadius: 6, padding: '4px 8px', marginTop: 8, fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                         <Ban size={12} strokeWidth={2.5} /> DO NOT BOIL
                       </div>
                     )}
