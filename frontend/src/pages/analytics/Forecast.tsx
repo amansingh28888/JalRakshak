@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getAnalyticsForecast, getStates, getDistricts } from '../../api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
-import { TrendingUp, Activity, AlertTriangle, Loader2 } from 'lucide-react';
+import { TrendingUp, Activity, AlertTriangle, Loader2, Globe2, ChevronDown, ChevronUp } from 'lucide-react';
+import { getSummaryTranslation, getSavedLanguageCode, saveLanguageCode } from '../../utils/language';
+import { LanguageSelector } from '../../components/LanguageSelector';
 
 const parameters = [
   { id: 'ph', label: 'pH' },
@@ -29,6 +31,13 @@ export default function Forecast() {
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [languageCode, setLanguageCode] = useState<string>(getSavedLanguageCode());
+  const [showTechDetails, setShowTechDetails] = useState(false);
+
+  const handleLanguageChange = (code: string) => {
+    setLanguageCode(code);
+    saveLanguageCode(code);
+  };
 
   useEffect(() => {
     getStates().then(setStates);
@@ -72,9 +81,15 @@ export default function Forecast() {
             Predict future water quality trends based on historical measurements.
           </p>
         </div>
-        <button onClick={() => window.print()} className="btn-secondary no-print" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          Print Report
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-3 no-print">
+          <LanguageSelector 
+            value={languageCode} 
+            onChange={handleLanguageChange} 
+          />
+          <button onClick={() => window.print()} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            Print Report
+          </button>
+        </div>
       </div>
 
       <div className="card no-print" style={{ padding: 20, marginBottom: 24, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
@@ -149,6 +164,59 @@ export default function Forecast() {
               <strong>EARLY WARNING:</strong> Historical measurements show an increasing trend. The projected value may approach or exceed safety thresholds during the forecast period. Note that this is a statistical prediction, not a definitive safety classification.
             </div>
           )}
+
+          {/* Simple Summary Section - Future Outlook */}
+          <div className="card" style={{ padding: 32, marginBottom: 24, borderLeft: '4px solid #F59E0B' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <Globe2 size={24} color="#F59E0B" />
+              {getSummaryTranslation(languageCode, 'forecast_title')}
+            </h3>
+            
+            <div style={{ fontSize: '1.1rem', color: 'var(--color-text)', lineHeight: 1.6, fontWeight: 500 }}>
+              {(() => {
+                if (summary.historical_samples < 5) {
+                  return getSummaryTranslation(languageCode, 'forecast_insufficient');
+                }
+                const paramLabel = parameters.find(p => p.id === filter.parameter)?.label?.split(' (')[0] || filter.parameter;
+                
+                let trendKey = 'forecast_stable';
+                if (summary.trend === 'Increasing') trendKey = 'forecast_increasing';
+                if (summary.trend === 'Decreasing') trendKey = 'forecast_decreasing';
+                
+                const p1 = getSummaryTranslation(languageCode, trendKey, { parameter: paramLabel, days: summary.horizon });
+                const p2 = getSummaryTranslation(languageCode, 'forecast_estimated', { value: `${summary.forecast_value} ${parameters.find(p => p.id === filter.parameter)?.label?.split('(')[1]?.replace(')', '') || ''}`.trim() });
+                const p3 = getSummaryTranslation(languageCode, 'forecast_disclaimer');
+                
+                return (
+                  <div>
+                    <p style={{ marginBottom: '0.5rem' }}>{p1}</p>
+                    <p style={{ marginBottom: '0.5rem' }}>{p2}</p>
+                    <p>{p3}</p>
+                  </div>
+                );
+              })()}
+            </div>
+            
+            <div style={{ marginTop: 24 }}>
+              <button 
+                onClick={() => setShowTechDetails(!showTechDetails)}
+                style={{ background: 'none', border: 'none', padding: 0, color: 'var(--color-primary)', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                {getSummaryTranslation(languageCode, 'technical_details')} 
+                {showTechDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              
+              {showTechDetails && (
+                <div style={{ marginTop: 16, padding: 16, background: 'var(--color-bg-soft)', borderRadius: 8, fontSize: '0.9rem', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}>
+                  <p><strong>Parameter:</strong> {parameters.find(p => p.id === filter.parameter)?.label}</p>
+                  <p><strong>Method:</strong> {summary.method}</p>
+                  <p><strong>Forecast Horizon:</strong> {summary.horizon} Days</p>
+                  <p><strong>Data Points:</strong> {summary.historical_samples} historical observations</p>
+                  <p><strong>Statistical Limitation:</strong> Forecasting is based on simple linear regression of historical data. True future levels may vary due to environmental, seasonal, or intervention factors.</p>
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="card" style={{ padding: 24, height: 500 }}>
             <h3 style={{ marginBottom: 20, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>

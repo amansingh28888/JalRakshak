@@ -6,25 +6,25 @@ import { getPublicStats, type PublicStats } from '../api';
 /* ─── Slide data ─────────────────────────────────────────── */
 const HERO_SLIDES = [
   {
-    bg: 'linear-gradient(135deg, #0a3d62 0%, #1a6fa8 50%, #0e5a8a 100%)',
+    imgUrl: '/slide1.jpg',
     title: 'Har Ghar Jal, Har Ghar Suraksha',
     sub: 'Ensuring safe drinking water for every household across India through comprehensive quality monitoring.',
     badge: 'जल सुरक्षा · Water Safety',
-    accent: '#4dd9f0',
+    accent: '#00d2ff',
   },
   {
-    bg: 'linear-gradient(135deg, #1a472a 0%, #2d6a4f 50%, #1b4332 100%)',
+    imgUrl: '/slide2.jpg',
     title: 'National Water Quality Monitoring',
     sub: 'Real-time analysis against IS 10500:2012 standards ensuring public health safety.',
     badge: 'IS 10500:2012 Compliant',
-    accent: '#52b788',
+    accent: '#00d2ff',
   },
   {
-    bg: 'linear-gradient(135deg, #4a1942 0%, #8338ec 50%, #3a0ca3 100%)',
+    imgUrl: '/slide3.jpg',
     title: '14 Languages, One Mission',
     sub: 'Translating critical water safety data into local languages so every citizen understands the risk.',
     badge: '14 भाषाएँ · Languages',
-    accent: '#c77dff',
+    accent: '#00d2ff',
   },
 ];
 
@@ -157,14 +157,56 @@ export default function RootLanding() {
         .slide-dot.active { background:white; width:24px; border-radius:5px; }
 
         .hero-slide-btn { 
-          background:rgba(255,255,255,0.15); color:white; border:1.5px solid rgba(255,255,255,0.4);
-          padding:14px 28px; border-radius:8px; font-weight:700; font-size:0.95rem;
-          cursor:pointer; transition:all 0.25s; display:flex; align-items:center; gap:8px;
-          text-decoration:none; backdrop-filter:blur(4px);
+          background:rgba(0, 210, 255, 0.15); color:white; border:1.5px solid rgba(0, 210, 255, 0.4);
+          padding:14px 28px; border-radius:30px; font-weight:700; font-size:0.95rem;
+          cursor:pointer; transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display:flex; align-items:center; gap:8px;
+          text-decoration:none; backdrop-filter:blur(10px); position: relative; overflow: hidden; z-index: 1;
         }
-        .hero-slide-btn:hover { background:rgba(255,255,255,0.28); border-color:white; transform:translateY(-2px); }
-        .hero-slide-btn.primary { background:white; color:#1677B8; border-color:white; }
-        .hero-slide-btn.primary:hover { background:#f0f7ff; transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+        .hero-slide-btn::before {
+          content: ''; position: absolute; top: 100%; left: 0; width: 200%; height: 200%;
+          background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.25" d="M0,160L48,149.3C96,139,192,117,288,128C384,139,480,181,576,202.7C672,224,768,224,864,197.3C960,171,1056,117,1152,106.7C1248,96,1344,128,1392,144L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x;
+          background-size: 50% 100%; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: -1; border-radius: 30px;
+        }
+        .hero-slide-btn:hover::before { top: -10%; animation: waveAction 2s linear infinite; }
+        .hero-slide-btn:hover { box-shadow: 0 6px 20px rgba(0, 210, 255, 0.4); transform: translateY(-3px); border-color: rgba(255,255,255,0.5); }
+        
+        .hero-slide-btn.primary { background: linear-gradient(135deg, #00d2ff, #3a7bd5); color:white; border-color:transparent; }
+        .hero-slide-btn.primary:hover { box-shadow:0 8px 30px rgba(0, 210, 255, 0.6); transform:translateY(-3px); color: white; }
+
+        .water-glass-panel {
+          background: rgba(0, 210, 255, 0.05);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          border: 1px solid rgba(255, 255, 255, 0.4);
+          border-radius: 32px;
+          padding: 60px 48px;
+          position: relative;
+          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1);
+          overflow: visible;
+        }
+        .water-glass-panel::before {
+          content: '';
+          position: absolute;
+          top: -12px; left: -12px;
+          width: 80px; height: 80px;
+          border-top: 3px solid #00d2ff;
+          border-left: 3px solid #00d2ff;
+          border-radius: 32px 0 0 0;
+        }
+        .water-glass-panel::after {
+          content: '';
+          position: absolute;
+          bottom: -12px; right: -12px;
+          width: 80px; height: 80px;
+          border-bottom: 3px solid #00d2ff;
+          border-right: 3px solid #00d2ff;
+          border-radius: 0 0 32px 0;
+        }
+        .float-rings {
+          position: absolute; border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.4);
+          animation: float 6s ease-in-out infinite;
+        }
 
         .section-header { text-align:center; margin-bottom:48px; }
         .section-tag { font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#1677B8; margin-bottom:10px; }
@@ -336,93 +378,86 @@ export default function RootLanding() {
 
       {/* ── HERO SLIDER ── */}
       <section id="main-content" className="hero-slide" key={slide} style={{
-        background: current.bg,
-        minHeight: 520,
+        backgroundImage: `linear-gradient(rgba(9, 20, 40, 0.4), rgba(9, 20, 40, 0.3)), url(${current.imgUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
       }}>
-        {/* decorative wave */}
-        <svg style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', opacity: 0.15 }} viewBox="0 0 1440 80" preserveAspectRatio="none">
-          <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white" />
-        </svg>
+        {/* Floating Rings */}
+        <div className="float-rings mobile-hide" style={{ top: '15%', left: '45%', width: 60, height: 60, animationDelay: '0s' }}>
+           <div className="float-rings" style={{ top: -10, left: -10, width: 80, height: 80, animationDelay: '0.2s', border: '1px solid rgba(0,210,255,0.6)' }} />
+        </div>
+        <div className="float-rings mobile-hide" style={{ bottom: '20%', right: '15%', width: 120, height: 120, animationDelay: '1s' }}>
+           <div className="float-rings" style={{ top: -20, left: -20, width: 160, height: 160, animationDelay: '1.2s', border: '1px solid rgba(0,210,255,0.4)' }} />
+        </div>
 
-        {/* Floating orbs */}
-        <div style={{ position: 'absolute', top: '20%', right: '5%', width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', animation: 'float 6s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', bottom: '10%', right: '20%', width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', animation: 'float 8s ease-in-out infinite reverse' }} />
+        {/* Water Drop Icons */}
+        <div style={{ position: 'absolute', top: '30%', left: '30%', animation: 'float 5s ease-in-out infinite alternate', opacity: 0.7 }} className="mobile-hide">
+          <Droplets color="white" size={32} />
+        </div>
+        <div style={{ position: 'absolute', top: '50%', right: '35%', animation: 'float 7s ease-in-out infinite alternate-reverse', opacity: 0.5 }} className="mobile-hide">
+          <Droplets color="#00d2ff" size={48} />
+        </div>
 
-        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '60px 40px', width: '100%', display: 'flex', alignItems: 'center', gap: 60, position: 'relative', zIndex: 2 }}>
-
-          {/* Left: text */}
-          <div className="slide-text" style={{ flex: 1, maxWidth: 660 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '100px 40px', width: '100%', display: 'flex', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+          
+          {/* Left: Water Glass Panel */}
+          <div className="water-glass-panel" style={{ flex: '0 1 650px' }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
-              border: `1px solid ${current.accent}60`,
-              padding: '5px 16px', borderRadius: 50,
-              color: current.accent, fontSize: '0.78rem', fontWeight: 700,
-              letterSpacing: '0.06em', marginBottom: 24,
+              background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(4px)',
+              border: `1px solid ${current.accent}`,
+              padding: '6px 18px', borderRadius: 50,
+              color: 'white', fontSize: '0.85rem', fontWeight: 700,
+              letterSpacing: '0.08em', marginBottom: 28, textTransform: 'uppercase'
             }}>
-              <ShieldCheck size={14} /> {current.badge}
+              <ShieldCheck size={16} color={current.accent} /> {current.badge}
             </div>
 
             <h1 style={{
-              fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-              fontWeight: 900, lineHeight: 1.15,
-              color: 'white', marginBottom: 20,
-              letterSpacing: '-0.02em',
-              textShadow: '0 2px 20px rgba(0,0,0,0.3)',
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+              fontWeight: 900, lineHeight: 1.1,
+              color: 'white', marginBottom: 24,
+              letterSpacing: '-0.03em',
+              textShadow: '0 4px 20px rgba(0,0,0,0.5)',
             }}>
               {current.title}
             </h1>
-            <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, marginBottom: 36, maxWidth: 560 }}>
-              {current.sub}
-            </p>
-
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <Link to="/citizen" className="hero-slide-btn primary">
-                Explore as Citizen <ArrowRight size={17} />
-              </Link>
-              <a href="#portals" className="hero-slide-btn">
-                View Portals <ChevronRight size={17} />
-              </a>
+            
+            <div style={{
+              background: 'rgba(0, 210, 255, 0.15)',
+              border: '1px solid rgba(0, 210, 255, 0.3)',
+              borderRadius: 16, padding: '24px', marginBottom: 36,
+              backdropFilter: 'blur(8px)',
+              boxShadow: 'inset 0 0 20px rgba(0,210,255,0.1)'
+            }}>
+              <p style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.95)', lineHeight: 1.7, fontWeight: 500 }}>
+                {current.sub}
+              </p>
             </div>
-          </div>
 
-          {/* Right: logo + pulse */}
-          <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }} className="mobile-hide">
-            <div style={{ position: 'relative', width: 220, height: 220 }}>
-              {/* Pulse rings */}
-              {[1, 2, 3].map(i => (
-                <div key={i} style={{
-                  position: 'absolute', inset: 0, borderRadius: '50%',
-                  border: `2px solid ${current.accent}40`,
-                  animation: `pulse-ring ${2 + i}s ease-out ${i * 0.5}s infinite`,
-                }} />
-              ))}
-              <div style={{
-                position: 'absolute', inset: 20,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.12)',
-                backdropFilter: 'blur(10px)',
-                border: '2px solid rgba(255,255,255,0.25)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <img src="/logo.png" alt="JalRakshak" style={{ width: 130, height: 130, objectFit: 'contain', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))', animation: 'float 4s ease-in-out infinite' }} />
-              </div>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <Link to="/citizen" className="hero-slide-btn primary" style={{ fontSize: '1.1rem', padding: '16px 36px' }}>
+                Play your part <ArrowRight size={20} />
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Slide dots + indicators */}
-        <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 5 }}>
+        <div style={{ position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 12, zIndex: 5 }}>
           {HERO_SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => setSlide(i)}
               className={`slide-dot${i === slide ? ' active' : ''}`}
               aria-label={`Slide ${i + 1}`}
+              style={{ width: i === slide ? 36 : 12, height: 12, borderRadius: i === slide ? 6 : '50%' }}
             />
           ))}
         </div>

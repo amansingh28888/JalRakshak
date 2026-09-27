@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getAnalyticsTrends, getStates, getDistricts } from '../../api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { LineChart as LineChartIcon, Activity, AlertTriangle, ArrowUpRight, ArrowDownRight, Minus, Loader2 } from 'lucide-react';
+import { LineChart as LineChartIcon, Activity, AlertTriangle, ArrowUpRight, ArrowDownRight, Minus, Loader2, Globe2, ChevronDown, ChevronUp } from 'lucide-react';
+import { getSummaryTranslation, getSavedLanguageCode, saveLanguageCode } from '../../utils/language';
+import { LanguageSelector } from '../../components/LanguageSelector';
 
 const parameters = [
   { id: 'ph', label: 'pH' },
@@ -28,6 +30,13 @@ export default function Trends() {
   const [data, setData] = useState<any[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [languageCode, setLanguageCode] = useState<string>(getSavedLanguageCode());
+  const [showTechDetails, setShowTechDetails] = useState(false);
+
+  const handleLanguageChange = (code: string) => {
+    setLanguageCode(code);
+    saveLanguageCode(code);
+  };
 
   useEffect(() => {
     getStates().then(setStates);
@@ -62,9 +71,15 @@ export default function Trends() {
             Track water quality parameters over time using historical data.
           </p>
         </div>
-        <button onClick={() => window.print()} className="btn-secondary no-print" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          Print Report
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-3 no-print">
+          <LanguageSelector 
+            value={languageCode} 
+            onChange={handleLanguageChange} 
+          />
+          <button onClick={() => window.print()} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            Print Report
+          </button>
+        </div>
       </div>
 
       <div className="card no-print" style={{ padding: 20, marginBottom: 24, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
@@ -168,6 +183,60 @@ export default function Trends() {
           
           <div style={{ textAlign: 'right', marginTop: 12, fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
             Based on {summary.sample_count} historical observations
+          </div>
+
+          {/* Simple Summary Section */}
+          <div className="card" style={{ padding: 32, marginTop: 24, borderLeft: '4px solid var(--color-primary)' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <Globe2 size={24} color="var(--color-primary)" />
+              {getSummaryTranslation(languageCode, 'trend_title')}
+            </h3>
+            
+            <div style={{ fontSize: '1.1rem', color: 'var(--color-text)', lineHeight: 1.6, fontWeight: 500 }}>
+              {(() => {
+                if (summary.sample_count < 2 || summary.status) {
+                  return getSummaryTranslation(languageCode, 'trend_insufficient');
+                }
+                const paramLabel = parameters.find(p => p.id === filter.parameter)?.label?.split(' (')[0] || filter.parameter;
+                
+                let trendKey = 'trend_stable';
+                if (summary.trend === 'Increasing') trendKey = 'trend_increasing';
+                if (summary.trend === 'Decreasing') trendKey = 'trend_decreasing';
+                
+                const p1 = getSummaryTranslation(languageCode, trendKey, { parameter: paramLabel });
+                const p2 = getSummaryTranslation(languageCode, 'trend_latest', { value: `${summary.latest_value} ${parameters.find(p => p.id === filter.parameter)?.label?.split('(')[1]?.replace(')', '') || ''}`.trim() });
+                const p3 = getSummaryTranslation(languageCode, 'trend_attention');
+                
+                return (
+                  <div>
+                    <p style={{ marginBottom: '0.5rem' }}>{p1}</p>
+                    <p style={{ marginBottom: '0.5rem' }}>{p2}</p>
+                    <p>{p3}</p>
+                  </div>
+                );
+              })()}
+            </div>
+            
+            <div style={{ marginTop: 24 }}>
+              <button 
+                onClick={() => setShowTechDetails(!showTechDetails)}
+                style={{ background: 'none', border: 'none', padding: 0, color: 'var(--color-primary)', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                {getSummaryTranslation(languageCode, 'technical_details')} 
+                {showTechDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              
+              {showTechDetails && (
+                <div style={{ marginTop: 16, padding: 16, background: 'var(--color-bg-soft)', borderRadius: 8, fontSize: '0.9rem', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}>
+                  <p><strong>Parameter:</strong> {parameters.find(p => p.id === filter.parameter)?.label}</p>
+                  <p><strong>Method:</strong> Linear Regression on Time Series Data</p>
+                  <p><strong>Analysis Period:</strong> Last {filter.days === 3650 ? 'All Time' : `${filter.days} Days`}</p>
+                  <p><strong>Data Points:</strong> {summary.sample_count} observations</p>
+                  <p><strong>Percentage Change:</strong> {summary.percentage_change > 0 ? '+' : ''}{summary.percentage_change}% over period</p>
+                  <p><strong>Statistical Limitation:</strong> Trends are descriptive based on historical readings and do not imply causation or guarantee future conditions.</p>
+                </div>
+              )}
+            </div>
           </div>
         </>
       ) : null}
