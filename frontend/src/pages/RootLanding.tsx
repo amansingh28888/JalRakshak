@@ -312,25 +312,11 @@ export default function RootLanding() {
           {/* Login buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button
-              onClick={() => navigate('/login?type=worker')}
-              style={{
-                background: '#f0f7ff', color: '#1677B8',
-                border: '1.5px solid #1677B8', padding: '8px 16px',
-                borderRadius: 6, fontWeight: 600, fontSize: '0.85rem',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#1677B8'; e.currentTarget.style.color = 'white'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#f0f7ff'; e.currentTarget.style.color = '#1677B8'; }}
-            >
-              <Droplets size={14} /> Worker
-            </button>
-            <button
-              onClick={() => navigate('/login?type=admin')}
+              onClick={() => navigate('/login')}
               style={{
                 background: '#1677B8', color: 'white',
-                border: '1.5px solid #1677B8', padding: '8px 18px',
-                borderRadius: 6, fontWeight: 700, fontSize: '0.85rem',
+                border: '1.5px solid #1677B8', padding: '8px 24px',
+                borderRadius: 6, fontWeight: 700, fontSize: '0.9rem',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
                 boxShadow: '0 2px 8px rgba(22,119,184,0.3)',
                 transition: 'all 0.2s',
@@ -338,7 +324,7 @@ export default function RootLanding() {
               onMouseEnter={e => { e.currentTarget.style.background = '#0B5D8F'; }}
               onMouseLeave={e => { e.currentTarget.style.background = '#1677B8'; }}
             >
-              <LogIn size={14} /> Admin Login
+              <LogIn size={16} /> Login
             </button>
           </div>
         </div>

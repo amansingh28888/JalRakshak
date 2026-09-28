@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../utils/supabaseClient';
 
-type UserRole = 'admin' | 'field_worker' | null;
+type UserRole = 'admin' | 'field_worker' | 'citizen' | null;
 
 interface UserProfile {
   id: number;
@@ -13,6 +13,8 @@ interface UserProfile {
   role: UserRole;
   state_ut?: string;
   district?: string;
+  state_id?: string;
+  district_id?: string;
   village?: string;
   status: 'active' | 'inactive';
 }
@@ -56,7 +58,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await response.json();
         setProfile(data);
       } else {
-        setProfile(null);
+        // Fallback for citizens who don't exist in the worker/admin backend table
+        const { data: citizen, error } = await supabase
+          .from('citizen_profiles')
+          .select('*')
+          .eq('user_id', sessionData.user.id)
+          .single();
+          
+        if (citizen && !error) {
+          setProfile({
+            id: citizen.id,
+            auth_user_id: citizen.user_id,
+            full_name: citizen.full_name,
+            email: citizen.email,
+            phone: citizen.mobile,
+            role: 'citizen',
+            state_id: citizen.state_id,
+            district_id: citizen.district_id,
+            village: citizen.village,
+            status: 'active'
+          });
+        } else {
+          setProfile(null);
+        }
       }
     } catch (e) {
       console.error('Failed to fetch profile:', e);

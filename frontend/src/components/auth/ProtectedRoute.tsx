@@ -4,7 +4,7 @@ import { ShieldAlert, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ProtectedRouteProps {
-  allowedRoles?: ('admin' | 'field_worker')[];
+  allowedRoles?: ('admin' | 'field_worker' | 'citizen')[];
 }
 
 export default function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {

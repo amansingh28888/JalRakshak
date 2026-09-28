@@ -4,7 +4,7 @@ JalRakshak — Worker API Router
 Handles protected field worker operations such as creating water samples.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from datetime import datetime
 import uuid
@@ -16,12 +16,14 @@ from app.models.audit_log import AuditLog
 from app.api.deps.auth import require_field_worker
 from app.schemas.sample import WaterSampleResponse, PaginatedSamplesResponse, SampleEvaluateRequest
 from app.rules.water_quality_rules import evaluate_sample
+from app.services.alert_engine import process_alerts_for_sample
 
 router = APIRouter(prefix="/api/worker", tags=["worker"])
 
 @router.post("/samples", response_model=WaterSampleResponse)
 def create_sample(
     body: SampleEvaluateRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: UserProfile = Depends(require_field_worker),
 ):
@@ -101,6 +103,8 @@ def create_sample(
     )
     db.add(audit)
     db.commit()
+
+    background_tasks.add_task(process_alerts_for_sample, new_sample.id)
 
     return new_sample
 

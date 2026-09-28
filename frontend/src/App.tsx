@@ -10,6 +10,11 @@ import DataManagement from './pages/DataManagement';
 import About from './pages/About';
 import SampleDetail from './pages/SampleDetail';
 
+import CitizenRegister from './pages/citizen/CitizenRegister';
+import CitizenLogin from './pages/citizen/CitizenLogin';
+import CitizenDashboard from './pages/citizen/CitizenDashboard';
+import CitizenProfileSetup from './pages/citizen/CitizenProfileSetup';
+
 import WorkerDashboard from './pages/worker/WorkerDashboard';
 import CollectSample from './pages/worker/CollectSample';
 import WorkerSamples from './pages/worker/WorkerSamples';
@@ -48,7 +53,11 @@ export default function App() {
             {/* Citizen Portal (Public) */}
             <Route path="/citizen">
               <Route index element={<Navigate to="/citizen/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="register" element={<CitizenRegister />} />
+              <Route path="login" element={<CitizenLogin />} />
+              <Route path="setup" element={<CitizenProfileSetup />} />
+              <Route path="dashboard" element={<CitizenDashboard />} />
+              <Route path="public-dashboard" element={<Dashboard />} />
               <Route path="explorer" element={<Explorer />} />
               <Route path="map" element={<MapView />} />
               <Route path="alerts" element={<AlertCenter />} />
