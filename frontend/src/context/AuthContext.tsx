@@ -73,6 +73,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             email: citizen.email,
             phone: citizen.mobile,
             role: 'citizen',
+            state_ut: citizen.state,
+            district: citizen.district,
             state_id: citizen.state_id,
             district_id: citizen.district_id,
             village: citizen.village,

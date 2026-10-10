@@ -51,11 +51,17 @@ export default function CitizenProfileSetup() {
     setLoading(true);
 
     try {
+      // Look up state and district names from locations data
+      const selectedState = states.find(s => s.id === formData.state_id);
+      const selectedDistrict = getDistricts(formData.state_id).find(d => d.id === formData.district_id);
+
       const { error: profileError } = await supabase.from('citizen_profiles').insert({
         user_id: user.id,
         full_name: formData.fullName,
         mobile: formData.mobile,
         email: user.email,
+        state: selectedState?.name || '',
+        district: selectedDistrict?.name || '',
         state_id: formData.state_id,
         district_id: formData.district_id,
       });

@@ -63,11 +63,16 @@ export default function CitizenRegister() {
 
       if (authData.user) {
         // 2. Insert into citizen_profiles
+        const selectedState = states.find(s => s.id === formData.state_id);
+        const selectedDistrict = getDistricts(formData.state_id).find(d => d.id === formData.district_id);
+
         const { error: profileError } = await supabase.from('citizen_profiles').insert({
           user_id: authData.user.id,
           full_name: formData.fullName,
           mobile: formData.mobile,
           email: formData.email,
+          state: selectedState?.name || '',
+          district: selectedDistrict?.name || '',
           state_id: formData.state_id,
           district_id: formData.district_id,
         });
