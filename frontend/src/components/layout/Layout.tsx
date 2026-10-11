@@ -153,7 +153,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {user ? (
               <div style={{ lineHeight: 1.2 }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-text)' }}>{profile?.full_name || user.email}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>{profile?.role === 'admin' ? 'Admin' : 'Field Worker'}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                  {profile?.role === 'admin' ? 'Admin' : profile?.role === 'citizen' ? 'Citizen' : 'Field Worker'}
+                </div>
               </div>
             ) : (
               <Link to="/login" style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-primary)', textDecoration: 'none' }}>Sign In</Link>

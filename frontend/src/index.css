@@ -147,6 +147,46 @@ h1, h2, h3, h4, h5 {
   50% { box-shadow: 0 0 30px rgba(0, 210, 255, 0.7); }
 }
 
+@keyframes shimmer {
+  0% { transform: translateX(-200%); }
+  100% { transform: translateX(300%); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* ── Dashboard Responsive ────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .card { border-radius: 14px; }
+}
+
+@media (max-width: 900px) {
+  .card { border-radius: 12px; }
+}
+
+/* ── Recharts Dark Theme Overrides ────────────────────────────── */
+.recharts-text { fill: #94a3b8 !important; }
+.recharts-cartesian-axis-line { stroke: rgba(255,255,255,0.08) !important; }
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255,255,255,0.04) !important;
+}
+.recharts-tooltip-cursor { fill: rgba(0, 210, 255, 0.06) !important; }
+.recharts-active-dot circle { filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.5)); }
+.recharts-legend-item { margin-right: 16px !important; }
+
 /* ── Leaflet map overrides ────────────────────────────────────── */
 .leaflet-container {
   background: rgba(12, 30, 62, 0.8) !important;
