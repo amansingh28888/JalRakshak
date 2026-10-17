@@ -7,18 +7,28 @@ from sqlalchemy import distinct
 from app.database import get_db
 from app.models.water_sample import WaterSample
 from app.models.user_profile import UserProfile
-from app.analytics.aggregations import get_dashboard_summary, get_state_stats, get_district_stats
+from app.analytics.aggregations import (
+    get_dashboard_summary,
+    get_state_stats,
+    get_district_stats,
+    resolve_state_name,
+)
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 
 
 @router.get("/summary")
-def dashboard_summary(db: Session = Depends(get_db)):
+def dashboard_summary(
+    state: Optional[str] = Query(None),
+    district: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
     """
-    All dashboard KPIs computed from live database.
+    All dashboard KPIs computed from live database, optionally filtered by state or district.
     No hard-coded statistics.
     """
-    return get_dashboard_summary(db)
+    return get_dashboard_summary(db, state=state, district=district)
+
 
 
 @router.get("/by-state")
@@ -31,7 +41,8 @@ def by_district(
     state: Optional[str] = Query(None),
     db: Session = Depends(get_db)
 ):
-    return get_district_stats(db, state_ut=state)
+    resolved = resolve_state_name(db, state)
+    return get_district_stats(db, state_ut=resolved)
 
 
 @router.get("/states")
@@ -48,8 +59,9 @@ def list_districts(
 ):
     """Return sorted list of districts, optionally filtered by state."""
     q = db.query(distinct(WaterSample.district)).order_by(WaterSample.district)
-    if state:
-        q = q.filter(WaterSample.state_ut == state)
+    resolved = resolve_state_name(db, state)
+    if resolved:
+        q = q.filter(WaterSample.state_ut == resolved)
     rows = q.all()
     return [r[0] for r in rows if r[0]]
 
@@ -74,6 +86,7 @@ def public_stats(db: Session = Depends(get_db)):
         "total_states":       summary["total_states"],
         "total_districts":    summary["total_districts"],
         "safe_percentage":    summary["safe_percentage"],
+        "safe_samples":       summary["safe_samples"],
         "biological_alerts":  summary["biological_alerts"],
         "chemical_alerts":    summary["chemical_alerts"],
         "do_not_boil_alerts": summary["do_not_boil_alerts"],

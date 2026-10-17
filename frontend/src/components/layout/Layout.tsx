@@ -1,5 +1,5 @@
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Search, Map as MapIcon, Bell, Database, LogOut, FileText, UserCircle, PlusCircle, Users, TrendingUp, BarChart2, LineChart, FileDown, Settings, Activity } from 'lucide-react';
+import { LayoutDashboard, Search, Map as MapIcon, Bell, LogOut, FileText, UserCircle, PlusCircle, TrendingUp, BarChart2, LineChart, FileDown, Settings, Activity } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { JalDootChatbot } from '../JalDootChatbot';
 
@@ -29,12 +29,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   if (path.startsWith('/admin') || (path.startsWith('/analytics') && profile?.role === 'admin') || (path.startsWith('/reports') && profile?.role === 'admin')) {
     navItems = [
-      { to: '/admin/dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
-      { to: '/admin/samples', label: 'All Samples', icon: Search },
-      { to: '/admin/data', label: 'Data Management', icon: Database },
-      { to: '/admin/workers', label: 'Field Workers', icon: Users },
-      { to: '/admin/audit-logs', label: 'Audit Logs', icon: FileText },
+      { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/analytics/trends', label: 'Water Quality', icon: Activity },
+      { to: '/admin/samples', label: 'River Levels', icon: TrendingUp },
+      { to: '/citizen/map', label: 'Map View', icon: MapIcon },
+      { to: '/admin/alerts', label: 'Alerts', icon: Bell, badge: 3 },
+      { to: '/reports', label: 'Reports', icon: FileText },
+      { to: '/settings', label: 'Settings', icon: Settings },
     ];
+    analyticsItems = [];
+  } else if (path.startsWith('/analyst') || (profile?.role === 'analyst' && (path.startsWith('/analytics') || path.startsWith('/reports')))) {
+    navItems = [
+      { to: '/analyst/dashboard', label: 'Analyst Dashboard', icon: LayoutDashboard },
+      { to: '/analytics/trends', label: 'Trends', icon: LineChart },
+      { to: '/analytics/forecast', label: 'Forecast', icon: TrendingUp },
+      { to: '/analytics/compare', label: 'Compare Locations', icon: BarChart2 },
+      { to: '/reports', label: 'Reports', icon: FileDown },
+      { to: '/citizen/map', label: 'Map View', icon: MapIcon },
+    ];
+    analyticsItems = [];
   } else if (path.startsWith('/worker') || (path.startsWith('/analytics') && profile?.role === 'field_worker') || (path.startsWith('/reports') && profile?.role === 'field_worker')) {
     navItems = [
       { to: '/worker/dashboard', label: 'Worker Dashboard', icon: LayoutDashboard },
@@ -52,20 +65,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       { to: '/citizen/about', label: 'Reports', icon: FileText },
       { to: '/settings', label: 'Settings', icon: Settings },
     ];
-  }
-
-  // Ensure Admin nav matches screenshot roughly
-  if (path.startsWith('/admin') || (path.startsWith('/analytics') && profile?.role === 'admin') || (path.startsWith('/reports') && profile?.role === 'admin')) {
-    navItems = [
-      { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { to: '/analytics/trends', label: 'Water Quality', icon: Activity },
-      { to: '/admin/samples', label: 'River Levels', icon: TrendingUp },
-      { to: '/citizen/map', label: 'Map View', icon: MapIcon },
-      { to: '/admin/alerts', label: 'Alerts', icon: Bell, badge: 3 },
-      { to: '/reports', label: 'Reports', icon: FileText },
-      { to: '/settings', label: 'Settings', icon: Settings },
-    ];
-    analyticsItems = []; // Merge analytics into main nav for this design
   }
 
   return (
@@ -153,8 +152,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {user ? (
               <div style={{ lineHeight: 1.2 }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-text)' }}>{profile?.full_name || user.email}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-                  {profile?.role === 'admin' ? 'Admin' : profile?.role === 'citizen' ? 'Citizen' : 'Field Worker'}
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', textTransform: 'capitalize' }}>
+                  {profile?.role === 'admin' 
+                    ? 'Administrator' 
+                    : profile?.role === 'analyst' 
+                    ? 'Scientific Analyst' 
+                    : profile?.role === 'field_worker' 
+                    ? 'Field Worker' 
+                    : profile?.role === 'citizen' 
+                    ? 'Citizen' 
+                    : 'Guest'}
                 </div>
               </div>
             ) : (

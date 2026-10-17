@@ -338,18 +338,17 @@ export default function Dashboard() {
     { param: 'Safe', value: summary.safe_samples, fullMark: summary.total_samples },
   ];
 
-  // Simulated trend data (derived from current data to show realistic patterns)
-  const trendData = (() => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const base = summary.total_samples / 12;
-    return months.map((m, i) => ({
-      month: m,
-      safe: Math.round(base * (0.5 + Math.sin(i * 0.5) * 0.15 + Math.random() * 0.1) * (summary.safe_percentage / 100)),
-      chemical: Math.round(base * (0.08 + Math.sin(i * 0.7 + 1) * 0.04 + Math.random() * 0.03)),
-      biological: Math.round(base * (0.06 + Math.cos(i * 0.4) * 0.03 + Math.random() * 0.02)),
-      physical: Math.round(base * (0.03 + Math.sin(i * 0.3 + 2) * 0.02 + Math.random() * 0.01)),
-    }));
-  })();
+  // Real Monthly Trends directly from verified database records
+  const trendData = summary.monthly_trends && summary.monthly_trends.length > 0
+    ? summary.monthly_trends.map(t => ({
+        month: t.month,
+        safe: t.safe,
+        chemical: t.chemical,
+        biological: t.biological,
+        physical: t.physical,
+        total: t.total,
+      }))
+    : [];
 
   // Radial bar for category summary
   const radialData = [
@@ -359,28 +358,25 @@ export default function Dashboard() {
     { name: 'Physical', value: summary.total_samples > 0 ? (summary.physical_concerns / summary.total_samples * 100) : 0, fill: '#eab308' },
   ];
 
-  // Stacked bar for severity by state
-  const severityStackData = summary.top_chemical_states.slice(0, 6).map(s => ({
-    state: s.state_ut.length > 10 ? s.state_ut.slice(0, 10) + '…' : s.state_ut,
-    critical: Math.round(s.chemical_alerts * 0.35),
-    high: Math.round(s.chemical_alerts * 0.25),
-    moderate: Math.round(s.chemical_alerts * 0.25),
-    low: Math.round(s.chemical_alerts * 0.15),
-  }));
+  // Real Severity breakdown per location from verified database records
+  const severityStackData = summary.severity_by_location && summary.severity_by_location.length > 0
+    ? summary.severity_by_location.map(s => ({
+        state: s.loc.length > 10 ? s.loc.slice(0, 10) + '…' : s.loc,
+        critical: s.critical,
+        high: s.high,
+        moderate: s.moderate,
+        low: s.low,
+      }))
+    : [];
 
-  // Generate sparkline mock data
+  // Deterministic sparkline data without Math.random
   const generateSparkData = (base: number, variance: number) =>
-    Array.from({ length: 12 }, () => Math.max(0, base + (Math.random() - 0.5) * variance));
+    Array.from({ length: 12 }, () => Math.max(0, Math.round(base + (Math.sin(variance) * 0.1))));
 
-  // Parameter health data
-  const parameterHealth = [
-    { name: 'pH Level', safe: Math.round(summary.safe_samples * 0.92), warning: Math.round(summary.physical_concerns * 0.3), danger: Math.round(summary.chemical_alerts * 0.05), total: summary.total_samples },
-    { name: 'Turbidity', safe: Math.round(summary.safe_samples * 0.85), warning: Math.round(summary.physical_concerns * 0.5), danger: Math.round(summary.chemical_alerts * 0.02), total: summary.total_samples },
-    { name: 'Fluoride', safe: Math.round(summary.safe_samples * 0.78), warning: Math.round(summary.chemical_alerts * 0.15), danger: Math.round(summary.chemical_alerts * 0.35), total: summary.total_samples },
-    { name: 'Arsenic', safe: Math.round(summary.safe_samples * 0.88), warning: Math.round(summary.chemical_alerts * 0.08), danger: Math.round(summary.chemical_alerts * 0.25), total: summary.total_samples },
-    { name: 'E. Coli', safe: Math.round(summary.safe_samples * 0.82), warning: Math.round(summary.biological_alerts * 0.4), danger: Math.round(summary.biological_alerts * 0.3), total: summary.total_samples },
-    { name: 'Iron', safe: Math.round(summary.safe_samples * 0.9), warning: Math.round(summary.physical_concerns * 0.2), danger: Math.round(summary.chemical_alerts * 0.03), total: summary.total_samples },
-  ];
+  // Real Parameter Health directly from verified IS 10500 database compliance
+  const parameterHealth = summary.parameter_health && summary.parameter_health.length > 0
+    ? summary.parameter_health
+    : [];
 
   const tooltipStyle = {
     background: 'rgba(9, 20, 40, 0.95)',

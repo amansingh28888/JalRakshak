@@ -257,6 +257,8 @@ export interface DashboardSummary {
 
   safe_samples: number;
 
+  unsafe_samples?: number;
+
   biological_alerts: number;
 
   chemical_alerts: number;
@@ -293,7 +295,40 @@ export interface DashboardSummary {
     state_ut: string;
     chemical_alerts: number;
   }[];
+
+  severity_by_location?: {
+    loc: string;
+    total: number;
+    low: number;
+    moderate: number;
+    high: number;
+    critical: number;
+  }[];
+
+  monthly_trends?: {
+    month: string;
+    raw_month?: string;
+    safe: number;
+    chemical: number;
+    biological: number;
+    physical: number;
+    total: number;
+  }[];
+
+  parameter_health?: {
+    name: string;
+    safe: number;
+    warning: number;
+    danger: number;
+    total: number;
+  }[];
+
+  missing_location_count?: number;
+
+  filter_state?: string;
+  filter_district?: string;
 }
+
 
 
 // ─────────────────────────────────────────────────────────────────────────────

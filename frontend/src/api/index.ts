@@ -35,8 +35,8 @@ export const getSampleVerdict = (id: number) =>
   api.get<WaterQualityVerdict>(`/api/samples/${id}/verdict`).then(r => r.data);
 
 // ── Dashboard ──────────────────────────────────────────────────────────────────
-export const getDashboardSummary = () =>
-  api.get<DashboardSummary>('/api/dashboard/summary').then(r => r.data);
+export const getDashboardSummary = (params?: { state?: string; district?: string }) =>
+  api.get<DashboardSummary>('/api/dashboard/summary', { params }).then(r => r.data);
 
 export const getStateStats = () =>
   api.get<Record<string, unknown>[]>('/api/dashboard/by-state').then(r => r.data);
@@ -58,9 +58,15 @@ export interface AlertFilters {
   critical_only?: boolean;
   category?: string;
   state?: string;
+  district?: string;
 }
 export const getAlerts = (filters: AlertFilters = {}) =>
   api.get('/api/alerts', { params: filters }).then(r => r.data);
+
+// ── User Profile ───────────────────────────────────────────────────────────────
+export const updateProfile = (data: Record<string, any>) =>
+  api.put('/api/auth/profile', data).then(r => r.data);
+
 
 // ── Analytics & Reports ────────────────────────────────────────────────────────
 export const getAnalyticsTrends = (params: any) => 
@@ -120,6 +126,7 @@ export interface PublicStats {
   total_states: number;
   total_districts: number;
   safe_percentage: number;
+  safe_samples?: number;
   biological_alerts: number;
   chemical_alerts: number;
   do_not_boil_alerts: number;

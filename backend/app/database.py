@@ -16,7 +16,7 @@ settings = get_settings()
 # Database URL
 # ─────────────────────────────────────────────────────────────
 
-DATABASE_URL = settings.database_url
+DATABASE_URL = settings.effective_database_url
 
 
 # ─────────────────────────────────────────────────────────────

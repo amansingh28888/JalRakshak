@@ -159,7 +159,7 @@ export default function WorkerDashboard() {
             </h1>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.92rem', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
               <MapPin size={15} color="var(--color-primary)" />
-              {profile?.district ? `Assigned Region: ${profile.district}, ${profile.state_ut}` : 'Mansa District, Punjab · Field Survey Node'}
+              {profile?.district ? `Assigned Region: ${profile.district}, ${profile.state_ut}` : (profile?.state_ut ? `Assigned Region: ${profile.state_ut}` : 'Field Survey Station')}
             </p>
           </div>
         </div>

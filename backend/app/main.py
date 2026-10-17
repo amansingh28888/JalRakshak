@@ -192,13 +192,15 @@ def api_states():
 def api_districts(state: str = None):
     from app.database import SessionLocal
     from app.models.water_sample import WaterSample
+    from app.analytics.aggregations import resolve_state_name
     from sqlalchemy import distinct
 
     db = SessionLocal()
     try:
         q = db.query(distinct(WaterSample.district)).order_by(WaterSample.district)
-        if state:
-            q = q.filter(WaterSample.state_ut == state)
+        resolved = resolve_state_name(db, state)
+        if resolved:
+            q = q.filter(WaterSample.state_ut == resolved)
         rows = q.all()
         return [r[0] for r in rows if r[0]]
     finally:

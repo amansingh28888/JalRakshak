@@ -24,6 +24,13 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = "sqlite:///./data/water_quality.db"
+    supabase_database_url: Optional[str] = None
+
+    @property
+    def effective_database_url(self) -> str:
+        if self.supabase_database_url and self.supabase_database_url.strip():
+            return self.supabase_database_url.strip()
+        return self.database_url
 
     # CORS
     frontend_origin: str = "http://localhost:5173"

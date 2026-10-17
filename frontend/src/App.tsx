@@ -31,6 +31,8 @@ import Forecast from './pages/analytics/Forecast';
 import Compare from './pages/analytics/Compare';
 import Reports from './pages/reports/Reports';
 
+import AnalystDashboard from './pages/analyst/AnalystDashboard';
+
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
@@ -44,7 +46,7 @@ export default function App() {
             <Route path="/" element={<RootLanding />} />
             <Route path="/login" element={<Login />} />
 
-            {/* Global Analytics & Reports (Publicly accessible but respects roles internally if needed) */}
+            {/* Global Analytics & Reports */}
             <Route path="/analytics/trends" element={<Trends />} />
             <Route path="/analytics/forecast" element={<Forecast />} />
             <Route path="/analytics/compare" element={<Compare />} />
@@ -66,12 +68,18 @@ export default function App() {
             </Route>
 
             {/* Worker Portal (Protected) */}
-            <Route path="/worker" element={<ProtectedRoute allowedRoles={['field_worker']} />}>
+            <Route path="/worker" element={<ProtectedRoute allowedRoles={['field_worker', 'admin']} />}>
               <Route index element={<Navigate to="/worker/dashboard" replace />} />
               <Route path="dashboard" element={<WorkerDashboard />} />
               <Route path="collect" element={<CollectSample />} />
               <Route path="samples" element={<WorkerSamples />} />
               <Route path="profile" element={<WorkerProfile />} />
+            </Route>
+
+            {/* Analyst Portal (Protected) */}
+            <Route path="/analyst" element={<ProtectedRoute allowedRoles={['analyst', 'admin']} />}>
+              <Route index element={<Navigate to="/analyst/dashboard" replace />} />
+              <Route path="dashboard" element={<AnalystDashboard />} />
             </Route>
 
             {/* Admin Portal (Protected) */}

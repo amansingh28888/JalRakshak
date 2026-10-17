@@ -28,15 +28,17 @@ class UserProfile(Base):
     email = Column(String(256), nullable=False, unique=True, index=True)
     phone = Column(String(32), nullable=True)
     
-    # role: 'admin' | 'field_worker'
-    role = Column(String(32), nullable=False, default="field_worker")
+    # role: 'citizen' | 'field_worker' | 'analyst' | 'admin'
+    role = Column(String(32), nullable=False, default="citizen")
     
-    # Assignments (for field workers)
+    # Assignments / Location
     state_ut = Column(String(128), nullable=True)
     district = Column(String(128), nullable=True)
     village = Column(String(256), nullable=True)
+    state_id = Column(String(64), nullable=True)
+    district_id = Column(String(64), nullable=True)
     
-    # status: 'active' | 'inactive'
+    # status: 'active' | 'pending_approval' | 'inactive'
     status = Column(String(32), nullable=False, default="active")
     
     created_at = Column(DateTime, default=func.now(), nullable=False)

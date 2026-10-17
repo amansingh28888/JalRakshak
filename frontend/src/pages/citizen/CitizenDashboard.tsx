@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getAlerts, getDashboardSummary } from '../../api';
+import { getAlerts, getDashboardSummary, getStates, getDistricts } from '../../api';
 import type { DashboardSummary } from '../../types';
 import { getCategoryConfig, formatPercentage } from '../../utils/display';
 import {
@@ -269,32 +269,98 @@ export default function CitizenDashboard() {
   const [loadingAlerts, setLoadingAlerts] = useState(true);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loadingSummary, setLoadingSummary] = useState(true);
-  const navigate = useNavigate();
 
+  // Available locations
+  const [availableStates, setAvailableStates] = useState<string[]>([]);
+  const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
+
+  // Selected filters: '' means All India
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('');
+
+  const navigate = useNavigate();
+  const fetchSeqRef = useRef(0);
+
+  // Load available states once on mount
   useEffect(() => {
-    // Fetch dashboard summary for charts
-    getDashboardSummary()
-      .then(setSummary)
-      .catch(console.error)
-      .finally(() => setLoadingSummary(false));
+    getStates()
+      .then(stList => {
+        if (Array.isArray(stList)) {
+          setAvailableStates(stList);
+        }
+      })
+      .catch(console.error);
   }, []);
 
+  // Fetch districts whenever selected state changes
   useEffect(() => {
-    if (profile?.role === 'citizen' && (profile.district || profile.district_id)) {
-      // Get recent alerts for their district
+    if (selectedState) {
+      getDistricts(selectedState)
+        .then(dList => {
+          if (Array.isArray(dList)) {
+            setAvailableDistricts(dList);
+          }
+        })
+        .catch(console.error);
+    } else {
+      setAvailableDistricts([]);
+      setSelectedDistrict('');
+    }
+  }, [selectedState]);
+
+  // Fetch Dashboard Summary when state or district changes
+  useEffect(() => {
+    const seq = ++fetchSeqRef.current;
+    setLoadingSummary(true);
+
+    const params: { state?: string; district?: string } = {};
+    if (selectedState) params.state = selectedState;
+    if (selectedDistrict) params.district = selectedDistrict;
+
+    getDashboardSummary(Object.keys(params).length > 0 ? params : undefined)
+      .then(res => {
+        if (fetchSeqRef.current === seq) {
+          setSummary(res);
+        }
+      })
+      .catch(err => {
+        if (fetchSeqRef.current === seq) {
+          console.error('Failed to load dashboard summary:', err);
+        }
+      })
+      .finally(() => {
+        if (fetchSeqRef.current === seq) {
+          setLoadingSummary(false);
+        }
+      });
+  }, [selectedState, selectedDistrict]);
+
+  // Fetch Alerts for the selected location
+  useEffect(() => {
+    if (profile?.role === 'citizen') {
+      const seq = fetchSeqRef.current;
+      setLoadingAlerts(true);
       const filterParams: any = {
-        district: profile.district || profile.district_id,
-        state_ut: profile.state_ut || profile.state_id,
-        page_size: 5
+        state: selectedState || undefined,
+        district: selectedDistrict || undefined,
+        page_size: 10
       };
       getAlerts(filterParams)
-      .then(res => setAlerts(res.items || []))
-      .catch(console.error)
-      .finally(() => setLoadingAlerts(false));
+        .then(res => {
+          if (fetchSeqRef.current === seq) {
+            setAlerts(res.items || []);
+          }
+        })
+        .catch(console.error)
+        .finally(() => {
+          if (fetchSeqRef.current === seq) {
+            setLoadingAlerts(false);
+          }
+        });
     } else {
       setLoadingAlerts(false);
     }
-  }, [profile]);
+  }, [selectedState, selectedDistrict, profile?.role]);
 
   if (isLoading || !profileLoaded || (loadingSummary && !summary)) {
     return (
@@ -308,7 +374,7 @@ export default function CitizenDashboard() {
           <Droplets size={36} color="var(--color-primary)" />
         </div>
         <div style={{ color: 'var(--color-text-secondary)', fontWeight: 500, fontSize: '0.95rem' }}>
-          Loading your dashboard...
+          Loading {selectedDistrict ? `${selectedDistrict}, ` : ''}{selectedState ? selectedState : 'National'} water quality data...
         </div>
         <div style={{
           width: 200, height: 3, borderRadius: 2, overflow: 'hidden',
@@ -330,6 +396,9 @@ export default function CitizenDashboard() {
     return <Navigate to="/citizen/login" replace />;
   }
 
+  const userHomeDistrict = profile?.district || profile?.district_id || '';
+  const userHomeState = profile?.state_ut || profile?.state_id || '';
+
   const latestAlert = alerts.length > 0 ? alerts[0] : null;
   const statusColor = latestAlert?.severity === 'CRITICAL' ? '#ef4444' : latestAlert?.severity === 'HIGH' ? '#f59e0b' : '#10b981';
   const statusText = latestAlert?.severity || 'SAFE';
@@ -346,7 +415,7 @@ export default function CitizenDashboard() {
     padding: '12px 16px',
   };
 
-  // Chart data from summary
+  // Real Chart data from database summary
   const pieData = summary?.category_distribution.map(c => ({
     name:     getCategoryConfig(c.category).label,
     value:    c.count,
@@ -366,18 +435,17 @@ export default function CitizenDashboard() {
     { param: 'Safe', value: summary.safe_samples, fullMark: summary.total_samples },
   ] : [];
 
-  const trendData = (() => {
-    if (!summary) return [];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const base = summary.total_samples / 12;
-    return months.map((m, i) => ({
-      month: m,
-      safe: Math.round(base * (0.5 + Math.sin(i * 0.5) * 0.15 + Math.random() * 0.1) * (summary.safe_percentage / 100)),
-      chemical: Math.round(base * (0.08 + Math.sin(i * 0.7 + 1) * 0.04 + Math.random() * 0.03)),
-      biological: Math.round(base * (0.06 + Math.cos(i * 0.4) * 0.03 + Math.random() * 0.02)),
-      physical: Math.round(base * (0.03 + Math.sin(i * 0.3 + 2) * 0.02 + Math.random() * 0.01)),
-    }));
-  })();
+  // Real Monthly Trends directly from verified database records
+  const trendData = summary?.monthly_trends && summary.monthly_trends.length > 0
+    ? summary.monthly_trends.map(t => ({
+        month: t.month,
+        safe: t.safe,
+        chemical: t.chemical,
+        biological: t.biological,
+        physical: t.physical,
+        total: t.total,
+      }))
+    : [];
 
   const radialData = summary ? [
     { name: 'Safe', value: summary.safe_percentage, fill: '#10b981' },
@@ -386,25 +454,24 @@ export default function CitizenDashboard() {
     { name: 'Physical', value: summary.total_samples > 0 ? (summary.physical_concerns / summary.total_samples * 100) : 0, fill: '#eab308' },
   ] : [];
 
-  const severityStackData = summary?.top_chemical_states.slice(0, 6).map(s => ({
-    state: s.state_ut.length > 10 ? s.state_ut.slice(0, 10) + '…' : s.state_ut,
-    critical: Math.round(s.chemical_alerts * 0.35),
-    high: Math.round(s.chemical_alerts * 0.25),
-    moderate: Math.round(s.chemical_alerts * 0.25),
-    low: Math.round(s.chemical_alerts * 0.15),
-  })) || [];
+  // Real Severity breakdown per location from verified database records
+  const severityStackData = summary?.severity_by_location && summary.severity_by_location.length > 0
+    ? summary.severity_by_location.map(s => ({
+        state: s.loc.length > 10 ? s.loc.slice(0, 10) + '…' : s.loc,
+        critical: s.critical,
+        high: s.high,
+        moderate: s.moderate,
+        low: s.low,
+      }))
+    : [];
 
   const generateSparkData = (base: number, variance: number) =>
-    Array.from({ length: 12 }, () => Math.max(0, base + (Math.random() - 0.5) * variance));
+    Array.from({ length: 12 }, () => Math.max(0, Math.round(base + (Math.sin(variance) * 0.1))));
 
-  const parameterHealth = summary ? [
-    { name: 'pH Level', safe: Math.round(summary.safe_samples * 0.92), warning: Math.round(summary.physical_concerns * 0.3), danger: Math.round(summary.chemical_alerts * 0.05), total: summary.total_samples },
-    { name: 'Turbidity', safe: Math.round(summary.safe_samples * 0.85), warning: Math.round(summary.physical_concerns * 0.5), danger: Math.round(summary.chemical_alerts * 0.02), total: summary.total_samples },
-    { name: 'Fluoride', safe: Math.round(summary.safe_samples * 0.78), warning: Math.round(summary.chemical_alerts * 0.15), danger: Math.round(summary.chemical_alerts * 0.35), total: summary.total_samples },
-    { name: 'Arsenic', safe: Math.round(summary.safe_samples * 0.88), warning: Math.round(summary.chemical_alerts * 0.08), danger: Math.round(summary.chemical_alerts * 0.25), total: summary.total_samples },
-    { name: 'E. Coli', safe: Math.round(summary.safe_samples * 0.82), warning: Math.round(summary.biological_alerts * 0.4), danger: Math.round(summary.biological_alerts * 0.3), total: summary.total_samples },
-    { name: 'Iron', safe: Math.round(summary.safe_samples * 0.9), warning: Math.round(summary.physical_concerns * 0.2), danger: Math.round(summary.chemical_alerts * 0.03), total: summary.total_samples },
-  ] : [];
+  // Real Parameter Health directly from verified IS 10500 database compliance
+  const parameterHealth = summary?.parameter_health && summary.parameter_health.length > 0
+    ? summary.parameter_health
+    : [];
 
   const totalAttention = summary ? (summary.biological_alerts + summary.chemical_alerts + summary.physical_concerns + summary.mixed_hazards) : 0;
   const attentionPct = summary && summary.total_samples > 0 ? (totalAttention / summary.total_samples * 100) : 0;
@@ -414,7 +481,7 @@ export default function CitizenDashboard() {
       {/* ═══ Welcome Header ═══ */}
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
-        marginBottom: 28, flexWrap: 'wrap', gap: 16
+        marginBottom: 24, flexWrap: 'wrap', gap: 16
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
@@ -428,28 +495,197 @@ export default function CitizenDashboard() {
             </div>
             <div>
               <h1 style={{ fontSize: '1.6rem', color: '#fff', margin: 0 }}>
-                Welcome, {profile?.full_name || 'Citizen'}
+                {selectedDistrict
+                  ? `${selectedDistrict}, ${selectedState}`
+                  : selectedState
+                  ? `${selectedState} Water Quality`
+                  : 'National Water Quality Dashboard'}
               </h1>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-text-secondary)', fontSize: '0.88rem', marginTop: 2 }}>
-                <MapPin size={14} />
-                {profile?.district || profile?.district_id || 'Mansa'}, {profile?.state_ut || profile?.state_id || 'Punjab'}
+                <MapPin size={14} color="var(--color-primary)" />
+                <span>
+                  {selectedDistrict ? `${selectedDistrict} District, ${selectedState}` : selectedState ? `${selectedState} State Analytics` : 'All-India Surveillance (36 States & UTs)'}
+                </span>
+                {summary && (
+                  <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: 12, color: 'var(--color-primary)' }}>
+                    {summary.total_samples.toLocaleString()} verified samples
+                  </span>
+                )}
               </div>
             </div>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+
+        {/* Global actions: Export, Refresh, Live Map */}
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.82rem' }}
             onClick={() => navigate('/reports')}>
             <Download size={14} /> Export
           </button>
           <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.82rem' }}
-            onClick={() => window.location.reload()}>
+            onClick={() => {
+              const seq = ++fetchSeqRef.current;
+              setLoadingSummary(true);
+              const params: any = {};
+              if (selectedState) params.state = selectedState;
+              if (selectedDistrict) params.district = selectedDistrict;
+              getDashboardSummary(Object.keys(params).length > 0 ? params : undefined)
+                .then(res => { if (fetchSeqRef.current === seq) setSummary(res); })
+                .finally(() => { if (fetchSeqRef.current === seq) setLoadingSummary(false); });
+            }}>
             <RefreshCw size={14} /> Refresh
           </button>
           <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.82rem' }}
             onClick={() => navigate('/citizen/map')}>
             <MapPin size={14} /> Live Map
           </button>
+        </div>
+      </div>
+
+      {/* ═══ Geographic Location Filter Bar ═══ */}
+      <div className="card" style={{
+        padding: '16px 20px',
+        marginBottom: 24,
+        background: 'rgba(9, 20, 40, 0.7)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(0, 210, 255, 0.2)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 16
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#38bdf8', fontSize: '0.85rem', fontWeight: 700 }}>
+            <Filter size={16} /> Filter Geographic Scope:
+          </div>
+
+          {/* Quick All-India Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedState('');
+              setSelectedDistrict('');
+            }}
+            style={{
+              background: !selectedState ? 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' : 'rgba(255,255,255,0.06)',
+              color: !selectedState ? '#fff' : 'var(--color-text-secondary)',
+              border: '1px solid ' + (!selectedState ? 'transparent' : 'rgba(255,255,255,0.1)'),
+              borderRadius: 8,
+              padding: '6px 14px',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'all 0.2s',
+            }}
+          >
+            <Database size={13} /> 🇮🇳 All-India
+          </button>
+
+          {/* Quick Home State Button (if profile has location) */}
+          {userHomeState && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedState(userHomeState);
+                if (userHomeDistrict) setSelectedDistrict(userHomeDistrict);
+              }}
+              style={{
+                background: selectedState === userHomeState && (!userHomeDistrict || selectedDistrict === userHomeDistrict)
+                  ? 'linear-gradient(135deg, #10b981, #059669)'
+                  : 'rgba(255,255,255,0.06)',
+                color: selectedState === userHomeState ? '#fff' : 'var(--color-text-secondary)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 8,
+                padding: '6px 14px',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                transition: 'all 0.2s',
+              }}
+            >
+              <MapPin size={13} /> My Region ({userHomeDistrict ? `${userHomeDistrict}, ` : ''}{userHomeState})
+            </button>
+          )}
+
+          {/* State Dropdown Selector */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <select
+              value={selectedState}
+              onChange={e => {
+                setSelectedState(e.target.value);
+                setSelectedDistrict('');
+              }}
+              aria-label="Select State or Union Territory"
+              style={{
+                background: '#0a192f',
+                color: '#e2e8f0',
+                border: '1px solid rgba(0, 210, 255, 0.3)',
+                borderRadius: 8,
+                padding: '6px 12px',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                outline: 'none',
+                minWidth: 180,
+              }}
+            >
+              <option value="">— Select State / UT (36) —</option>
+              {availableStates.map(st => (
+                <option key={st} value={st}>{st}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* District Dropdown Selector (Active when a state is chosen) */}
+          {selectedState && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <select
+                value={selectedDistrict}
+                onChange={e => setSelectedDistrict(e.target.value)}
+                aria-label={`Select District in ${selectedState}`}
+                style={{
+                  background: '#0a192f',
+                  color: '#e2e8f0',
+                  border: '1px solid rgba(0, 210, 255, 0.3)',
+                  borderRadius: 8,
+                  padding: '6px 12px',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  outline: 'none',
+                  minWidth: 170,
+                }}
+              >
+                <option value="">All Districts in {selectedState}</option>
+                {availableDistricts.map(dt => (
+                  <option key={dt} value={dt}>{dt}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+
+        {/* Active Scope Badge */}
+        <div style={{
+          fontSize: '0.75rem',
+          color: selectedState ? '#38bdf8' : '#94a3b8',
+          background: selectedState ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255,255,255,0.05)',
+          padding: '4px 12px',
+          borderRadius: 20,
+          border: '1px solid ' + (selectedState ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255,255,255,0.08)'),
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: selectedState ? '#38bdf8' : '#10b981' }} />
+          Active Dataset: <strong>{selectedDistrict ? `${selectedDistrict}, ${selectedState}` : selectedState ? selectedState : 'National (All-India)'}</strong>
         </div>
       </div>
 
@@ -468,7 +704,7 @@ export default function CitizenDashboard() {
             fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-text-secondary)',
             textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16
           }}>
-            Latest Water Status — {profile?.district || profile?.district_id || 'Local District'}
+            Latest Water Status — {selectedDistrict ? `${selectedDistrict} District` : (selectedState || 'All India Overview')}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 20 }}>
             <div style={{
@@ -504,16 +740,16 @@ export default function CitizenDashboard() {
               padding: '10px 16px', flex: '1 1 120px',
               border: '1px solid rgba(255,255,255,0.05)',
             }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', marginBottom: 4 }}>District</div>
-              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>{profile?.district || profile?.district_id || 'Mansa'}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', marginBottom: 4 }}>Scope</div>
+              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>{selectedDistrict || selectedState || 'National'}</div>
             </div>
             <div style={{
               background: 'rgba(255,255,255,0.03)', borderRadius: 10,
               padding: '10px 16px', flex: '1 1 120px',
               border: '1px solid rgba(255,255,255,0.05)',
             }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', marginBottom: 4 }}>State</div>
-              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>{profile?.state_ut || profile?.state_id || 'Punjab'}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', marginBottom: 4 }}>Region</div>
+              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>{selectedState || 'All India'}</div>
             </div>
           </div>
         </div>
@@ -531,7 +767,7 @@ export default function CitizenDashboard() {
             }} />
             <h3 style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-text-secondary)',
               marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              National Safety Score
+              {selectedState ? `${selectedState} Safety Score` : 'National Safety Score'}
             </h3>
             <SafetyGauge percentage={summary.safe_percentage} />
             <div style={{ marginTop: 12, textAlign: 'center', fontSize: '0.78rem', color: 'var(--color-text-secondary)' }}>
@@ -541,7 +777,7 @@ export default function CitizenDashboard() {
         )}
       </div>
 
-      {/* ═══ National KPI Grid ═══ */}
+      {/* ═══ National/State KPI Grid ═══ */}
       {summary && (
         <>
           {/* Attention Banner */}
@@ -561,8 +797,9 @@ export default function CitizenDashboard() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#fbbf24', marginBottom: 6 }}>
-                  ⚠ {totalAttention.toLocaleString()} samples need attention nationally ({formatPercentage(attentionPct)})
+                  ⚠ {totalAttention.toLocaleString()} samples need attention {selectedDistrict ? `in ${selectedDistrict}, ${selectedState}` : selectedState ? `in ${selectedState}` : 'nationally'} ({formatPercentage(attentionPct)})
                 </div>
+
                 <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: '0.78rem' }}>
                   {summary.chemical_alerts > 0 && (
                     <span style={{ color: '#fca5a5', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -734,14 +971,15 @@ export default function CitizenDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Chemical States Bar */}
+            {/* Chemical States/Districts Bar */}
             <div className="card" style={{ padding: '24px 28px' }}>
               <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
-                Chemical Alerts by State
+                {selectedState ? `Chemical Alerts in ${selectedState}` : 'Chemical Alerts by State'}
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
-                Top affected regions
+                {selectedState ? 'Top affected districts' : 'Top affected regions'}
               </p>
+
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={stateBarData} layout="vertical" margin={{ left: 8, right: 16 }}>
                   <defs>
@@ -788,10 +1026,10 @@ export default function CitizenDashboard() {
             {/* Stacked Severity */}
             <div className="card" style={{ padding: '24px 28px' }}>
               <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
-                Severity by State
+                {selectedState ? `Severity by District (${selectedState})` : 'Severity by State (National)'}
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
-                Risk level per region
+                {selectedState ? 'District risk breakdown' : 'Regional risk breakdown'}
               </p>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={severityStackData}>
@@ -1114,7 +1352,7 @@ export default function CitizenDashboard() {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
           <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Droplets size={18} color="var(--color-primary)" /> Recent Alerts — {profile?.district || profile?.district_id || 'Local District'}
+            <Droplets size={18} color="var(--color-primary)" /> Recent Alerts — {selectedDistrict ? `${selectedDistrict}, ${selectedState}` : selectedState ? selectedState : 'National (All-India)'}
           </h3>
           <Link to="/citizen/alerts" style={{
             fontSize: '0.8rem', color: 'var(--color-primary)', textDecoration: 'none',
@@ -1130,7 +1368,7 @@ export default function CitizenDashboard() {
           <div style={{ padding: '32px 28px', textAlign: 'center' }}>
             <CheckCircle2 size={40} color="#10b981" style={{ marginBottom: 12, opacity: 0.6 }} />
             <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
-              No recent water quality alerts in your district. Water appears safe! 💧
+              No recent water quality alerts {selectedDistrict ? `in ${selectedDistrict}` : selectedState ? `in ${selectedState}` : 'nationally'}. Water appears safe! 💧
             </div>
           </div>
         ) : (

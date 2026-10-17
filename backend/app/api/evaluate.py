@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.water_sample import WaterSample
+from app.models.user_profile import UserProfile
+from app.api.deps.auth import require_admin
 from app.rules.water_quality_rules import evaluate_sample
 from app.schemas.sample import SampleEvaluateRequest
 from app.services.import_service import import_samples_from_records, ImportReport
@@ -50,6 +52,7 @@ async def import_csv(
     file: UploadFile = File(...),
     replace_existing: bool = False,
     db: Session = Depends(get_db),
+    current_user: UserProfile = Depends(require_admin),
 ):
     """
     Upload a CSV file, validate, classify with rule engine, and import to DB.
@@ -97,6 +100,7 @@ def import_synthetic_data(
     n: int = 5000,
     replace_existing: bool = True,
     db: Session = Depends(get_db),
+    current_user: UserProfile = Depends(require_admin),
 ):
     """
     Load synthetic demo data into the database.

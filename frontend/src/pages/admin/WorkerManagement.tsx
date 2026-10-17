@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { UserPlus, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { UserPlus, Loader2, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
 import { indiaLocations, indiaStates } from '../../utils/indiaLocations';
 
 interface Worker {
@@ -48,6 +48,48 @@ export default function WorkerManagement() {
       console.error('Failed to fetch workers:', e);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteWorker = async (id: number) => {
+    if (!window.confirm('Are you sure you want to permanently remove this field worker? This action is irreversible.')) return;
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/admin/workers/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session?.access_token}` }
+      });
+      if (response.ok) {
+        setSuccess('Worker account removed successfully.');
+        fetchWorkers();
+      } else {
+        const data = await response.json();
+        setError(data.detail || 'Failed to remove worker');
+      }
+    } catch {
+      setError('Network error while deleting worker');
+    }
+  };
+
+  const handleToggleStatus = async (id: number, currentStatus: string) => {
+    const nextStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}/api/admin/workers/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({ status: nextStatus })
+      });
+      if (response.ok) {
+        setSuccess(`Worker account marked as ${nextStatus}.`);
+        fetchWorkers();
+      } else {
+        const data = await response.json();
+        setError(data.detail || 'Failed to update status');
+      }
+    } catch {
+      setError('Network error while updating worker status');
     }
   };
 
@@ -190,12 +232,13 @@ export default function WorkerManagement() {
                 <th>Email</th>
                 <th>Location</th>
                 <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {workers.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: 32, color: 'var(--color-text-secondary)' }}>No workers found.</td>
+                  <td colSpan={5} style={{ textAlign: 'center', padding: 32, color: 'var(--color-text-secondary)' }}>No workers found.</td>
                 </tr>
               ) : workers.map(worker => (
                 <tr key={worker.id}>
@@ -203,9 +246,43 @@ export default function WorkerManagement() {
                   <td>{worker.email}</td>
                   <td>{worker.district ? `${worker.district}, ${worker.state_ut}` : 'Unassigned'}</td>
                   <td>
-                    <span className={worker.status === 'active' ? 'severity-SAFE' : 'severity-CRITICAL'}>
-                      {worker.status.toUpperCase()}
+                    <span className={worker.status === 'active' ? 'severity-SAFE' : worker.status === 'pending_approval' ? 'severity-MODERATE' : 'severity-CRITICAL'}>
+                      {worker.status.replace('_', ' ').toUpperCase()}
                     </span>
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    <div style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+                      <button
+                        onClick={() => handleToggleStatus(worker.id, worker.status)}
+                        style={{
+                          background: worker.status === 'active' ? '#fef2f2' : '#ecfdf5',
+                          color: worker.status === 'active' ? '#ef4444' : '#10b981',
+                          border: `1px solid ${worker.status === 'active' ? '#fecaca' : '#a7f3d0'}`,
+                          padding: '4px 10px',
+                          borderRadius: 6,
+                          fontSize: '0.8rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {worker.status === 'active' ? 'Deactivate' : worker.status === 'pending_approval' ? 'Approve' : 'Activate'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteWorker(worker.id)}
+                        aria-label="Delete worker"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#ef4444',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.water_sample import WaterSample
 from app.rules.standards import AlertCategory, Severity
+from app.analytics.aggregations import resolve_state_name
 
 router = APIRouter(prefix="/api/alerts", tags=["alerts"])
 
@@ -18,12 +19,22 @@ def list_alerts(
     critical_only: bool = Query(False),
     category: Optional[str] = Query(None, description="Filter by alert category"),
     state: Optional[str] = None,
+    district: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
-    """List alerts with optional filtering by category, severity, state."""
+    """List alerts with optional filtering by category, severity, state, district."""
     q = db.query(WaterSample).filter(
         WaterSample.alert_category != AlertCategory.POTABLE_SAFE
     )
+
+    # Normalize parameters if called directly in unit tests without FastAPI DI
+    if not isinstance(do_not_boil_only, bool):
+        do_not_boil_only = getattr(do_not_boil_only, 'default', False)
+    if not isinstance(critical_only, bool):
+        critical_only = getattr(critical_only, 'default', False)
+    if not isinstance(category, str):
+        cat_val = getattr(category, 'default', None)
+        category = cat_val if isinstance(cat_val, str) else None
 
     if do_not_boil_only:
         q = q.filter(WaterSample.do_not_boil == True)
@@ -34,8 +45,13 @@ def list_alerts(
     if category:
         q = q.filter(WaterSample.alert_category == category)
 
-    if state:
-        q = q.filter(WaterSample.state_ut.ilike(f"%{state}%"))
+    resolved_state = resolve_state_name(db, state)
+    if resolved_state:
+        q = q.filter(WaterSample.state_ut == resolved_state)
+
+    if district and district.strip():
+        q = q.filter(WaterSample.district.ilike(f"%{district.strip()}%"))
+
 
     # Sort: mixed hazards first, then chemical, then biological
     q = q.order_by(WaterSample.do_not_boil.desc(), WaterSample.severity.desc())
