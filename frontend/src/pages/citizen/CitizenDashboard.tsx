@@ -1,6 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getAlerts, getDashboardSummary, getStates, getDistricts } from '../../api';
+import {
+  getAlerts, getDashboardSummary, getStates, getDistricts,
+  getMyNotifications, markNotificationRead, markAllNotificationsRead,
+  updateProfile, type CitizenNotificationItem
+} from '../../api';
 import type { DashboardSummary } from '../../types';
 import { getCategoryConfig, formatPercentage } from '../../utils/display';
 import {
@@ -8,7 +12,7 @@ import {
   AlertOctagon, Waves, Database, CheckCircle, Ban, ShieldCheck,
   LineChart as LineChartIcon, TrendingUp, BarChart2, FileDown,
   Activity, Zap, Eye, Download, RefreshCw, ArrowUpRight,
-  ArrowDownRight, Filter, Share2, Clock
+  ArrowDownRight, Filter, Share2, Clock, Bell, Globe, Check
 } from 'lucide-react';
 import {
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid,
@@ -264,11 +268,19 @@ function ParameterBar({ name, safe, warning, danger, total }: {
    ════════════════════════════════════════════════════════════════ */
 
 export default function CitizenDashboard() {
-  const { profile, isLoading, profileLoaded } = useAuth();
+  const { profile, isLoading, profileLoaded, session, refreshProfile } = useAuth();
+  const token = session?.access_token || '';
+
   const [alerts, setAlerts] = useState<any[]>([]);
   const [loadingAlerts, setLoadingAlerts] = useState(true);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loadingSummary, setLoadingSummary] = useState(true);
+
+  // Village Alert Notifications
+  const [notifications, setNotifications] = useState<CitizenNotificationItem[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [preferredLang, setPreferredLang] = useState<string>(profile?.preferred_language || 'en');
+  const [updatingLang, setUpdatingLang] = useState(false);
 
   // Available locations
   const [availableStates, setAvailableStates] = useState<string[]>([]);
@@ -280,6 +292,67 @@ export default function CitizenDashboard() {
 
   const navigate = useNavigate();
   const fetchSeqRef = useRef(0);
+
+  const fetchCitizenNotifications = async () => {
+    if (!token) return;
+    setLoadingNotifications(true);
+    try {
+      const data = await getMyNotifications(token);
+      setNotifications(data);
+    } catch (e) {
+      console.error('Failed to load citizen notifications:', e);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchCitizenNotifications();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (profile?.preferred_language) {
+      setPreferredLang(profile.preferred_language);
+    }
+  }, [profile?.preferred_language]);
+
+  const handleLanguageChange = async (newLang: string) => {
+    setPreferredLang(newLang);
+    setUpdatingLang(true);
+    try {
+      await updateProfile({ preferred_language: newLang });
+      await refreshProfile();
+      if (token) {
+        await fetchCitizenNotifications();
+      }
+    } catch (e) {
+      console.error('Failed to update preferred language:', e);
+    } finally {
+      setUpdatingLang(false);
+    }
+  };
+
+  const handleMarkRead = async (logId: number) => {
+    if (!token) return;
+    try {
+      await markNotificationRead(token, logId);
+      setNotifications(prev => prev.map(n => n.id === logId ? { ...n, is_read: true } : n));
+    } catch (e) {
+      console.error('Failed to mark read:', e);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    if (!token) return;
+    try {
+      await markAllNotificationsRead(token);
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    } catch (e) {
+      console.error('Failed to mark all read:', e);
+    }
+  };
 
   // Load available states once on mount
   useEffect(() => {
@@ -540,6 +613,195 @@ export default function CitizenDashboard() {
             <MapPin size={14} /> Live Map
           </button>
         </div>
+      </div>
+
+      {/* ═══ Village Water Quality Alerts & Notifications Section ═══ */}
+      <div className="card" style={{
+        padding: '20px 24px',
+        marginBottom: 24,
+        background: notifications.some(n => !n.is_read) ? 'rgba(220, 38, 38, 0.08)' : 'rgba(15, 23, 42, 0.75)',
+        border: notifications.some(n => !n.is_read) ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(14, 165, 233, 0.25)',
+        backdropFilter: 'blur(12px)',
+        borderRadius: 16,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 38, height: 38, borderRadius: 10,
+              background: notifications.some(n => !n.is_read) ? '#EF4444' : '#0284C7',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+            }}>
+              <Bell size={20} />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                  Village Water Advisories & Alerts
+                </h3>
+                {notifications.filter(n => !n.is_read).length > 0 && (
+                  <span style={{ background: '#EF4444', color: '#fff', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: 999 }}>
+                    {notifications.filter(n => !n.is_read).length} new
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)', marginTop: 2 }}>
+                {profile?.village ? `Registered village: ${profile.village}` : 'Village-targeted contamination alerts & safety advisories'}
+              </div>
+            </div>
+          </div>
+
+          {/* Language preference selector & Mark all read */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.06)', padding: '4px 10px', borderRadius: 8, border: '1px solid var(--color-border)' }}>
+              <Globe size={14} color="#38BDF8" />
+              <span style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)' }}>Language:</span>
+              <select
+                value={preferredLang}
+                onChange={e => handleLanguageChange(e.target.value)}
+                disabled={updatingLang}
+                style={{
+                  background: 'transparent', border: 'none', color: '#38BDF8',
+                  fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', outline: 'none',
+                }}
+              >
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="gu">ગુજરાતી (Gujarati)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="ml">മലയാളം (Malayalam)</option>
+                <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                <option value="as">অসমীয়া (Assamese)</option>
+                <option value="ur">اردو (Urdu)</option>
+              </select>
+            </div>
+
+            {notifications.some(n => !n.is_read) && (
+              <button
+                onClick={handleMarkAllRead}
+                style={{
+                  background: 'transparent', border: '1px solid var(--color-border)',
+                  color: 'var(--color-text-secondary)', fontSize: '0.78rem', padding: '6px 12px',
+                  borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4,
+                }}
+              >
+                <Check size={13} /> Mark All Read
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Notifications List */}
+        {loadingNotifications ? (
+          <div style={{ padding: 24, textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+            <RefreshCw size={20} style={{ animation: 'spin 1s linear infinite' }} />
+          </div>
+        ) : notifications.length === 0 ? (
+          <div style={{
+            background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)',
+            borderRadius: 10, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+            <ShieldCheck size={22} color="#10B981" />
+            <div style={{ flex: 1 }}>
+              <div style={{ color: '#10B981', fontWeight: 700, fontSize: '0.9rem' }}>
+                Village Water Safety Status: Normal
+              </div>
+              <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginTop: 2 }}>
+                No active contamination alerts recorded for {profile?.village ? `village ${profile.village}` : 'your registered area'}. If a verified sample triggers an alert, you will receive an automatic email and dashboard warning in your preferred language.
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {notifications.map(n => (
+              <div
+                key={n.id}
+                style={{
+                  background: n.is_read ? 'rgba(255,255,255,0.03)' : 'rgba(239, 68, 68, 0.08)',
+                  border: n.is_read ? '1px solid var(--color-border)' : '1px solid rgba(239, 68, 68, 0.35)',
+                  borderRadius: 12, padding: '16px 20px',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <span style={{
+                      background: n.severity === 'CRITICAL' ? '#DC2626' : '#EA580C',
+                      color: '#fff', fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: 6,
+                    }}>
+                      {n.severity} ALERT
+                    </span>
+                    <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '0.95rem' }}>
+                      {n.title}
+                    </span>
+                    {!n.is_read && (
+                      <span style={{ background: '#EF4444', color: '#fff', fontSize: '0.68rem', fontWeight: 800, padding: '1px 6px', borderRadius: 999 }}>
+                        UNREAD
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                      {new Date(n.created_at).toLocaleDateString()}
+                    </span>
+                    {!n.is_read && (
+                      <button
+                        onClick={() => handleMarkRead(n.id)}
+                        style={{
+                          background: 'rgba(255,255,255,0.08)', border: 'none', color: '#38BDF8',
+                          fontSize: '0.75rem', fontWeight: 600, padding: '3px 8px', borderRadius: 6, cursor: 'pointer',
+                        }}
+                      >
+                        Mark as read
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Explanation in vernacular */}
+                <p style={{ margin: '0 0 10px 0', fontSize: '0.88rem', color: 'var(--color-text)', lineHeight: 1.5 }}>
+                  {n.explanation}
+                </p>
+
+                {/* Parameter details chip */}
+                {n.primary_contaminant && (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.05)',
+                    padding: '4px 10px', borderRadius: 8, fontSize: '0.8rem', marginBottom: 10, border: '1px solid var(--color-border)',
+                  }}>
+                    <FlaskConical size={14} color="#F59E0B" />
+                    <span><strong>Contaminant:</strong> {n.primary_contaminant}</span>
+                    {n.contaminant_value && (
+                      <span>| <strong>Measured:</strong> {n.contaminant_value} {n.contaminant_unit}</span>
+                    )}
+                    <span>| <strong>Standard:</strong> {n.contaminant_limit}</span>
+                  </div>
+                )}
+
+                {/* Precautions & Boiling Warning */}
+                {n.precautions && n.precautions.length > 0 && (
+                  <div style={{
+                    marginTop: 6, padding: '10px 14px', borderRadius: 8,
+                    background: n.do_not_boil ? 'rgba(220, 38, 38, 0.12)' : 'rgba(14, 165, 233, 0.1)',
+                    border: n.do_not_boil ? '1px solid rgba(220, 38, 38, 0.3)' : '1px solid rgba(14, 165, 233, 0.2)',
+                  }}>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: n.do_not_boil ? '#EF4444' : '#38BDF8', marginBottom: 4 }}>
+                      {n.do_not_boil ? 'CRITICAL BOILING SAFETY WARNING' : 'RECOMMENDED PRECAUTIONS'}
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 18, fontSize: '0.82rem', color: 'var(--color-text)', lineHeight: 1.45 }}>
+                      {n.precautions.map((p, idx) => (
+                        <li key={idx} style={{ marginBottom: 2 }}>{p}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ═══ Geographic Location Filter Bar ═══ */}

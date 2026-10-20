@@ -19,6 +19,8 @@ export default function CitizenProfileSetup() {
     mobile: '',
     state_id: '',
     district_id: '',
+    village: '',
+    preferred_language: 'en',
   });
 
   const { states, getDistricts, loading: locLoading } = useLocations();
@@ -101,8 +103,10 @@ export default function CitizenProfileSetup() {
           phone: formData.mobile.trim(),
           state_ut: selectedState?.name || '',
           district: selectedDistrict?.name || '',
+          village: formData.village.trim(),
           state_id: formData.state_id,
           district_id: formData.district_id,
+          preferred_language: formData.preferred_language || 'en',
         });
       } catch (beErr) {
         console.warn('Backend updateProfile failed, falling back to direct Supabase:', beErr);
@@ -117,15 +121,16 @@ export default function CitizenProfileSetup() {
             status: 'active',
             state_ut: selectedState?.name || '',
             district: selectedDistrict?.name || '',
+            village: formData.village.trim(),
             state_id: formData.state_id,
             district_id: formData.district_id,
+            preferred_language: formData.preferred_language || 'en',
           }, { onConflict: 'auth_user_id' });
 
         if (userProfileError) {
           console.warn('user_profiles update error:', userProfileError);
         }
       }
-
 
       // 2. Update citizen_profiles
       const { error: profileError } = await supabase
@@ -137,8 +142,10 @@ export default function CitizenProfileSetup() {
           email: user.email,
           state: selectedState?.name || '',
           district: selectedDistrict?.name || '',
+          village: formData.village.trim(),
           state_id: formData.state_id,
           district_id: formData.district_id,
+          preferred_language: formData.preferred_language || 'en',
         }, { onConflict: 'user_id' });
 
       if (profileError) throw profileError;
@@ -212,6 +219,49 @@ export default function CitizenProfileSetup() {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Village / Town *</label>
+            <input
+              required
+              type="text"
+              name="village"
+              value={formData.village}
+              onChange={handleChange}
+              placeholder="e.g. Rampur, Ajnala, etc."
+              style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#0f172a', background: '#fff', fontSize: '0.95rem' }}
+            />
+            <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 4, display: 'block' }}>
+              Used to match water quality alerts specifically for your village.
+            </span>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Preferred Alert Language *</label>
+            <select
+              name="preferred_language"
+              value={formData.preferred_language}
+              onChange={handleChange}
+              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#0f172a', background: '#fff', fontSize: '0.95rem' }}
+            >
+              <option value="en">English</option>
+              <option value="hi">हिंदी (Hindi)</option>
+              <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+              <option value="bn">বাংলা (Bengali)</option>
+              <option value="mr">मराठी (Marathi)</option>
+              <option value="gu">ગુજરાતી (Gujarati)</option>
+              <option value="ta">தமிழ் (Tamil)</option>
+              <option value="te">తెలుగు (Telugu)</option>
+              <option value="kn">ಕನ್ನಡ (Kannada)</option>
+              <option value="ml">മലയാളം (Malayalam)</option>
+              <option value="or">ଓଡ଼ିଆ (Odia)</option>
+              <option value="as">অসমীয়া (Assamese)</option>
+              <option value="ur">اردو (Urdu)</option>
+            </select>
+            <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 4, display: 'block' }}>
+              JalRakshak emails and dashboard advisories will be generated in this language.
+            </span>
           </div>
 
           <button type="submit" disabled={loading} style={{ marginTop: '12px', width: '100%', padding: '12px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '1rem', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>

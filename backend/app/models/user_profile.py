@@ -41,6 +41,9 @@ class UserProfile(Base):
     # status: 'active' | 'pending_approval' | 'inactive'
     status = Column(String(32), nullable=False, default="active")
     
+    # Preferred language for alert notifications (e.g. 'en', 'hi', 'pa', etc.)
+    preferred_language = Column(String(16), nullable=False, default="en")
+    
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 

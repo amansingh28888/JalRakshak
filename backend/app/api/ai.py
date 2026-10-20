@@ -68,7 +68,7 @@ async def get_advisory(request: AdvisoryRequest):
         solution=result.solution,
         short_message=result.short_message,
         source=result.source,
-        model_used=result.model_used,
+        model_used=str(result.model_used) if result.model_used is not None else None,
         do_not_boil=request.do_not_boil,       # Echo back unchanged — invariant
         safe_to_drink=request.safe_to_drink,    # Echo back unchanged — invariant
         message_type=request.message_type,      # Echo back for frontend use

@@ -1,14 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
-import { ShieldCheck, Droplets, ArrowLeft, Loader2, AlertTriangle, Users, BarChart3, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import {
+  ShieldCheck,
+  Droplets,
+  ArrowLeft,
+  Loader2,
+  AlertTriangle,
+  Users,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  ArrowRight
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
-  const loginType = searchParams.get('type');
+  const initialType = searchParams.get('type');
   const navigate = useNavigate();
   const { session, profile, isLoading, profileLoaded } = useAuth();
+
+  const [role, setRole] = useState<'citizen' | 'worker' | 'admin'>(
+    initialType === 'worker' ? 'worker' : initialType === 'admin' ? 'admin' : 'citizen'
+  );
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,19 +39,28 @@ export default function Login() {
   const [resetError, setResetError] = useState<string | null>(null);
 
   useEffect(() => {
-    // If already logged in, redirect based on verified role
     if (session && profileLoaded && profile) {
-      if (profile.status === 'pending_approval') {
-        // Stays on pending approval view handled by route guards
-        return;
-      }
+      if (profile.status === 'pending_approval') return;
       if (profile.role === 'admin') navigate('/admin/dashboard');
       else if (profile.role === 'field_worker') navigate('/worker/dashboard');
       else if (profile.role === 'analyst') navigate('/analyst/dashboard');
-      else if (profile.role === 'citizen') navigate('/citizen/dashboard');
-      else navigate('/');
+      else if (profile.role === 'citizen') {
+        if (!profile.state_ut || !profile.district) {
+          navigate('/citizen/setup');
+        } else {
+          navigate('/citizen/dashboard');
+        }
+      } else {
+        navigate('/');
+      }
     }
   }, [session, profile, profileLoaded, navigate]);
+
+  useEffect(() => {
+    if (initialType === 'worker') setRole('worker');
+    else if (initialType === 'admin') setRole('admin');
+    else if (initialType === 'citizen') setRole('citizen');
+  }, [initialType]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,10 +92,24 @@ export default function Login() {
       if (!data.session) {
         throw new Error('Authentication failed. No active session established.');
       }
-      // AuthContext onAuthStateChange will resolve profile and useEffect will route to dashboard
-    } catch (e: any) {
-      setError(e.message || 'Incorrect email or password. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Incorrect email or password. Please try again.');
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError(null);
+    try {
+      const { error: googleError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/citizen/setup',
+        },
+      });
+      if (googleError) throw googleError;
+    } catch (err: any) {
+      setError(err.message || 'Google sign-in could not be completed. Please try again.');
     }
   };
 
@@ -96,227 +134,576 @@ export default function Login() {
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'column', gap: 16 }}>
-        <Loader2 size={48} color="var(--color-primary)" className="animate-spin" />
-        <div style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}>Initializing Portal...</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'column', gap: 16, background: '#091428' }}>
+        <Loader2 size={48} color="#38bdf8" className="animate-spin" />
+        <div style={{ color: '#cbd5e1', fontWeight: 500 }}>Initializing Portal...</div>
       </div>
     );
   }
 
-  // 1. Role Selection View
-  if (!loginType) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-        <button 
-          onClick={() => navigate('/')}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#64748b', fontSize: '0.9rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 40, alignSelf: 'flex-start', marginLeft: 'auto', marginRight: 'auto', maxWidth: 1000, width: '100%' }}
-        >
-          <ArrowLeft size={16} /> Back to Home
-        </button>
+  const roleMeta = {
+    citizen: {
+      name: 'Citizen',
+      tagline: 'Access local water reports & safety alerts',
+      icon: Users,
+      color: '#10b981',
+      bg: 'rgba(16, 185, 129, 0.15)',
+      borderColor: 'rgba(16, 185, 129, 0.4)',
+      placeholder: 'citizen@example.com',
+      buttonBg: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+    },
+    worker: {
+      name: 'Field Worker',
+      tagline: 'Record FTK tests and upload field samples',
+      icon: Droplets,
+      color: '#38bdf8',
+      bg: 'rgba(56, 189, 248, 0.15)',
+      borderColor: 'rgba(56, 189, 248, 0.4)',
+      placeholder: 'worker@jalrakshak.gov.in',
+      buttonBg: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+    },
+    admin: {
+      name: 'Administrator',
+      tagline: 'Manage surveillance, workers & system logs',
+      icon: ShieldCheck,
+      color: '#a855f7',
+      bg: 'rgba(168, 85, 247, 0.15)',
+      borderColor: 'rgba(168, 85, 247, 0.4)',
+      placeholder: 'admin@jalrakshak.gov.in',
+      buttonBg: 'linear-gradient(135deg, #7e22ce 0%, #a855f7 100%)',
+    },
+  };
 
-        <h1 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#0f172a', marginBottom: 10, textAlign: 'center' }}>Choose Portal</h1>
-        <p style={{ color: '#64748b', fontSize: '1.05rem', marginBottom: 44, textAlign: 'center' }}>Select your account role to continue to the appropriate JalRakshak portal.</p>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24, maxWidth: 1000, width: '100%' }}>
-          
-          {/* Citizen */}
-          <div style={{ background: 'white', padding: 32, borderRadius: 16, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }}>
-            <div style={{ width: 60, height: 60, borderRadius: 16, background: '#ecfdf5', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-              <Users size={30} />
-            </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>CITIZEN</h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: 24, flex: 1, lineHeight: 1.5 }}>Check water safety alerts, view maps, and report water issues</p>
-            <button onClick={() => navigate('/citizen/login')} style={{ width: '100%', padding: '12px', background: '#10b981', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer' }}>
-              Citizen Login
-            </button>
-          </div>
-
-          {/* Worker */}
-          <div style={{ background: 'white', padding: 32, borderRadius: 16, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }}>
-            <div style={{ width: 60, height: 60, borderRadius: 16, background: '#eff6ff', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-              <Droplets size={30} />
-            </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>FIELD WORKER</h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: 24, flex: 1, lineHeight: 1.5 }}>Record water sample tests, GPS locations, and physical observations</p>
-            <button onClick={() => navigate('/login?type=worker')} style={{ width: '100%', padding: '12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer' }}>
-              Worker Login
-            </button>
-          </div>
-
-          {/* Admin */}
-          <div style={{ background: 'white', padding: 32, borderRadius: 16, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }}>
-            <div style={{ width: 60, height: 60, borderRadius: 16, background: '#f5f3ff', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-              <ShieldCheck size={30} />
-            </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>ADMIN</h2>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: 24, flex: 1, lineHeight: 1.5 }}>Manage user roles, review all samples, configure rules, and audit logs</p>
-            <button onClick={() => navigate('/login?type=admin')} style={{ width: '100%', padding: '12px', background: '#8b5cf6', color: 'white', border: 'none', borderRadius: 8, fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer' }}>
-              Admin Login
-            </button>
-          </div>
-
-        </div>
-
-        <div style={{ marginTop: 40, textAlign: 'center' }}>
-          <span style={{ color: '#64748b', fontSize: '0.9rem' }}>New citizen? </span>
-          <Link to="/citizen/register" style={{ color: '#0ea5e9', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
-            Register Citizen Account
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  // 2. Dedicated Login Views (Worker / Analyst / Admin)
-  const isWorker = loginType === 'worker';
-  const isAnalyst = loginType === 'analyst';
-  const roleName = isWorker ? 'Field Worker' : isAnalyst ? 'Analyst' : 'Admin';
-  const roleColor = isWorker ? '#3b82f6' : isAnalyst ? '#0284c7' : '#8b5cf6';
-  const roleBg = isWorker ? '#eff6ff' : isAnalyst ? '#e0f2fe' : '#f5f3ff';
-  const RoleIcon = isWorker ? Droplets : isAnalyst ? BarChart3 : ShieldCheck;
+  const currentMeta = roleMeta[role];
+  const IconComponent = currentMeta.icon;
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ background: 'white', padding: 40, borderRadius: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.06)', width: '100%', maxWidth: 440, border: '1px solid #e2e8f0' }}>
-        
-        <button 
-          onClick={() => navigate('/login')}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#64748b', fontSize: '0.85rem', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 28 }}
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#091428',
+        padding: '24px',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '460px',
+          background: '#0c1e3e',
+          borderRadius: '20px',
+          border: '1px solid rgba(56, 189, 248, 0.25)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6)',
+          overflow: 'hidden',
+          color: '#ffffff',
+        }}
+      >
+        {/* Top Header */}
+        <div
+          style={{
+            padding: '20px 24px 16px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'linear-gradient(180deg, #0e244d 0%, #0c1e3e 100%)',
+          }}
         >
-          <ArrowLeft size={16} /> Choose Another Role
-        </button>
-
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 16, background: roleBg, color: roleColor, marginBottom: 16 }}>
-            <RoleIcon size={28} />
+          <div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              Sign In to JalRakshak
+            </div>
+            <div style={{ fontSize: '0.82rem', color: '#cbd5e1', marginTop: '2px' }}>
+              Select your role to access your dedicated portal
+            </div>
           </div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', marginBottom: 6 }}>
-            {roleName} Login
-          </h1>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-            Enter your authorized credentials to access the {roleName} Portal.
-          </p>
+          <button
+            onClick={() => navigate('/')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#cbd5e1',
+              padding: '6px 12px',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <ArrowLeft size={14} />
+            <span>Home</span>
+          </button>
         </div>
 
-        {error && (
-          <div style={{ padding: '12px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, color: '#ef4444', fontSize: '0.85rem', marginBottom: 20, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-            <AlertTriangle size={18} style={{ marginTop: 2, flexShrink: 0 }} />
-            <span>{error}</span>
+        {/* Role Tabs */}
+        <div style={{ padding: '16px 24px 0' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '8px',
+              background: '#091428',
+              padding: '4px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}
+          >
+            {/* Citizen */}
+            <button
+              type="button"
+              onClick={() => {
+                setRole('citizen');
+                setError(null);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '10px 8px',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                background: role === 'citizen' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
+                color: role === 'citizen' ? '#34d399' : '#94a3b8',
+                boxShadow: role === 'citizen' ? '0 2px 8px rgba(16, 185, 129, 0.2)' : 'none',
+                transition: 'all 0.15s',
+              }}
+            >
+              <Users size={16} />
+              <span>Citizen</span>
+            </button>
+
+            {/* Worker */}
+            <button
+              type="button"
+              onClick={() => {
+                setRole('worker');
+                setError(null);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '10px 8px',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                background: role === 'worker' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
+                color: role === 'worker' ? '#38bdf8' : '#94a3b8',
+                boxShadow: role === 'worker' ? '0 2px 8px rgba(56, 189, 248, 0.2)' : 'none',
+                transition: 'all 0.15s',
+              }}
+            >
+              <Droplets size={16} />
+              <span>Worker</span>
+            </button>
+
+            {/* Admin */}
+            <button
+              type="button"
+              onClick={() => {
+                setRole('admin');
+                setError(null);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '10px 8px',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                background: role === 'admin' ? 'rgba(168, 85, 247, 0.2)' : 'transparent',
+                color: role === 'admin' ? '#c084fc' : '#94a3b8',
+                boxShadow: role === 'admin' ? '0 2px 8px rgba(168, 85, 247, 0.2)' : 'none',
+                transition: 'all 0.15s',
+              }}
+            >
+              <ShieldCheck size={16} />
+              <span>Admin</span>
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Forgot Password Modal */}
-        {showForgotPassword ? (
-          <form onSubmit={handleResetPassword} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ background: '#f1f5f9', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', color: '#475569' }}>
-              Enter your account email to receive password recovery instructions.
+        {/* Active Role Meta */}
+        <div style={{ padding: '16px 24px 8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '10px',
+              background: currentMeta.bg,
+              border: `1px solid ${currentMeta.borderColor}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: currentMeta.color,
+              flexShrink: 0,
+            }}
+          >
+            <IconComponent size={20} />
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '0.98rem', color: '#ffffff' }}>
+              {currentMeta.name} Login
             </div>
-
-            {resetSuccess && (
-              <div style={{ padding: '12px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, color: '#059669', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <CheckCircle2 size={16} /> {resetSuccess}
-              </div>
-            )}
-
-            {resetError && (
-              <div style={{ padding: '12px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, color: '#ef4444', fontSize: '0.85rem' }}>
-                {resetError}
-              </div>
-            )}
-
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: 6 }}>Email Address</label>
-              <input 
-                type="email" 
-                value={resetEmail}
-                onChange={e => setResetEmail(e.target.value)}
-                placeholder="name@jalrakshak.gov.in"
-                required 
-                style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.95rem', color: '#0f172a' }}
-              />
+            <div style={{ fontSize: '0.78rem', color: '#cbd5e1' }}>
+              {currentMeta.tagline}
             </div>
+          </div>
+        </div>
 
-            <div style={{ display: 'flex', gap: 12 }}>
-              <button 
-                type="submit" 
-                disabled={resetLoading}
-                style={{ flex: 1, padding: '12px', background: roleColor, color: 'white', border: 'none', borderRadius: 8, fontSize: '0.95rem', fontWeight: 600, cursor: resetLoading ? 'not-allowed' : 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}
+        {/* Login Form */}
+        <div style={{ padding: '8px 24px 24px' }}>
+          {error && (
+            <div
+              style={{
+                padding: '10px 14px',
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                borderRadius: '8px',
+                color: '#fca5a5',
+                fontSize: '0.85rem',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '8px',
+                lineHeight: 1.45,
+              }}
+            >
+              <AlertTriangle size={16} style={{ marginTop: 2, flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {showForgotPassword ? (
+            <form onSubmit={handleResetPassword} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  padding: '12px 14px',
+                  borderRadius: '8px',
+                  fontSize: '0.85rem',
+                  color: '#cbd5e1',
+                  lineHeight: 1.5,
+                }}
               >
-                {resetLoading ? <Loader2 size={18} className="animate-spin" /> : 'Send Reset Link'}
+                Enter your account email to receive a password reset link.
+              </div>
+
+              {resetSuccess && (
+                <div
+                  style={{
+                    padding: '10px 14px',
+                    background: 'rgba(16, 185, 129, 0.15)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    borderRadius: '8px',
+                    color: '#6ee7b7',
+                    fontSize: '0.85rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <CheckCircle2 size={16} />
+                  <span>{resetSuccess}</span>
+                </div>
+              )}
+
+              {resetError && (
+                <div
+                  style={{
+                    padding: '10px 14px',
+                    background: 'rgba(239, 68, 68, 0.15)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: '8px',
+                    color: '#fca5a5',
+                    fontSize: '0.85rem',
+                  }}
+                >
+                  {resetError}
+                </div>
+              )}
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={resetEmail}
+                  onChange={e => setResetEmail(e.target.value)}
+                  placeholder="name@jalrakshak.gov.in"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    background: '#091428',
+                    color: '#ffffff',
+                    fontSize: '0.92rem',
+                    outline: 'none',
+                  }}
+                  onFocus={e => (e.currentTarget.style.borderColor = currentMeta.color)}
+                  onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)')}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+                <button
+                  type="submit"
+                  disabled={resetLoading}
+                  style={{
+                    flex: 1,
+                    padding: '11px',
+                    background: currentMeta.buttonBg,
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '0.92rem',
+                    fontWeight: 600,
+                    cursor: resetLoading ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  {resetLoading ? <Loader2 size={16} className="animate-spin" /> : 'Send Reset Link'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(false)}
+                  style={{
+                    padding: '11px 16px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    color: '#cbd5e1',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '8px',
+                    fontSize: '0.92rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder={currentMeta.placeholder}
+                  required
+                  autoComplete="email"
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    background: '#091428',
+                    color: '#ffffff',
+                    fontSize: '0.92rem',
+                    outline: 'none',
+                  }}
+                  onFocus={e => (e.currentTarget.style.borderColor = currentMeta.color)}
+                  onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)')}
+                />
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 600, color: '#cbd5e1' }}>
+                    Password
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassword(true)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: currentMeta.color,
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    autoComplete="current-password"
+                    style={{
+                      width: '100%',
+                      padding: '10px 42px 10px 14px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      background: '#091428',
+                      color: '#ffffff',
+                      fontSize: '0.92rem',
+                      outline: 'none',
+                    }}
+                    onFocus={e => (e.currentTarget.style.borderColor = currentMeta.color)}
+                    onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      color: '#94a3b8',
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: currentMeta.buttonBg,
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  marginTop: '6px',
+                  boxShadow: `0 4px 16px ${currentMeta.bg}`,
+                }}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Verifying Credentials...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign In as {currentMeta.name}</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
               </button>
+
+              {/* ── Continue with Google ── */}
+              <div style={{ display: 'flex', alignItems: 'center', margin: '6px 0 2px' }}>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+                <span style={{ padding: '0 12px', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600 }}>OR</span>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+              </div>
+
               <button
                 type="button"
-                onClick={() => setShowForgotPassword(false)}
-                style={{ padding: '12px 16px', background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', borderRadius: 8, fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer' }}
+                onClick={handleGoogleLogin}
+                style={{
+                  width: '100%',
+                  padding: '11px 16px',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '0.92rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '10px',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+                  transition: 'background 0.15s, transform 0.15s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#f8fafc';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#ffffff';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                Cancel
+                <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span>Continue with Google</span>
               </button>
-            </div>
-          </form>
-        ) : (
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: 6 }}>Email Address</label>
-              <input 
-                type="email" 
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder={`${loginType}@jalrakshak.gov.in`}
-                required 
-                autoComplete="email"
-                style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.95rem', color: '#0f172a' }}
-              />
-            </div>
+            </form>
+          )}
 
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>Password</label>
-                <button
-                  type="button"
-                  onClick={() => setShowForgotPassword(true)}
-                  style={{ background: 'none', border: 'none', color: roleColor, fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+          <div
+            style={{
+              marginTop: '20px',
+              paddingTop: '16px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+              textAlign: 'center',
+              fontSize: '0.82rem',
+              color: '#cbd5e1',
+            }}
+          >
+            {role === 'citizen' ? (
+              <div>
+                <span>New citizen? </span>
+                <Link
+                  to="/citizen/register"
+                  style={{ color: '#34d399', fontWeight: 600, textDecoration: 'none' }}
                 >
-                  Forgot Password?
-                </button>
+                  Create Citizen Account
+                </Link>
               </div>
-              <div style={{ position: 'relative' }}>
-                <input 
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required 
-                  autoComplete="current-password"
-                  style={{ width: '100%', padding: '10px 42px 10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.95rem', color: '#0f172a' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-            
-            <button 
-              type="submit" 
-              disabled={loading}
-              style={{ width: '100%', padding: '12px', background: roleColor, color: 'white', border: 'none', borderRadius: 8, fontSize: '1rem', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, cursor: loading ? 'not-allowed' : 'pointer', marginTop: 8 }}
-            >
-              {loading ? <><Loader2 size={20} className="animate-spin" /> Verifying Credentials...</> : 'Sign In'}
-            </button>
-          </form>
-        )}
-
-        <div style={{ marginTop: 28, paddingTop: 20, borderTop: '1px solid #f1f5f9', textAlign: 'center', fontSize: '0.875rem', color: '#64748b' }}>
-          <span>Registering as a citizen? </span>
-          <Link to="/citizen/register" style={{ color: '#0ea5e9', fontWeight: 600, textDecoration: 'none' }}>
-            Create Citizen Account
-          </Link>
+            ) : (
+              <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>
+                Authorized JalRakshak personnel only. Contact administrative nodal officer for account provisioning.
+              </span>
+            )}
+          </div>
         </div>
-
       </div>
     </div>
   );

@@ -12,11 +12,13 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
 from app.config import get_settings
-from app.database import init_db
+from app.database import init_db, get_db
+from app.models.water_sample import WaterSample
 
 settings = get_settings()
 
@@ -138,6 +140,7 @@ from app.api.admin import router as admin_router
 from app.api.auth import router as auth_router
 from app.api.analytics import router as analytics_router
 from app.api.reports import router as reports_router
+from app.api.notifications import router as notifications_router
 
 app.include_router(samples_router)
 app.include_router(dashboard_router)
@@ -150,21 +153,14 @@ app.include_router(admin_router)
 app.include_router(auth_router)
 app.include_router(analytics_router)
 app.include_router(reports_router)
+app.include_router(notifications_router)
 
 
 # ── Core endpoints ────────────────────────────────────────────────────────────
 @app.get("/health")
-def health():
+def health(db: Session = Depends(get_db)):
     """Health check endpoint."""
-    from app.database import SessionLocal
-    from app.models.water_sample import WaterSample
-
-    db = SessionLocal()
-    try:
-        count = db.query(WaterSample).count()
-    finally:
-        db.close()
-
+    count = db.query(WaterSample).count()
     return {
         "status": "ok",
         "service": "JalRakshak",

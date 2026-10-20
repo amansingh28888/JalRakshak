@@ -17,6 +17,7 @@ export interface UserProfile {
   state_id?: string;
   district_id?: string;
   village?: string;
+  preferred_language?: string;
   status: UserStatus;
 }
 

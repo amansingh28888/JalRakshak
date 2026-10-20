@@ -18,6 +18,7 @@ class ProfileUpdateRequest(BaseModel):
     village: Optional[str] = None
     state_id: Optional[str] = None
     district_id: Optional[str] = None
+    preferred_language: Optional[str] = None
 
 @router.get("/me")
 def get_me(current_user: UserProfile = Depends(get_current_user_any_status)):
@@ -38,6 +39,7 @@ def get_me(current_user: UserProfile = Depends(get_current_user_any_status)):
         "state_id": current_user.state_id,
         "district_id": current_user.district_id,
         "status": current_user.status,
+        "preferred_language": getattr(current_user, "preferred_language", "en") or "en",
     }
 
 @router.put("/profile")
@@ -48,7 +50,7 @@ def update_profile(
 ):
     """
     Authoritative profile update endpoint.
-    Safely updates user location and details, propagating changes to citizen_profiles.
+    Safely updates user location, details, and preferred language, propagating changes to citizen_profiles.
     """
     if body.full_name is not None and body.full_name.strip():
         current_user.full_name = body.full_name.strip()
@@ -64,6 +66,8 @@ def update_profile(
         current_user.state_id = body.state_id.strip()
     if body.district_id is not None:
         current_user.district_id = body.district_id.strip()
+    if body.preferred_language is not None and body.preferred_language.strip():
+        current_user.preferred_language = body.preferred_language.strip().lower()
 
     db.commit()
     db.refresh(current_user)
@@ -73,10 +77,10 @@ def update_profile(
         try:
             db.execute(text("""
                 INSERT INTO public.citizen_profiles (
-                    user_id, full_name, mobile, email, state, district, village, state_id, district_id
+                    user_id, full_name, mobile, email, state, district, village, state_id, district_id, preferred_language
                 )
                 VALUES (
-                    :uid, :name, :mobile, :email, :state, :district, :village, :state_id, :district_id
+                    :uid, :name, :mobile, :email, :state, :district, :village, :state_id, :district_id, :preferred_language
                 )
                 ON CONFLICT (user_id) DO UPDATE SET
                     full_name = EXCLUDED.full_name,
@@ -85,7 +89,8 @@ def update_profile(
                     district = EXCLUDED.district,
                     village = EXCLUDED.village,
                     state_id = EXCLUDED.state_id,
-                    district_id = EXCLUDED.district_id
+                    district_id = EXCLUDED.district_id,
+                    preferred_language = EXCLUDED.preferred_language
             """), {
                 "uid": current_user.auth_user_id,
                 "name": current_user.full_name,
@@ -96,6 +101,7 @@ def update_profile(
                 "village": current_user.village,
                 "state_id": current_user.state_id,
                 "district_id": current_user.district_id,
+                "preferred_language": getattr(current_user, "preferred_language", "en") or "en",
             })
             db.commit()
         except Exception as e:
@@ -114,5 +120,6 @@ def update_profile(
         "state_id": current_user.state_id,
         "district_id": current_user.district_id,
         "status": current_user.status,
+        "preferred_language": getattr(current_user, "preferred_language", "en") or "en",
     }
 

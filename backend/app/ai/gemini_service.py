@@ -343,6 +343,7 @@ async def generate_advisory(context: dict) -> AdvisoryResponse:
     target_language = context.get("target_language", "English")
     language_code   = context.get("language_code", "en")
 
+    settings = get_settings()
     if not settings.gemini_available:
         logger.info("Gemini API key not configured — using deterministic fallback advisory.")
         return _get_fallback(

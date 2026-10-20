@@ -96,6 +96,24 @@ def init_db():
         water_sample,
         user_profile,
         audit_log,
+        notification_log,
     )  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+
+    # Ensure added columns exist in SQLite or Postgres
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        # Check user_profiles.preferred_language
+        try:
+            conn.execute(text("ALTER TABLE user_profiles ADD COLUMN preferred_language VARCHAR(16) DEFAULT 'en'"))
+            conn.commit()
+        except Exception:
+            pass  # Already exists or table created with it
+
+        # Check notification_logs.is_read
+        try:
+            conn.execute(text("ALTER TABLE notification_logs ADD COLUMN is_read BOOLEAN DEFAULT 0"))
+            conn.commit()
+        except Exception:
+            pass  # Already exists or table created with it

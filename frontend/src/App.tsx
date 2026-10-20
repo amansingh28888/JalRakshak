@@ -24,6 +24,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminSamples from './pages/admin/AdminSamples';
 import WorkerManagement from './pages/admin/WorkerManagement';
 import AuditLogs from './pages/admin/AuditLogs';
+import AdminNotifications from './pages/admin/AdminNotifications';
 
 // New Analytics & Reports pages
 import Trends from './pages/analytics/Trends';
@@ -90,6 +91,8 @@ export default function App() {
               <Route path="data" element={<DataManagement />} />
               <Route path="workers" element={<WorkerManagement />} />
               <Route path="audit-logs" element={<AuditLogs />} />
+              <Route path="alerts" element={<AdminNotifications />} />
+              <Route path="notifications" element={<AdminNotifications />} />
             </Route>
             
             {/* Fallbacks */}
