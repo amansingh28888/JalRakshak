@@ -203,13 +203,13 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         style={{
           width: '100%',
           maxWidth: '460px',
-          background: '#0c1e3e',
+          background: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '20px',
-          border: '1px solid rgba(56, 189, 248, 0.25)',
+          border: '1px solid rgba(14, 165, 233, 0.25)',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05)',
           overflow: 'hidden',
           fontFamily: 'Inter, system-ui, sans-serif',
-          color: '#ffffff',
+          color: '#0c2340',
           position: 'relative',
         }}
       >
@@ -217,18 +217,18 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         <div
           style={{
             padding: '20px 24px 16px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            borderBottom: '1px solid rgba(14, 165, 233, 0.15)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'linear-gradient(180deg, #0e244d 0%, #0c1e3e 100%)',
+            background: 'linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 100%)',
           }}
         >
           <div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0c2340', letterSpacing: '-0.02em' }}>
               Sign In to JalRakshak
             </div>
-            <div style={{ fontSize: '0.82rem', color: '#cbd5e1', marginTop: '2px' }}>
+            <div style={{ fontSize: '0.82rem', color: '#475569', marginTop: '2px' }}>
               Select your role to access your dedicated portal
             </div>
           </div>
@@ -239,9 +239,9 @@ export const SignInModal: React.FC<SignInModalProps> = ({
               width: '34px',
               height: '34px',
               borderRadius: '8px',
-              background: 'rgba(255, 255, 255, 0.08)',
+              background: 'rgba(14, 165, 233, 0.06)',
               border: 'none',
-              color: '#cbd5e1',
+              color: '#475569',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -268,10 +268,10 @@ export const SignInModal: React.FC<SignInModalProps> = ({
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '8px',
-              background: '#091428',
+              background: '#f0f9ff',
               padding: '4px',
               borderRadius: '12px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(14, 165, 233, 0.12)',
             }}
           >
             {/* Citizen Tab */}
@@ -293,7 +293,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 background: role === 'citizen' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-                color: role === 'citizen' ? '#34d399' : '#94a3b8',
+                color: role === 'citizen' ? '#059669' : '#64748b',
                 boxShadow: role === 'citizen' ? '0 2px 8px rgba(16, 185, 129, 0.2)' : 'none',
                 transition: 'all 0.15s',
               }}
@@ -321,7 +321,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 background: role === 'worker' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
-                color: role === 'worker' ? '#38bdf8' : '#94a3b8',
+                color: role === 'worker' ? '#0284c7' : '#64748b',
                 boxShadow: role === 'worker' ? '0 2px 8px rgba(56, 189, 248, 0.2)' : 'none',
                 transition: 'all 0.15s',
               }}
@@ -349,7 +349,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 background: role === 'admin' ? 'rgba(168, 85, 247, 0.2)' : 'transparent',
-                color: role === 'admin' ? '#c084fc' : '#94a3b8',
+                color: role === 'admin' ? '#7c3aed' : '#64748b',
                 boxShadow: role === 'admin' ? '0 2px 8px rgba(168, 85, 247, 0.2)' : 'none',
                 transition: 'all 0.15s',
               }}
@@ -379,10 +379,10 @@ export const SignInModal: React.FC<SignInModalProps> = ({
             <IconComponent size={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '0.98rem', color: '#ffffff' }}>
+            <div style={{ fontWeight: 700, fontSize: '0.98rem', color: '#0c2340' }}>
               {currentMeta.name} Login
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#cbd5e1' }}>
+            <div style={{ fontSize: '0.78rem', color: '#475569' }}>
               {currentMeta.tagline}
             </div>
           </div>
@@ -397,7 +397,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 background: 'rgba(239, 68, 68, 0.15)',
                 border: '1px solid rgba(239, 68, 68, 0.35)',
                 borderRadius: '8px',
-                color: '#fca5a5',
+                color: '#b91c1c',
                 fontSize: '0.85rem',
                 marginBottom: '16px',
                 display: 'flex',
@@ -416,11 +416,11 @@ export const SignInModal: React.FC<SignInModalProps> = ({
             <form onSubmit={handleResetPassword} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'rgba(14, 165, 233, 0.07)',
                   padding: '12px 14px',
                   borderRadius: '8px',
                   fontSize: '0.85rem',
-                  color: '#cbd5e1',
+                  color: '#475569',
                   lineHeight: 1.5,
                 }}
               >
@@ -434,7 +434,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                     background: 'rgba(16, 185, 129, 0.15)',
                     border: '1px solid rgba(16, 185, 129, 0.3)',
                     borderRadius: '8px',
-                    color: '#6ee7b7',
+                    color: '#065f46',
                     fontSize: '0.85rem',
                     display: 'flex',
                     alignItems: 'center',
@@ -453,7 +453,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                     background: 'rgba(239, 68, 68, 0.15)',
                     border: '1px solid rgba(239, 68, 68, 0.3)',
                     borderRadius: '8px',
-                    color: '#fca5a5',
+                    color: '#b91c1c',
                     fontSize: '0.85rem',
                   }}
                 >
@@ -462,7 +462,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
               )}
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>
                   Email Address
                 </label>
                 <input
@@ -476,8 +476,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                     padding: '10px 14px',
                     borderRadius: '8px',
                     border: '1px solid rgba(255, 255, 255, 0.15)',
-                    background: '#091428',
-                    color: '#ffffff',
+                    background: '#f0f9ff',
+                    color: '#0c2340',
                     fontSize: '0.92rem',
                     outline: 'none',
                   }}
@@ -494,7 +494,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                     flex: 1,
                     padding: '11px',
                     background: currentMeta.buttonBg,
-                    color: '#ffffff',
+                    color: '#0c2340',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '0.92rem',
@@ -513,8 +513,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                   onClick={() => setShowForgotPassword(false)}
                   style={{
                     padding: '11px 16px',
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    color: '#cbd5e1',
+                    background: 'rgba(14, 165, 233, 0.06)',
+                    color: '#475569',
                     border: '1px solid rgba(255, 255, 255, 0.15)',
                     borderRadius: '8px',
                     fontSize: '0.92rem',
@@ -530,7 +530,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
             /* Standard Login Form */
             <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>
                   Email Address
                 </label>
                 <input
@@ -545,8 +545,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                     padding: '10px 14px',
                     borderRadius: '8px',
                     border: '1px solid rgba(255, 255, 255, 0.15)',
-                    background: '#091428',
-                    color: '#ffffff',
+                    background: '#f0f9ff',
+                    color: '#0c2340',
                     fontSize: '0.92rem',
                     outline: 'none',
                   }}
@@ -557,7 +557,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
 
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <label style={{ fontSize: '0.82rem', fontWeight: 600, color: '#cbd5e1' }}>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 600, color: '#475569' }}>
                     Password
                   </label>
                   <button
@@ -589,8 +589,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                       padding: '10px 42px 10px 14px',
                       borderRadius: '8px',
                       border: '1px solid rgba(255, 255, 255, 0.15)',
-                      background: '#091428',
-                      color: '#ffffff',
+                      background: '#f0f9ff',
+                      color: '#0c2340',
                       fontSize: '0.92rem',
                       outline: 'none',
                     }}
@@ -608,7 +608,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                       transform: 'translateY(-50%)',
                       background: 'none',
                       border: 'none',
-                      color: '#94a3b8',
+                      color: '#64748b',
                       cursor: 'pointer',
                       padding: 0,
                     }}
@@ -654,9 +654,9 @@ export const SignInModal: React.FC<SignInModalProps> = ({
 
               {/* ── Continue with Google ── */}
               <div style={{ display: 'flex', alignItems: 'center', margin: '6px 0 2px' }}>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
-                <span style={{ padding: '0 12px', color: '#94a3b8', fontSize: '0.78rem', fontWeight: 600 }}>OR</span>
-                <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(14, 165, 233, 0.2)' }}></div>
+                <span style={{ padding: '0 12px', color: '#64748b', fontSize: '0.78rem', fontWeight: 600 }}>OR</span>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(14, 165, 233, 0.2)' }}></div>
               </div>
 
               <button
@@ -707,7 +707,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
               borderTop: '1px solid rgba(255, 255, 255, 0.08)',
               textAlign: 'center',
               fontSize: '0.82rem',
-              color: '#cbd5e1',
+              color: '#475569',
             }}
           >
             {role === 'citizen' ? (
@@ -722,7 +722,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 </Link>
               </div>
             ) : (
-              <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>
+              <span style={{ color: '#64748b', fontSize: '0.78rem' }}>
                 Authorized JalRakshak personnel only. Contact administrative nodal officer for account provisioning.
               </span>
             )}

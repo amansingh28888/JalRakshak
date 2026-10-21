@@ -121,7 +121,7 @@ export default function CitizenLogin() {
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Password</label>
             <div style={{ position: 'relative' }}>
               <input required type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" autoComplete="current-password" style={{ width: '100%', padding: '10px 40px 10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#0f172a', background: '#fff', fontSize: '0.95rem' }} />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}>
+              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: 0 }}>
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -134,7 +134,7 @@ export default function CitizenLogin() {
 
         <div style={{ display: 'flex', alignItems: 'center', margin: '22px 0' }}>
           <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }}></div>
-          <span style={{ padding: '0 16px', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 600 }}>OR</span>
+          <span style={{ padding: '0 16px', color: '#64748b', fontSize: '0.85rem', fontWeight: 600 }}>OR</span>
           <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }}></div>
         </div>
 

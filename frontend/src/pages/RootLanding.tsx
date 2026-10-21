@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Droplets,
@@ -36,13 +36,13 @@ export default function RootLanding() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#091428', color: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 60%, #bae6fd 100%)', color: '#0f172a', fontFamily: 'Inter, system-ui, sans-serif' }}>
       {/* ── Top Navigation Bar ────────────────────────────────────────── */}
       <header
         style={{
           height: '72px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          background: 'rgba(9, 20, 40, 0.92)',
+          borderBottom: '1px solid rgba(14, 165, 233, 0.18)',
+          background: 'rgba(255, 255, 255, 0.92)',
           backdropFilter: 'blur(12px)',
           position: 'sticky',
           top: 0,
@@ -70,10 +70,10 @@ export default function RootLanding() {
             <Droplets size={24} />
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: '1.25rem', color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+            <div style={{ fontWeight: 800, fontSize: '1.25rem', color: '#0c2340', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
               Jal<span style={{ color: '#38bdf8' }}>Rakshak</span>
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#cbd5e1', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>
+            <div style={{ fontSize: '0.72rem', color: '#475569', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>
               Water Safety Platform
             </div>
           </div>
@@ -86,14 +86,14 @@ export default function RootLanding() {
             style={{
               padding: '8px 14px',
               fontSize: '0.9rem',
-              color: '#cbd5e1',
+              color: '#475569',
               textDecoration: 'none',
               borderRadius: '8px',
               fontWeight: 500,
               transition: 'color 0.2s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0284c7')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
           >
             Dashboard
           </Link>
@@ -102,14 +102,14 @@ export default function RootLanding() {
             style={{
               padding: '8px 14px',
               fontSize: '0.9rem',
-              color: '#cbd5e1',
+              color: '#475569',
               textDecoration: 'none',
               borderRadius: '8px',
               fontWeight: 500,
               transition: 'color 0.2s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0284c7')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
           >
             Water Map
           </Link>
@@ -118,14 +118,14 @@ export default function RootLanding() {
             style={{
               padding: '8px 14px',
               fontSize: '0.9rem',
-              color: '#cbd5e1',
+              color: '#475569',
               textDecoration: 'none',
               borderRadius: '8px',
               fontWeight: 500,
               transition: 'color 0.2s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0284c7')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
           >
             Alerts
           </Link>
@@ -134,14 +134,14 @@ export default function RootLanding() {
             style={{
               padding: '8px 14px',
               fontSize: '0.9rem',
-              color: '#cbd5e1',
+              color: '#475569',
               textDecoration: 'none',
               borderRadius: '8px',
               fontWeight: 500,
               transition: 'color 0.2s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#cbd5e1')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0284c7')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#475569')}
           >
             Explorer
           </Link>
@@ -219,7 +219,7 @@ export default function RootLanding() {
             lineHeight: 1.18,
             letterSpacing: '-0.03em',
             marginBottom: '22px',
-            color: '#ffffff',
+            color: '#0c2340',
           }}
         >
           Clean & Safe Drinking Water <br />
@@ -238,7 +238,7 @@ export default function RootLanding() {
         <p
           style={{
             fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
-            color: '#cbd5e1',
+            color: '#475569',
             lineHeight: 1.65,
             maxWidth: '700px',
             margin: '0 auto 36px',
@@ -298,20 +298,20 @@ export default function RootLanding() {
               borderRadius: '12px',
               fontSize: '1rem',
               fontWeight: 600,
-              background: 'rgba(255, 255, 255, 0.08)',
-              color: '#ffffff',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              background: 'rgba(14, 165, 233, 0.08)',
+              color: '#0c2340',
+              border: '1px solid rgba(14, 165, 233, 0.3)',
               cursor: 'pointer',
               transition: 'all 0.15s',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
+              e.currentTarget.style.background = 'rgba(14, 165, 233, 0.15)';
               e.currentTarget.style.borderColor = '#38bdf8';
               e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.background = 'rgba(14, 165, 233, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.3)';
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
@@ -334,16 +334,16 @@ export default function RootLanding() {
             style={{
               padding: '24px',
               textAlign: 'center',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               borderRadius: '16px',
-              border: '1px solid rgba(56, 189, 248, 0.2)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(14, 165, 233, 0.2)',
+              boxShadow: '0 4px 20px rgba(14, 165, 233, 0.1)',
             }}
           >
             <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#38bdf8', marginBottom: '4px' }}>
               {stats?.total_samples ? stats.total_samples.toLocaleString('en-IN') : '55,000+'}
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: 500 }}>
+            <div style={{ fontSize: '0.9rem', color: '#475569', fontWeight: 500 }}>
               Water Samples Tested
             </div>
           </div>
@@ -352,16 +352,16 @@ export default function RootLanding() {
             style={{
               padding: '24px',
               textAlign: 'center',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               borderRadius: '16px',
-              border: '1px solid rgba(56, 189, 248, 0.2)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(14, 165, 233, 0.2)',
+              boxShadow: '0 4px 20px rgba(14, 165, 233, 0.1)',
             }}
           >
             <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#60a5fa', marginBottom: '4px' }}>
               {stats?.total_states ?? 36}
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: 500 }}>
+            <div style={{ fontSize: '0.9rem', color: '#475569', fontWeight: 500 }}>
               States & UTs Covered
             </div>
           </div>
@@ -370,16 +370,16 @@ export default function RootLanding() {
             style={{
               padding: '24px',
               textAlign: 'center',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               borderRadius: '16px',
-              border: '1px solid rgba(56, 189, 248, 0.2)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+              border: '1px solid rgba(14, 165, 233, 0.2)',
+              boxShadow: '0 4px 20px rgba(14, 165, 233, 0.1)',
             }}
           >
             <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#93c5fd', marginBottom: '4px' }}>
               {stats?.total_districts ?? 533}
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: 500 }}>
+            <div style={{ fontSize: '0.9rem', color: '#475569', fontWeight: 500 }}>
               Districts Monitored
             </div>
           </div>
@@ -388,16 +388,16 @@ export default function RootLanding() {
             style={{
               padding: '24px',
               textAlign: 'center',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               borderRadius: '16px',
               border: '1px solid rgba(16, 185, 129, 0.25)',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+              boxShadow: '0 4px 20px rgba(14, 165, 233, 0.1)',
             }}
           >
             <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#34d399', marginBottom: '4px' }}>
               {stats?.safe_percentage ? `${stats.safe_percentage}%` : '42.8%'}
             </div>
-            <div style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: 500 }}>
+            <div style={{ fontSize: '0.9rem', color: '#475569', fontWeight: 500 }}>
               Safe Drinking Index
             </div>
           </div>
@@ -407,10 +407,10 @@ export default function RootLanding() {
       {/* ── Simple Role Portals ──────────────────────────────────────── */}
       <section style={{ maxWidth: '1100px', margin: '0 auto 70px', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-          <h2 style={{ fontSize: '1.85rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+          <h2 style={{ fontSize: '1.85rem', fontWeight: 700, color: '#0c2340', marginBottom: '8px' }}>
             Choose Your Portal
           </h2>
-          <p style={{ color: '#cbd5e1', fontSize: '1rem' }}>
+          <p style={{ color: '#475569', fontSize: '1rem' }}>
             Access tailored dashboards based on your role in the water safety network
           </p>
         </div>
@@ -430,9 +430,9 @@ export default function RootLanding() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               border: '1px solid rgba(16, 185, 129, 0.3)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+              boxShadow: '0 8px 24px rgba(14, 165, 233, 0.12)',
               transition: 'transform 0.2s, border-color 0.2s',
             }}
             onMouseEnter={e => {
@@ -460,10 +460,10 @@ export default function RootLanding() {
               >
                 <Users size={24} />
               </div>
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0c2340', marginBottom: '8px' }}>
                 Citizen Portal
               </h3>
-              <p style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
+              <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
                 Look up water quality in your district, view recent lab test results, and check active contamination alerts.
               </p>
             </div>
@@ -494,9 +494,9 @@ export default function RootLanding() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               border: '1px solid rgba(56, 189, 248, 0.25)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+              boxShadow: '0 8px 24px rgba(14, 165, 233, 0.12)',
               transition: 'transform 0.2s, border-color 0.2s',
             }}
             onMouseEnter={e => {
@@ -524,10 +524,10 @@ export default function RootLanding() {
               >
                 <Briefcase size={24} />
               </div>
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0c2340', marginBottom: '8px' }}>
                 Field Worker Portal
               </h3>
-              <p style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
+              <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
                 Collect field samples, input field test kit (FTK) measurements, and record GPS verified water sources.
               </p>
             </div>
@@ -560,9 +560,9 @@ export default function RootLanding() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              background: '#0c1e3e',
+              background: 'rgba(255, 255, 255, 0.8)',
               border: '1px solid rgba(168, 85, 247, 0.25)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+              boxShadow: '0 8px 24px rgba(14, 165, 233, 0.12)',
               transition: 'transform 0.2s, border-color 0.2s',
             }}
             onMouseEnter={e => {
@@ -590,10 +590,10 @@ export default function RootLanding() {
               >
                 <BarChart3 size={24} />
               </div>
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0c2340', marginBottom: '8px' }}>
                 Official & Analyst Portal
               </h3>
-              <p style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
+              <p style={{ color: '#475569', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
                 State and district level analytics, chemical contamination trends, and laboratory audit management.
               </p>
             </div>
@@ -626,14 +626,14 @@ export default function RootLanding() {
           maxWidth: '1100px',
           margin: '0 auto 70px',
           padding: '40px 20px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          borderTop: '1px solid rgba(14, 165, 233, 0.18)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '1.85rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
+          <h2 style={{ fontSize: '1.85rem', fontWeight: 700, color: '#0c2340', marginBottom: '8px' }}>
             Built for National Drinking Water Safety
           </h2>
-          <p style={{ color: '#cbd5e1', fontSize: '1rem' }}>
+          <p style={{ color: '#475569', fontSize: '1rem' }}>
             Ensuring every household receives water meeting Indian Standards
           </p>
         </div>
@@ -662,10 +662,10 @@ export default function RootLanding() {
               <CheckCircle2 size={22} />
             </div>
             <div>
-              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#ffffff', marginBottom: '4px' }}>
+              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', marginBottom: '4px' }}>
                 IS 10500:2012 Compliance
               </h4>
-              <p style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.55 }}>
                 Evaluates parameters including pH, TDS, Turbidity, Arsenic, Fluoride, and Coliform.
               </p>
             </div>
@@ -688,10 +688,10 @@ export default function RootLanding() {
               <AlertTriangle size={22} />
             </div>
             <div>
-              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#ffffff', marginBottom: '4px' }}>
+              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', marginBottom: '4px' }}>
                 Early Hazard Alerts
               </h4>
-              <p style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.55 }}>
                 Instant notifications for chemical contamination and crucial 'Do Not Boil' warnings.
               </p>
             </div>
@@ -714,10 +714,10 @@ export default function RootLanding() {
               <MapPin size={22} />
             </div>
             <div>
-              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#ffffff', marginBottom: '4px' }}>
+              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', marginBottom: '4px' }}>
                 Geospatial Mapping
               </h4>
-              <p style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.55 }}>
                 Interactive map displaying water quality safe zones and contamination hotspots.
               </p>
             </div>
@@ -740,10 +740,10 @@ export default function RootLanding() {
               <FileText size={22} />
             </div>
             <div>
-              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#ffffff', marginBottom: '4px' }}>
+              <h4 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#0c2340', marginBottom: '4px' }}>
                 Open Data & Reports
               </h4>
-              <p style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.55 }}>
                 Transparent laboratory records accessible to citizens, researchers, and authorities.
               </p>
             </div>
@@ -754,11 +754,12 @@ export default function RootLanding() {
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <footer
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          background: '#060e1d',
+          borderTop: '1px solid rgba(14, 165, 233, 0.22)',
+          background: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(12px)',
           padding: '40px 20px',
           fontSize: '0.88rem',
-          color: '#cbd5e1',
+          color: '#475569',
         }}
       >
         <div
@@ -773,35 +774,35 @@ export default function RootLanding() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Droplets size={20} style={{ color: '#38bdf8' }} />
+            <Droplets size={20} style={{ color: '#0284c7' }} />
             <div>
-              <span style={{ fontWeight: 700, color: '#ffffff' }}>JalRakshak</span> — National Drinking Water Quality Surveillance
+              <span style={{ fontWeight: 700, color: '#0c2340' }}>JalRakshak</span> — National Drinking Water Quality Surveillance
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Link to="/citizen/dashboard" style={{ color: '#cbd5e1', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#ffffff'} onMouseLeave={e => e.currentTarget.style.color = '#cbd5e1'}>
+            <Link to="/citizen/dashboard" style={{ color: '#475569', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#0284c7'} onMouseLeave={e => e.currentTarget.style.color = '#475569'}>
               Citizen Dashboard
             </Link>
-            <Link to="/citizen/map" style={{ color: '#cbd5e1', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#ffffff'} onMouseLeave={e => e.currentTarget.style.color = '#cbd5e1'}>
+            <Link to="/citizen/map" style={{ color: '#475569', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#0284c7'} onMouseLeave={e => e.currentTarget.style.color = '#475569'}>
               Water Map
             </Link>
-            <Link to="/citizen/alerts" style={{ color: '#cbd5e1', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#ffffff'} onMouseLeave={e => e.currentTarget.style.color = '#cbd5e1'}>
+            <Link to="/citizen/alerts" style={{ color: '#475569', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#0284c7'} onMouseLeave={e => e.currentTarget.style.color = '#475569'}>
               Alerts
             </Link>
             <button
               type="button"
               onClick={() => openSignIn('citizen')}
               style={{
-                color: '#cbd5e1',
+                color: '#475569',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
                 fontSize: '0.88rem',
                 padding: 0,
               }}
-              onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
-              onMouseLeave={e => e.currentTarget.style.color = '#cbd5e1'}
+              onMouseEnter={e => e.currentTarget.style.color = '#0284c7'}
+              onMouseLeave={e => e.currentTarget.style.color = '#475569'}
             >
               Sign In
             </button>
@@ -813,10 +814,10 @@ export default function RootLanding() {
             maxWidth: '1100px',
             margin: '20px auto 0',
             paddingTop: '20px',
-            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+            borderTop: '1px solid rgba(14, 165, 233, 0.15)',
             textAlign: 'center',
             fontSize: '0.8rem',
-            color: '#94a3b8',
+            color: '#64748b',
           }}
         >
           Department of Drinking Water & Sanitation · Jal Jeevan Mission · National Water Quality Monitoring

@@ -68,7 +68,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--color-bg-soft)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--color-bg)' }}>
       {/* Top Navbar */}
       <style>{`
         @media print {
@@ -77,10 +77,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }
         .topbar {
           height: 72px;
-          background: rgba(9, 20, 40, 0.7);
+          background: rgba(255, 255, 255, 0.85);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          border-bottom: 1px solid rgba(14, 165, 233, 0.18);
           display: flex;
           align-items: center;
           padding: 0 24px;
@@ -90,11 +90,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           right: 0;
           z-index: 101;
           justify-content: space-between;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 20px rgba(14, 165, 233, 0.08);
         }
         .search-bar {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(14, 165, 233, 0.06);
+          border: 1px solid rgba(14, 165, 233, 0.2);
           border-radius: 9999px;
           padding: 8px 16px;
           display: flex;
@@ -105,8 +105,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }
         .search-bar:focus-within {
           border-color: var(--color-primary);
-          box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.15);
-          background: rgba(12, 30, 62, 0.6);
+          box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+          background: rgba(255, 255, 255, 0.9);
         }
         .search-bar input {
           background: transparent;
@@ -175,9 +175,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Sidebar - Hide when printing */}
       <aside className="no-print" style={{
         width: 260,
-        background: 'rgba(9, 20, 40, 0.7)',
+        background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(16px)',
-        borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRight: '1px solid rgba(14, 165, 233, 0.15)',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
@@ -185,6 +185,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         left: 0,
         bottom: 0,
         zIndex: 100,
+        boxShadow: '4px 0 20px rgba(14, 165, 233, 0.06)',
       }}>
         {/* Nav */}
         <nav style={{ padding: '24px 16px', flex: 1, overflowY: 'auto' }}>
@@ -232,14 +233,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Bottom Graphic */}
-        <div style={{ padding: '32px 24px', textAlign: 'center', background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0, 210, 255, 0.05) 100%)', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <div style={{ padding: '32px 24px', textAlign: 'center', background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(14, 165, 233, 0.07) 100%)', borderTop: '1px solid rgba(14, 165, 233, 0.12)' }}>
           <div style={{ color: 'var(--color-primary)', marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
             <svg width="32" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
           </div>
           <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', lineHeight: 1.5 }}>
             Clean Water.<br/>Safe Communities.<br/>A Healthier Future.
           </div>
-          <div style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: 16 }}>
+          <div style={{ fontSize: '0.65rem', color: '#64748b', marginTop: 16 }}>
             © 2025 JalRakshak. All rights reserved.
           </div>
         </div>

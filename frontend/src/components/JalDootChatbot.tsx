@@ -97,9 +97,9 @@ export const JalDootChatbot: React.FC = () => {
             maxWidth: 'calc(100vw - 32px)',
             height: 580,
             maxHeight: '85vh',
-            background: '#0c1e3e',
+            background: 'rgba(255, 255, 255, 0.97)',
             borderRadius: 16,
-            boxShadow: '0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(56, 189, 248, 0.25)',
+            boxShadow: '0 16px 48px rgba(14, 165, 233, 0.18), 0 0 0 1px rgba(14, 165, 233, 0.25)',
             display: 'flex',
             flexDirection: 'column',
             zIndex: 9999,
@@ -111,8 +111,8 @@ export const JalDootChatbot: React.FC = () => {
           <div
             style={{
               padding: '16px 20px',
-              background: 'linear-gradient(135deg, #091733 0%, #0f2752 100%)',
-              borderBottom: '1px solid rgba(56, 189, 248, 0.2)',
+              background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+              borderBottom: '1px solid rgba(14, 165, 233, 0.2)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -135,7 +135,7 @@ export const JalDootChatbot: React.FC = () => {
                 <Bot size={22} />
               </div>
               <div>
-                <div style={{ fontWeight: 700, fontSize: '1.05rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span>JalDoot</span>
                   <span
                     style={{
@@ -150,16 +150,16 @@ export const JalDootChatbot: React.FC = () => {
                     AI GUIDE
                   </span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Your guide to safer drinking water</div>
+                <div style={{ fontSize: '0.8rem', color: '#475569' }}>Your guide to safer drinking water</div>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close chat"
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
+                background: 'rgba(14, 165, 233, 0.1)',
                 border: 'none',
-                color: '#cbd5e1',
+                color: '#0284c7',
                 cursor: 'pointer',
                 width: 32,
                 height: 32,
@@ -170,12 +170,12 @@ export const JalDootChatbot: React.FC = () => {
                 transition: 'background 0.15s, color 0.15s',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.18)';
-                e.currentTarget.style.color = '#ffffff';
+                e.currentTarget.style.background = 'rgba(14, 165, 233, 0.2)';
+                e.currentTarget.style.color = '#0c2340';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.color = '#cbd5e1';
+                e.currentTarget.style.background = 'rgba(14, 165, 233, 0.1)';
+                e.currentTarget.style.color = '#0284c7';
               }}
             >
               <X size={18} />
@@ -188,7 +188,7 @@ export const JalDootChatbot: React.FC = () => {
               flex: 1,
               overflowY: 'auto',
               padding: 16,
-              background: '#091428',
+              background: '#f0f9ff',
               display: 'flex',
               flexDirection: 'column',
               gap: 14,
@@ -200,10 +200,10 @@ export const JalDootChatbot: React.FC = () => {
                 textAlign: 'center',
                 padding: '10px 14px',
                 borderRadius: 10,
-                background: 'rgba(56, 189, 248, 0.06)',
-                border: '1px solid rgba(56, 189, 248, 0.15)',
+                background: 'rgba(14, 165, 233, 0.06)',
+                border: '1px solid rgba(14, 165, 233, 0.15)',
                 fontSize: '0.82rem',
-                color: '#cbd5e1',
+                color: '#475569',
                 lineHeight: 1.45,
               }}
             >
@@ -223,14 +223,14 @@ export const JalDootChatbot: React.FC = () => {
                     borderRadius: isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                     background: isUser
                       ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
-                      : '#13274f',
-                    color: '#ffffff',
+                      : 'rgba(255, 255, 255, 0.9)',
+                    color: isUser ? '#ffffff' : '#0f172a',
                     border: isUser
-                      ? '1px solid rgba(56, 189, 248, 0.4)'
-                      : '1px solid rgba(56, 189, 248, 0.2)',
+                      ? '1px solid rgba(14, 165, 233, 0.4)'
+                      : '1px solid rgba(14, 165, 233, 0.15)',
                     fontSize: '0.92rem',
                     lineHeight: 1.55,
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+                    boxShadow: '0 2px 8px rgba(14, 165, 233, 0.1)',
                     wordBreak: 'break-word',
                   }}
                 >
@@ -266,25 +266,25 @@ export const JalDootChatbot: React.FC = () => {
                       style={{
                         textAlign: 'left',
                         padding: '10px 14px',
-                        background: '#13274f',
-                        border: '1px solid rgba(56, 189, 248, 0.25)',
+                        background: 'rgba(255, 255, 255, 0.8)',
+                        border: '1px solid rgba(14, 165, 233, 0.25)',
                         borderRadius: 10,
                         fontSize: '0.88rem',
-                        color: '#f0f9ff',
+                        color: '#0f172a',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
                         fontWeight: 500,
                         lineHeight: 1.4,
                       }}
                       onMouseEnter={e => {
-                        e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
-                        e.currentTarget.style.borderColor = '#38bdf8';
-                        e.currentTarget.style.color = '#ffffff';
+                        e.currentTarget.style.background = 'rgba(14, 165, 233, 0.12)';
+                        e.currentTarget.style.borderColor = '#0ea5e9';
+                        e.currentTarget.style.color = '#0284c7';
                       }}
                       onMouseLeave={e => {
-                        e.currentTarget.style.background = '#13274f';
-                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)';
-                        e.currentTarget.style.color = '#f0f9ff';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)';
+                        e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.25)';
+                        e.currentTarget.style.color = '#0f172a';
                       }}
                     >
                       {q}
@@ -300,8 +300,8 @@ export const JalDootChatbot: React.FC = () => {
           <div
             style={{
               padding: '14px 16px',
-              background: '#0c1e3e',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'rgba(240, 249, 255, 0.95)',
+              borderTop: '1px solid rgba(14, 165, 233, 0.15)',
               display: 'flex',
               gap: 10,
               alignItems: 'center',
@@ -316,16 +316,16 @@ export const JalDootChatbot: React.FC = () => {
               style={{
                 flex: 1,
                 padding: '11px 16px',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(14, 165, 233, 0.25)',
                 borderRadius: 24,
                 fontSize: '0.9rem',
                 outline: 'none',
-                background: '#091428',
-                color: '#ffffff',
+                background: '#ffffff',
+                color: '#0f172a',
                 fontFamily: 'Inter, system-ui, sans-serif',
               }}
-              onFocus={e => (e.currentTarget.style.borderColor = '#38bdf8')}
-              onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)')}
+              onFocus={e => (e.currentTarget.style.borderColor = '#0ea5e9')}
+              onBlur={e => (e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.25)')}
             />
             <button
               onClick={() => handleSend(inputValue)}
@@ -334,8 +334,8 @@ export const JalDootChatbot: React.FC = () => {
               style={{
                 background: inputValue.trim()
                   ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
-                  : 'rgba(255, 255, 255, 0.08)',
-                color: inputValue.trim() ? '#ffffff' : '#64748b',
+                  : 'rgba(14, 165, 233, 0.08)',
+                color: inputValue.trim() ? '#ffffff' : '#94a3b8',
                 border: 'none',
                 borderRadius: '50%',
                 width: 42,
