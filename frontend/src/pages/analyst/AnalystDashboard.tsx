@@ -210,7 +210,13 @@ export default function AnalystDashboard() {
               <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 12 }} />
               <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
               <Tooltip 
-                contentStyle={{ background: '#0f172a', borderRadius: 8, border: 'none', color: 'white' }}
+                contentStyle={{
+                  background: 'rgba(255, 255, 255, 0.96)',
+                  borderRadius: 10,
+                  border: '1px solid rgba(14, 165, 233, 0.25)',
+                  boxShadow: '0 8px 30px rgba(14, 165, 233, 0.15)',
+                  color: '#0f172a',
+                }}
               />
               <Area 
                 type="monotone" 

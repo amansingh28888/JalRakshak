@@ -128,11 +128,11 @@ export default function WorkerDashboard() {
   ];
 
   const tooltipStyle = {
-    background: 'rgba(9, 20, 40, 0.95)',
-    border: '1px solid rgba(0, 210, 255, 0.2)',
+    background: 'rgba(255, 255, 255, 0.96)',
+    border: '1px solid rgba(14, 165, 233, 0.3)',
     borderRadius: 12,
-    color: '#e0f2fe',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    color: '#0f172a',
+    boxShadow: '0 8px 32px rgba(14, 165, 233, 0.15)',
     backdropFilter: 'blur(10px)',
     padding: '10px 14px',
   };
@@ -271,7 +271,7 @@ export default function WorkerDashboard() {
       {/* ═══ Visual Field Telemetry & Sensor Picture Card ═══ */}
       <div className="card card-hover" style={{
         marginBottom: 32, padding: 0, overflow: 'hidden',
-        border: '1px solid rgba(255, 255, 255, 0.08)'
+        border: '1px solid rgba(14, 165, 233, 0.18)'
       }}>
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -291,7 +291,7 @@ export default function WorkerDashboard() {
             />
             <div style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(90deg, transparent 60%, rgba(9,20,40,0.9) 100%)',
+              background: 'linear-gradient(90deg, transparent 60%, rgba(255,255,255,0.3) 100%)',
             }} />
             <div style={{ position: 'absolute', top: 14, left: 14 }}>
               <span style={{
@@ -313,7 +313,7 @@ export default function WorkerDashboard() {
                 Field Diagnostics Kit Telemetry
               </span>
             </div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', margin: '0 0 10px 0' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0c2340', margin: '0 0 10px 0' }}>
               Real-time Electrochemical Probes
             </h3>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.88rem', lineHeight: 1.5, margin: '0 0 20px 0' }}>
@@ -324,22 +324,22 @@ export default function WorkerDashboard() {
               display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10,
               marginBottom: 20, textAlign: 'center'
             }}>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                 <div style={{ fontSize: '0.68rem', color: 'var(--color-text-secondary)' }}>Water Temp</div>
                 <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0ea5e9', marginTop: 2 }}>16.8°C</div>
                 <div style={{ fontSize: '0.65rem', color: '#10b981' }}>Normal</div>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                 <div style={{ fontSize: '0.68rem', color: 'var(--color-text-secondary)' }}>Field pH</div>
                 <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#10b981', marginTop: 2 }}>7.81</div>
                 <div style={{ fontSize: '0.65rem', color: '#10b981' }}>Alkaline</div>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                 <div style={{ fontSize: '0.68rem', color: 'var(--color-text-secondary)' }}>Dissolved O₂</div>
                 <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#00d2ff', marginTop: 2 }}>8.4 mg/L</div>
                 <div style={{ fontSize: '0.65rem', color: '#00d2ff' }}>High Purity</div>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 6px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                 <div style={{ fontSize: '0.68rem', color: 'var(--color-text-secondary)' }}>Conductivity</div>
                 <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#8b5cf6', marginTop: 2 }}>188 µS/cm</div>
                 <div style={{ fontSize: '0.65rem', color: '#8b5cf6' }}>Standard</div>
@@ -375,7 +375,7 @@ export default function WorkerDashboard() {
         <div className="card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0c2340', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <BarChart2 size={18} color="var(--color-primary)" />
                 Weekly Collection Cadence
               </h3>
@@ -387,9 +387,9 @@ export default function WorkerDashboard() {
           <div style={{ width: '100%', height: 260 }}>
             <ResponsiveContainer>
               <BarChart data={weeklyTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="day" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" />
+                <XAxis dataKey="day" stroke="#64748b" tick={{ fill: '#475569', fontSize: 12 }} />
+                <YAxis stroke="#64748b" tick={{ fill: '#475569', fontSize: 12 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Bar dataKey="safe" name="Safe Samples" fill="#10b981" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="critical" name="Flagged Hazards" fill="#ef4444" radius={[4, 4, 0, 0]} />
@@ -402,7 +402,7 @@ export default function WorkerDashboard() {
         <div className="card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0c2340', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <ShieldCheck size={18} color="#10b981" />
                 Sample Severity Distribution
               </h3>
@@ -429,7 +429,7 @@ export default function WorkerDashboard() {
                 </Pie>
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend
-                  formatter={value => <span style={{ color: '#cbd5e1', fontSize: '0.8rem' }}>{value}</span>}
+                  formatter={value => <span style={{ color: '#475569', fontSize: '0.8rem' }}>{value}</span>}
                   wrapperStyle={{ paddingTop: 10 }}
                 />
               </PieChart>
@@ -441,7 +441,7 @@ export default function WorkerDashboard() {
         <div className="card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0c2340', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <TrendingUp size={18} color="#8b5cf6" />
                 Multi-Parameter Quality Index
               </h3>
@@ -453,8 +453,8 @@ export default function WorkerDashboard() {
           <div style={{ width: '100%', height: 260 }}>
             <ResponsiveContainer>
               <RadarChart cx="50%" cy="50%" outerRadius={85} data={radarData}>
-                <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                <PolarAngleAxis dataKey="parameter" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <PolarGrid stroke="rgba(14, 165, 233, 0.15)" />
+                <PolarAngleAxis dataKey="parameter" tick={{ fill: '#475569', fontSize: 11 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#64748b" tick={{ fill: '#64748b', fontSize: 10 }} />
                 <Radar name="Quality Score" dataKey="score" stroke="#00d2ff" fill="#00d2ff" fillOpacity={0.35} />
                 <Tooltip contentStyle={tooltipStyle} />
@@ -466,7 +466,7 @@ export default function WorkerDashboard() {
         {/* Collection Target & Speed Progress */}
         <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0c2340', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
               <Zap size={18} color="#f59e0b" />
               Monthly Field Milestone Progress
             </h3>
@@ -476,30 +476,30 @@ export default function WorkerDashboard() {
 
             <div style={{ marginBottom: 18 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: 6 }}>
-                <span style={{ color: '#cbd5e1' }}>Samples Audited: {stats.total || 24} / 30</span>
+                <span style={{ color: '#334155', fontWeight: 600 }}>Samples Audited: {stats.total || 24} / 30</span>
                 <span style={{ color: 'var(--color-primary)', fontWeight: 700 }}>80% Complete</span>
               </div>
-              <div style={{ height: 10, background: 'rgba(255,255,255,0.05)', borderRadius: 5, overflow: 'hidden' }}>
+              <div style={{ height: 10, background: 'rgba(14, 165, 233, 0.12)', borderRadius: 5, overflow: 'hidden' }}>
                 <div style={{ width: '80%', height: '100%', background: 'linear-gradient(90deg, #0ea5e9, #00d2ff)', borderRadius: 5 }} />
               </div>
             </div>
 
             <div style={{ marginBottom: 18 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: 6 }}>
-                <span style={{ color: '#cbd5e1' }}>Safe Well Clearances</span>
+                <span style={{ color: '#334155', fontWeight: 600 }}>Safe Well Clearances</span>
                 <span style={{ color: '#10b981', fontWeight: 700 }}>92% Passed</span>
               </div>
-              <div style={{ height: 10, background: 'rgba(255,255,255,0.05)', borderRadius: 5, overflow: 'hidden' }}>
+              <div style={{ height: 10, background: 'rgba(14, 165, 233, 0.12)', borderRadius: 5, overflow: 'hidden' }}>
                 <div style={{ width: '92%', height: '100%', background: 'linear-gradient(90deg, #10b981, #059669)', borderRadius: 5 }} />
               </div>
             </div>
 
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: 6 }}>
-                <span style={{ color: '#cbd5e1' }}>Lab Chain-of-Custody Sync</span>
+                <span style={{ color: '#334155', fontWeight: 600 }}>Lab Chain-of-Custody Sync</span>
                 <span style={{ color: '#8b5cf6', fontWeight: 700 }}>100% Synced</span>
               </div>
-              <div style={{ height: 10, background: 'rgba(255,255,255,0.05)', borderRadius: 5, overflow: 'hidden' }}>
+              <div style={{ height: 10, background: 'rgba(14, 165, 233, 0.12)', borderRadius: 5, overflow: 'hidden' }}>
                 <div style={{ width: '100%', height: '100%', background: 'linear-gradient(90deg, #8b5cf6, #6d28d9)', borderRadius: 5 }} />
               </div>
             </div>
@@ -510,7 +510,7 @@ export default function WorkerDashboard() {
             border: '1px solid rgba(0,210,255,0.15)', marginTop: 20,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between'
           }}>
-            <span style={{ fontSize: '0.82rem', color: '#cbd5e1' }}>Offline cache: 0 pending</span>
+            <span style={{ fontSize: '0.82rem', color: '#475569', fontWeight: 500 }}>Offline cache: 0 pending</span>
             <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
               <CheckCircle size={14} /> Cloud Synchronized
             </span>
@@ -525,7 +525,7 @@ export default function WorkerDashboard() {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between'
         }}>
           <div>
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', margin: '0 0 2px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0c2340', margin: '0 0 2px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
               <Droplets size={18} color="var(--color-primary)" />
               Recent Field Submissions
             </h2>
@@ -579,7 +579,7 @@ export default function WorkerDashboard() {
                         {s.sample_id}
                       </td>
                       <td>
-                        <div style={{ fontWeight: 600, color: '#fff' }}>{s.village || 'Sampling Point'}</div>
+                        <div style={{ fontWeight: 600, color: '#0c2340' }}>{s.village || 'Sampling Point'}</div>
                         <div style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)' }}>
                           {s.district || profile?.district}, {s.state_ut || profile?.state_ut}
                         </div>
@@ -593,9 +593,9 @@ export default function WorkerDashboard() {
                       <td>
                         <span style={{
                           fontSize: '0.78rem', fontWeight: 600,
-                          color: '#e0f2fe', background: 'rgba(255,255,255,0.05)',
+                          color: '#0284c7', background: 'rgba(14, 165, 233, 0.08)',
                           padding: '3px 10px', borderRadius: 12,
-                          border: '1px solid rgba(255,255,255,0.1)'
+                          border: '1px solid rgba(14, 165, 233, 0.2)'
                         }}>
                           {s.alert_category?.replace(/_/g, ' ')}
                         </span>

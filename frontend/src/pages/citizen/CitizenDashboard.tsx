@@ -106,7 +106,7 @@ function SafetyGauge({ percentage }: { percentage: number }) {
             </feMerge>
           </filter>
         </defs>
-        <circle cx="100" cy="100" r={radius} fill="none" stroke="rgba(255,255,255,0.05)"
+        <circle cx="100" cy="100" r={radius} fill="none" stroke="rgba(14, 165, 233, 0.1)"
           strokeWidth={stroke} />
         <circle cx="100" cy="100" r={radius} fill="none" stroke="url(#gaugeGrad)"
           strokeWidth={stroke} strokeLinecap="round"
@@ -479,11 +479,11 @@ export default function CitizenDashboard() {
 
   // Chart tooltip style
   const tooltipStyle = {
-    background: 'rgba(9, 20, 40, 0.95)',
-    border: '1px solid rgba(0, 210, 255, 0.2)',
+    background: 'rgba(255, 255, 255, 0.96)',
+    border: '1px solid rgba(14, 165, 233, 0.3)',
     borderRadius: 12,
-    color: '#e0f2fe',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    color: '#0f172a',
+    boxShadow: '0 8px 32px rgba(14, 165, 233, 0.15)',
     backdropFilter: 'blur(10px)',
     padding: '12px 16px',
   };
@@ -567,7 +567,7 @@ export default function CitizenDashboard() {
               <Activity size={22} color="#fff" />
             </div>
             <div>
-              <h1 style={{ fontSize: '1.6rem', color: '#fff', margin: 0 }}>
+              <h1 style={{ fontSize: '1.6rem', color: '#0c2340', margin: 0 }}>
                 {selectedDistrict
                   ? `${selectedDistrict}, ${selectedState}`
                   : selectedState
@@ -580,7 +580,7 @@ export default function CitizenDashboard() {
                   {selectedDistrict ? `${selectedDistrict} District, ${selectedState}` : selectedState ? `${selectedState} State Analytics` : 'All-India Surveillance (36 States & UTs)'}
                 </span>
                 {summary && (
-                  <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: 12, color: 'var(--color-primary)' }}>
+                  <span style={{ fontSize: '0.75rem', background: 'rgba(14, 165, 233, 0.1)', padding: '2px 8px', borderRadius: 12, color: 'var(--color-primary)' }}>
                     {summary.total_samples.toLocaleString()} verified samples
                   </span>
                 )}
@@ -619,7 +619,7 @@ export default function CitizenDashboard() {
       <div className="card" style={{
         padding: '20px 24px',
         marginBottom: 24,
-        background: notifications.some(n => !n.is_read) ? 'rgba(220, 38, 38, 0.08)' : 'rgba(15, 23, 42, 0.75)',
+        background: notifications.some(n => !n.is_read) ? 'rgba(220, 38, 38, 0.08)' : 'rgba(255, 255, 255, 0.85)',
         border: notifications.some(n => !n.is_read) ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(14, 165, 233, 0.25)',
         backdropFilter: 'blur(12px)',
         borderRadius: 16,
@@ -808,9 +808,10 @@ export default function CitizenDashboard() {
       <div className="card" style={{
         padding: '16px 20px',
         marginBottom: 24,
-        background: 'rgba(9, 20, 40, 0.7)',
+        background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(0, 210, 255, 0.2)',
+        border: '1px solid rgba(14, 165, 233, 0.22)',
+        boxShadow: '0 4px 20px rgba(14, 165, 233, 0.06)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -818,7 +819,7 @@ export default function CitizenDashboard() {
         gap: 16
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#38bdf8', fontSize: '0.85rem', fontWeight: 700 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#0284c7', fontSize: '0.85rem', fontWeight: 700 }}>
             <Filter size={16} /> Filter Geographic Scope:
           </div>
 
@@ -830,9 +831,9 @@ export default function CitizenDashboard() {
               setSelectedDistrict('');
             }}
             style={{
-              background: !selectedState ? 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' : 'rgba(255,255,255,0.06)',
-              color: !selectedState ? '#fff' : 'var(--color-text-secondary)',
-              border: '1px solid ' + (!selectedState ? 'transparent' : 'rgba(255,255,255,0.1)'),
+              background: !selectedState ? 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' : 'rgba(14, 165, 233, 0.08)',
+              color: !selectedState ? '#fff' : 'var(--color-text)',
+              border: '1px solid ' + (!selectedState ? 'transparent' : 'rgba(14, 165, 233, 0.2)'),
               borderRadius: 8,
               padding: '6px 14px',
               fontSize: '0.82rem',
@@ -858,9 +859,9 @@ export default function CitizenDashboard() {
               style={{
                 background: selectedState === userHomeState && (!userHomeDistrict || selectedDistrict === userHomeDistrict)
                   ? 'linear-gradient(135deg, #10b981, #059669)'
-                  : 'rgba(255,255,255,0.06)',
-                color: selectedState === userHomeState ? '#fff' : 'var(--color-text-secondary)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                  : 'rgba(14, 165, 233, 0.08)',
+                color: selectedState === userHomeState ? '#fff' : 'var(--color-text)',
+                border: '1px solid ' + (selectedState === userHomeState ? 'transparent' : 'rgba(14, 165, 233, 0.2)'),
                 borderRadius: 8,
                 padding: '6px 14px',
                 fontSize: '0.82rem',
@@ -886,9 +887,9 @@ export default function CitizenDashboard() {
               }}
               aria-label="Select State or Union Territory"
               style={{
-                background: '#0a192f',
-                color: '#e2e8f0',
-                border: '1px solid rgba(0, 210, 255, 0.3)',
+                background: '#ffffff',
+                color: '#0f172a',
+                border: '1px solid rgba(14, 165, 233, 0.3)',
                 borderRadius: 8,
                 padding: '6px 12px',
                 fontSize: '0.85rem',
@@ -913,9 +914,9 @@ export default function CitizenDashboard() {
                 onChange={e => setSelectedDistrict(e.target.value)}
                 aria-label={`Select District in ${selectedState}`}
                 style={{
-                  background: '#0a192f',
-                  color: '#e2e8f0',
-                  border: '1px solid rgba(0, 210, 255, 0.3)',
+                  background: '#ffffff',
+                  color: '#0f172a',
+                  border: '1px solid rgba(14, 165, 233, 0.3)',
                   borderRadius: 8,
                   padding: '6px 12px',
                   fontSize: '0.85rem',
@@ -937,16 +938,16 @@ export default function CitizenDashboard() {
         {/* Active Scope Badge */}
         <div style={{
           fontSize: '0.75rem',
-          color: selectedState ? '#38bdf8' : '#94a3b8',
-          background: selectedState ? 'rgba(56, 189, 248, 0.1)' : 'rgba(255,255,255,0.05)',
+          color: selectedState ? '#0284c7' : '#475569',
+          background: selectedState ? 'rgba(14, 165, 233, 0.12)' : 'rgba(14, 165, 233, 0.06)',
           padding: '4px 12px',
           borderRadius: 20,
-          border: '1px solid ' + (selectedState ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255,255,255,0.08)'),
+          border: '1px solid ' + (selectedState ? 'rgba(14, 165, 233, 0.3)' : 'rgba(14, 165, 233, 0.15)'),
           display: 'flex',
           alignItems: 'center',
           gap: 6
         }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: selectedState ? '#38bdf8' : '#10b981' }} />
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: selectedState ? '#0284c7' : '#10b981' }} />
           Active Dataset: <strong>{selectedDistrict ? `${selectedDistrict}, ${selectedState}` : selectedState ? selectedState : 'National (All-India)'}</strong>
         </div>
       </div>
@@ -1135,7 +1136,7 @@ export default function CitizenDashboard() {
             <div className="card" style={{ padding: '24px 28px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                 <div>
-                  <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+                  <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                     Monthly Quality Trends
                   </h3>
                   <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0 }}>
@@ -1144,8 +1145,8 @@ export default function CitizenDashboard() {
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: 20, background: 'rgba(0,210,255,0.15)', color: 'var(--color-primary)', fontWeight: 600 }}>12M</span>
-                  <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: 20, background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>6M</span>
-                  <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: 20, background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>3M</span>
+                  <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: 20, background: 'rgba(14, 165, 233, 0.08)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>6M</span>
+                  <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: 20, background: 'rgba(14, 165, 233, 0.08)', color: 'var(--color-text-secondary)', fontWeight: 600 }}>3M</span>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={280}>
@@ -1168,16 +1169,16 @@ export default function CitizenDashboard() {
                       <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                  <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} />
-                  <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" />
+                  <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(14, 165, 233, 0.15)' }} />
+                  <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(14, 165, 233, 0.15)' }} />
                   <Tooltip contentStyle={tooltipStyle} formatter={(val: any) => [Number(val).toLocaleString(), '']} />
                   <Area type="monotone" dataKey="safe" stroke="#10b981" fill="url(#gradSafe2)" strokeWidth={2} name="Safe" />
                   <Area type="monotone" dataKey="chemical" stroke="#ef4444" fill="url(#gradChem2)" strokeWidth={2} name="Chemical" />
                   <Area type="monotone" dataKey="biological" stroke="#f97316" fill="url(#gradBio2)" strokeWidth={2} name="Biological" />
                   <Area type="monotone" dataKey="physical" stroke="#eab308" fill="url(#gradPhys2)" strokeWidth={2} name="Physical" />
                   <Legend
-                    formatter={(value: string) => <span style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 500 }}>{value}</span>}
+                    formatter={(value: string) => <span style={{ color: '#475569', fontSize: '0.78rem', fontWeight: 500 }}>{value}</span>}
                     iconType="circle" iconSize={8}
                   />
                 </AreaChart>
@@ -1186,7 +1187,7 @@ export default function CitizenDashboard() {
 
             {/* Radar Chart */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 Contamination Profile
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 16 }}>
@@ -1194,8 +1195,8 @@ export default function CitizenDashboard() {
               </p>
               <ResponsiveContainer width="100%" height={280}>
                 <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
-                  <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                  <PolarAngleAxis dataKey="param" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                  <PolarGrid stroke="rgba(14, 165, 233, 0.15)" />
+                  <PolarAngleAxis dataKey="param" tick={{ fill: '#475569', fontSize: 12 }} />
                   <PolarRadiusAxis tick={{ fill: '#64748b', fontSize: 10 }} />
                   <Radar name="Contamination" dataKey="value" stroke="#00d2ff" fill="#00d2ff" fillOpacity={0.2} strokeWidth={2} />
                   <Tooltip contentStyle={tooltipStyle} />
@@ -1208,7 +1209,7 @@ export default function CitizenDashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 28 }}>
             {/* Pie Chart */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 Quality Distribution
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -1226,7 +1227,7 @@ export default function CitizenDashboard() {
                   <Tooltip contentStyle={tooltipStyle}
                     formatter={(val) => [Number(val).toLocaleString(), 'Samples']} />
                   <Legend
-                    formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 500 }}>{value}</span>}
+                    formatter={(value) => <span style={{ color: '#475569', fontSize: '0.72rem', fontWeight: 500 }}>{value}</span>}
                     iconType="circle" iconSize={8}
                   />
                 </PieChart>
@@ -1235,7 +1236,7 @@ export default function CitizenDashboard() {
 
             {/* Chemical States/Districts Bar */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 {selectedState ? `Chemical Alerts in ${selectedState}` : 'Chemical Alerts by State'}
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -1250,9 +1251,9 @@ export default function CitizenDashboard() {
                       <stop offset="100%" stopColor="#00d2ff" />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" horizontal={false} />
                   <XAxis type="number" tick={{ fill: '#64748b', fontSize: 11 }} />
-                  <YAxis type="category" dataKey="state" tick={{ fill: '#94a3b8', fontSize: 11 }} width={85} />
+                  <YAxis type="category" dataKey="state" tick={{ fill: '#475569', fontSize: 11 }} width={85} />
                   <Tooltip contentStyle={tooltipStyle}
                     formatter={(val) => [Number(val).toLocaleString(), 'Alerts']} />
                   <Bar dataKey="chemical" fill="url(#barGrad2)" radius={[0, 6, 6, 0]} barSize={16} />
@@ -1262,7 +1263,7 @@ export default function CitizenDashboard() {
 
             {/* Radial Bar */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 Category Breakdown
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -1275,7 +1276,7 @@ export default function CitizenDashboard() {
                   <Tooltip contentStyle={tooltipStyle}
                     formatter={(val: any) => [`${Number(val).toFixed(1)}%`, '']} />
                   <Legend
-                    formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 500 }}>{value}</span>}
+                    formatter={(value) => <span style={{ color: '#475569', fontSize: '0.72rem', fontWeight: 500 }}>{value}</span>}
                     iconType="circle" iconSize={8}
                   />
                 </RadialBarChart>
@@ -1287,7 +1288,7 @@ export default function CitizenDashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24, marginBottom: 28 }}>
             {/* Stacked Severity */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 {selectedState ? `Severity by District (${selectedState})` : 'Severity by State (National)'}
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -1295,7 +1296,7 @@ export default function CitizenDashboard() {
               </p>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={severityStackData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" vertical={false} />
                   <XAxis dataKey="state" tick={{ fill: '#64748b', fontSize: 10 }} />
                   <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
                   <Tooltip contentStyle={tooltipStyle} />
@@ -1304,7 +1305,7 @@ export default function CitizenDashboard() {
                   <Bar dataKey="high" stackId="sev" fill="#f97316" name="High" />
                   <Bar dataKey="critical" stackId="sev" fill="#ef4444" radius={[4, 4, 0, 0]} name="Critical" />
                   <Legend
-                    formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 500 }}>{value}</span>}
+                    formatter={(value) => <span style={{ color: '#475569', fontSize: '0.72rem', fontWeight: 500 }}>{value}</span>}
                     iconType="square" iconSize={8}
                   />
                 </BarChart>
@@ -1313,7 +1314,7 @@ export default function CitizenDashboard() {
 
             {/* Severity Distribution */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 Alert Severity
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -1321,7 +1322,7 @@ export default function CitizenDashboard() {
               </p>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={summary.severity_distribution}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" vertical={false} />
                   <XAxis dataKey="severity" tick={{ fill: '#64748b', fontSize: 11 }} />
                   <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
                   <Tooltip contentStyle={tooltipStyle}
@@ -1342,7 +1343,7 @@ export default function CitizenDashboard() {
 
             {/* Parameter Health */}
             <div className="card" style={{ padding: '24px 28px' }}>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 Parameter Health
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 16 }}>
@@ -1367,7 +1368,7 @@ export default function CitizenDashboard() {
 
           {/* ═══ Water Source Analysis ═══ */}
           <div className="card" style={{ padding: '24px 28px', marginBottom: 28 }}>
-            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
               Water Source Analysis
             </h3>
             <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 16 }}>
@@ -1383,7 +1384,7 @@ export default function CitizenDashboard() {
                     padding: '14px 18px', border: '1px solid rgba(255,255,255,0.05)'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 600 }}>{s.source || 'Unknown'}</span>
+                      <span style={{ fontSize: '0.85rem', color: '#0c2340', fontWeight: 600 }}>{s.source || 'Unknown'}</span>
                       <span style={{
                         fontSize: '0.72rem', fontWeight: 700, color,
                         background: `${color}20`, padding: '3px 10px', borderRadius: 20
@@ -1412,7 +1413,7 @@ export default function CitizenDashboard() {
       <div style={{ marginBottom: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0c2340', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
               <FlaskConical size={22} color="var(--color-primary)" />
               Water Quality Analysis & Purification Infrastructure
             </h3>
@@ -1439,7 +1440,7 @@ export default function CitizenDashboard() {
           gap: 24,
         }}>
           {/* Picture Card 1: Spectrometry Lab */}
-          <div className="card card-hover" style={{ overflow: 'hidden', padding: 0, border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="card card-hover" style={{ overflow: 'hidden', padding: 0, border: '1px solid rgba(14, 165, 233, 0.18)' }}>
             <div style={{ position: 'relative', height: 220, overflow: 'hidden' }}>
               <img
                 src="/water_lab_analysis.jpg"
@@ -1480,17 +1481,17 @@ export default function CitizenDashboard() {
                 display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10,
                 marginBottom: 16, textAlign: 'center'
               }}>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>pH Level</div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#10b981', marginTop: 2 }}>7.41 pH</div>
                   <div style={{ fontSize: '0.65rem', color: '#10b981' }}>Optimal</div>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>Turbidity</div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#0ea5e9', marginTop: 2 }}>0.12 NTU</div>
                   <div style={{ fontSize: '0.65rem', color: '#0ea5e9' }}>Crystal Clear</div>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>Dissolved TDS</div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#8b5cf6', marginTop: 2 }}>115 mg/L</div>
                   <div style={{ fontSize: '0.65rem', color: '#8b5cf6' }}>Pure Mineral</div>
@@ -1521,7 +1522,7 @@ export default function CitizenDashboard() {
           </div>
 
           {/* Picture Card 2: Purification Infrastructure */}
-          <div className="card card-hover" style={{ overflow: 'hidden', padding: 0, border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="card card-hover" style={{ overflow: 'hidden', padding: 0, border: '1px solid rgba(14, 165, 233, 0.18)' }}>
             <div style={{ position: 'relative', height: 220, overflow: 'hidden' }}>
               <img
                 src="/water_purification_plant.jpg"
@@ -1562,17 +1563,17 @@ export default function CitizenDashboard() {
                 display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10,
                 marginBottom: 16, textAlign: 'center'
               }}>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>Purification Rate</div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#10b981', marginTop: 2 }}>99.99%</div>
                   <div style={{ fontSize: '0.65rem', color: '#10b981' }}>Pathogen Free</div>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>Throughput</div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#00d2ff', marginTop: 2 }}>1,250 L/h</div>
                   <div style={{ fontSize: '0.65rem', color: '#00d2ff' }}>Continuous</div>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.05)', padding: '10px 8px', borderRadius: 10, border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>Chlorine Residual</div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#f59e0b', marginTop: 2 }}>0.15 ppm</div>
                   <div style={{ fontSize: '0.65rem', color: '#f59e0b' }}>Protected</div>
@@ -1610,10 +1611,10 @@ export default function CitizenDashboard() {
       {/* ═══ Recent Alerts (District-specific) ═══ */}
       <div className="card" style={{ marginBottom: 28, overflow: 'hidden' }}>
         <div style={{
-          padding: '20px 28px', borderBottom: '1px solid rgba(255,255,255,0.05)',
+          padding: '20px 28px', borderBottom: '1px solid rgba(14, 165, 233, 0.12)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center'
         }}>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0c2340', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
             <Droplets size={18} color="var(--color-primary)" /> Recent Alerts — {selectedDistrict ? `${selectedDistrict}, ${selectedState}` : selectedState ? selectedState : 'National (All-India)'}
           </h3>
           <Link to="/citizen/alerts" style={{
@@ -1640,7 +1641,7 @@ export default function CitizenDashboard() {
               return (
                 <div key={alert.id} style={{
                   padding: '16px 28px',
-                  borderBottom: i < alerts.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                  borderBottom: i < alerts.length - 1 ? '1px solid rgba(14, 165, 233, 0.1)' : 'none',
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                   transition: 'background 0.2s',
                 }}>
@@ -1686,7 +1687,7 @@ export default function CitizenDashboard() {
 
       {/* ═══ Quick Actions ═══ */}
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: '1.1rem', color: '#fff', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <h2 style={{ fontSize: '1.1rem', color: '#0c2340', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
           <Zap size={18} color="var(--color-primary)" /> Quick Actions
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14 }}>

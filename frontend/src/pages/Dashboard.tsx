@@ -379,11 +379,11 @@ export default function Dashboard() {
     : [];
 
   const tooltipStyle = {
-    background: 'rgba(9, 20, 40, 0.95)',
-    border: '1px solid rgba(0, 210, 255, 0.2)',
+    background: 'rgba(255, 255, 255, 0.96)',
+    border: '1px solid rgba(14, 165, 233, 0.3)',
     borderRadius: 12,
-    color: '#e0f2fe',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    color: '#0f172a',
+    boxShadow: '0 8px 32px rgba(14, 165, 233, 0.15)',
     backdropFilter: 'blur(10px)',
     padding: '12px 16px',
   };
@@ -405,7 +405,7 @@ export default function Dashboard() {
             }}>
               <Activity size={22} color="#fff" />
             </div>
-            <h1 style={{ fontSize: '1.75rem', color: '#fff', margin: 0 }}>
+            <h1 style={{ fontSize: '1.75rem', color: '#0c2340', margin: 0 }}>
               Analytics Dashboard
             </h1>
           </div>
@@ -449,27 +449,27 @@ export default function Dashboard() {
             <AlertTriangle size={22} color="#f59e0b" />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '1rem', color: '#fbbf24', marginBottom: 8 }}>
+            <div style={{ fontWeight: 700, fontSize: '1rem', color: '#b45309', marginBottom: 8 }}>
               ⚠ {totalAttention.toLocaleString()} samples require attention ({formatPercentage(attentionPct)})
             </div>
             <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', fontSize: '0.82rem' }}>
               {summary.chemical_alerts > 0 && (
-                <span style={{ color: '#fca5a5', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <FlaskConical size={13} /> {summary.chemical_alerts.toLocaleString()} chemical
                 </span>
               )}
               {summary.biological_alerts > 0 && (
-                <span style={{ color: '#fde68a', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ color: '#b45309', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <Bug size={13} /> {summary.biological_alerts.toLocaleString()} biological
                 </span>
               )}
               {summary.mixed_hazards > 0 && (
-                <span style={{ color: '#fca5a5', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <AlertOctagon size={13} /> {summary.mixed_hazards.toLocaleString()} mixed hazard
                 </span>
               )}
               {summary.physical_concerns > 0 && (
-                <span style={{ color: '#fde68a', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ color: '#b45309', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <Waves size={13} /> {summary.physical_concerns.toLocaleString()} physical
                 </span>
               )}
@@ -550,7 +550,7 @@ export default function Dashboard() {
         <div className="card" style={{ padding: '24px 28px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+              <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
                 Monthly Quality Trends
               </h3>
               <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0 }}>
@@ -583,16 +583,16 @@ export default function Dashboard() {
                   <stop offset="95%" stopColor="#eab308" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-              <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} />
-              <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(255,255,255,0.08)' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" />
+              <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(14, 165, 233, 0.15)' }} />
+              <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={{ stroke: 'rgba(14, 165, 233, 0.15)' }} />
               <Tooltip contentStyle={tooltipStyle} formatter={(val: any) => [Number(val).toLocaleString(), '']} />
               <Area type="monotone" dataKey="safe" stroke="#10b981" fill="url(#gradSafe)" strokeWidth={2} name="Safe" />
               <Area type="monotone" dataKey="chemical" stroke="#ef4444" fill="url(#gradChem)" strokeWidth={2} name="Chemical" />
               <Area type="monotone" dataKey="biological" stroke="#f97316" fill="url(#gradBio)" strokeWidth={2} name="Biological" />
               <Area type="monotone" dataKey="physical" stroke="#eab308" fill="url(#gradPhys)" strokeWidth={2} name="Physical" />
               <Legend
-                formatter={(value: string) => <span style={{ color: '#94a3b8', fontSize: '0.78rem', fontWeight: 500 }}>{value}</span>}
+                formatter={(value: string) => <span style={{ color: '#475569', fontSize: '0.78rem', fontWeight: 500 }}>{value}</span>}
                 iconType="circle" iconSize={8}
               />
             </AreaChart>
@@ -601,7 +601,7 @@ export default function Dashboard() {
 
         {/* Radar Chart — Contamination Profile */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Contamination Profile
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 16 }}>
@@ -609,8 +609,8 @@ export default function Dashboard() {
           </p>
           <ResponsiveContainer width="100%" height={300}>
             <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
-              <PolarGrid stroke="rgba(255,255,255,0.08)" />
-              <PolarAngleAxis dataKey="param" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+              <PolarGrid stroke="rgba(14, 165, 233, 0.15)" />
+              <PolarAngleAxis dataKey="param" tick={{ fill: '#475569', fontSize: 12 }} />
               <PolarRadiusAxis tick={{ fill: '#64748b', fontSize: 10 }} />
               <Radar name="Contamination" dataKey="value" stroke="#00d2ff" fill="#00d2ff" fillOpacity={0.2} strokeWidth={2} />
               <Tooltip contentStyle={tooltipStyle} />
@@ -623,7 +623,7 @@ export default function Dashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 28 }}>
         {/* Pie Chart — Category Distribution */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Quality Distribution
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -641,7 +641,7 @@ export default function Dashboard() {
               <Tooltip contentStyle={tooltipStyle}
                 formatter={(val) => [Number(val).toLocaleString(), 'Samples']} />
               <Legend
-                formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 500 }}>{value}</span>}
+                formatter={(value) => <span style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>{value}</span>}
                 iconType="circle" iconSize={8}
               />
             </PieChart>
@@ -650,7 +650,7 @@ export default function Dashboard() {
 
         {/* Bar Chart — Top Chemical States */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Chemical Alerts by State
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -664,9 +664,9 @@ export default function Dashboard() {
                   <stop offset="100%" stopColor="#00d2ff" />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" horizontal={false} />
               <XAxis type="number" tick={{ fill: '#64748b', fontSize: 11 }} />
-              <YAxis type="category" dataKey="state" tick={{ fill: '#94a3b8', fontSize: 11 }} width={85} />
+              <YAxis type="category" dataKey="state" tick={{ fill: '#475569', fontSize: 11 }} width={85} />
               <Tooltip contentStyle={tooltipStyle}
                 formatter={(val) => [Number(val).toLocaleString(), 'Alerts']} />
               <Bar dataKey="chemical" fill="url(#barGrad)" radius={[0, 6, 6, 0]} barSize={16} />
@@ -676,7 +676,7 @@ export default function Dashboard() {
 
         {/* Radial Bar — Category Percentages */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Category Breakdown
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -689,7 +689,7 @@ export default function Dashboard() {
               <Tooltip contentStyle={tooltipStyle}
                 formatter={(val: any) => [`${Number(val).toFixed(1)}%`, '']} />
               <Legend
-                formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 500 }}>{value}</span>}
+                formatter={(value) => <span style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>{value}</span>}
                 iconType="circle" iconSize={8}
               />
             </RadialBarChart>
@@ -701,7 +701,7 @@ export default function Dashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24, marginBottom: 28 }}>
         {/* Stacked Severity Bar */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Severity by State
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -709,7 +709,7 @@ export default function Dashboard() {
           </p>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={severityStackData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" vertical={false} />
               <XAxis dataKey="state" tick={{ fill: '#64748b', fontSize: 10 }} />
               <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
               <Tooltip contentStyle={tooltipStyle} />
@@ -718,7 +718,7 @@ export default function Dashboard() {
               <Bar dataKey="high" stackId="severity" fill="#f97316" name="High" />
               <Bar dataKey="critical" stackId="severity" fill="#ef4444" radius={[4, 4, 0, 0]} name="Critical" />
               <Legend
-                formatter={(value) => <span style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 500 }}>{value}</span>}
+                formatter={(value) => <span style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>{value}</span>}
                 iconType="square" iconSize={8}
               />
             </BarChart>
@@ -727,7 +727,7 @@ export default function Dashboard() {
 
         {/* Severity Distribution (Original) */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Alert Severity Breakdown
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 8 }}>
@@ -735,7 +735,7 @@ export default function Dashboard() {
           </p>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={summary.severity_distribution} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(14, 165, 233, 0.1)" vertical={false} />
               <XAxis dataKey="severity" tick={{ fill: '#64748b', fontSize: 11 }} />
               <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
               <Tooltip contentStyle={tooltipStyle}
@@ -756,7 +756,7 @@ export default function Dashboard() {
 
         {/* Parameter Health Matrix */}
         <div className="card" style={{ padding: '24px 28px' }}>
-          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+          <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
             Parameter Health
           </h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0, marginBottom: 16 }}>
@@ -785,7 +785,7 @@ export default function Dashboard() {
       <div className="card" style={{ padding: '24px 28px', marginBottom: 28 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <div>
-            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#fff', margin: 0, marginBottom: 4 }}>
+            <h3 style={{ fontWeight: 700, fontSize: '1.05rem', color: '#0c2340', margin: 0, marginBottom: 4 }}>
               Water Source Analysis
             </h3>
             <p style={{ fontSize: '0.78rem', color: 'var(--color-text-secondary)', margin: 0 }}>
@@ -803,7 +803,7 @@ export default function Dashboard() {
                 padding: '16px 20px', border: '1px solid rgba(255,255,255,0.05)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.88rem', color: '#fff', fontWeight: 600 }}>{s.source || 'Unknown'}</span>
+                  <span style={{ fontSize: '0.88rem', color: '#0c2340', fontWeight: 600 }}>{s.source || 'Unknown'}</span>
                   <span style={{
                     fontSize: '0.75rem', fontWeight: 700, color,
                     background: `${color}20`, padding: '3px 10px', borderRadius: 20
@@ -829,7 +829,7 @@ export default function Dashboard() {
 
       {/* ═══ Quick Actions Grid ═══ */}
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+        <h2 style={{ fontSize: '1.15rem', color: '#0c2340', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
           <Zap size={20} color="var(--color-primary)" /> Quick Actions
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
